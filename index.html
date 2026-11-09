@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zela · Cuide do bairro, da casa e da saúde</title>
+  <meta name="description" content="Avise sobre buraco e poste apagado, saiba antes quando vem chuva forte e descubra qual UBS tem o seu remédio. Alto Tietê, SP.">
+  <meta name="theme-color" content="#0B6B4E">
+  <meta property="og:title" content="Zela · Cuide do bairro, da casa e da saúde">
+  <meta property="og:description" content="Zeladoria, alerta de chuva e saúde em linguagem simples para o Alto Tietê.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%230B6B4E'/%3E%3Cpath d='M13 13h14L13 27h14' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='8' r='4' fill='%23F5C451'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="zela s0">
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- ===== Navegação em ilha ===== -->
+  <header class="navwrap">
+    <nav class="nav" aria-label="Principal">
+      <a class="logo" href="#/inicio" aria-label="Zela, página inicial"><span class="mark" aria-hidden="true"></span>Zela</a>
+      <div class="nav-links">
+        <a href="#/inicio" data-route="inicio">Início</a>
+        <a href="#/reportar" data-route="reportar">Reportar problema</a>
+        <a href="#/chamados" data-route="chamados">Meus chamados</a>
+        <a href="#/alerta" data-route="alerta">Alerta de chuva</a>
+        <a href="#/saude" data-route="saude">Saúde</a>
+        <a href="#/sobre" data-route="sobre">Sobre</a>
+      </div>
+      <div class="nav-end">
+        <button class="btn btn-s btn-sm a11y-btn" type="button" id="a11y-btn" aria-expanded="false" aria-controls="painel-a11y"><span class="i i20 i-access" aria-hidden="true"></span><span class="a11y-txt">Acessibilidade</span></button>
+        <button class="menu-btn" type="button" id="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-cel"><span></span><span></span></button>
+        <div id="painel-a11y" class="pop" role="dialog" aria-label="Acessibilidade">
+          <div class="row between gap16">
+            <h2 class="t3">Acessibilidade</h2>
+            <button class="btn btn-gh btn-sm btn-ic" type="button" id="a11y-close" aria-label="Fechar painel"><span class="i i20 i-x" aria-hidden="true"></span></button>
+          </div>
+          <div class="stack gap8">
+            <span class="lbl" id="lbl-texto">Tamanho do texto</span>
+            <div class="seg" role="group" aria-labelledby="lbl-texto">
+              <button type="button" data-size="0" aria-pressed="true" aria-label="Texto normal" style="font-size: 16px">A</button>
+              <button type="button" data-size="1" aria-pressed="false" aria-label="Texto maior" style="font-size: 20px">A</button>
+              <button type="button" data-size="2" aria-pressed="false" aria-label="Texto bem maior" style="font-size: 24px">A</button>
+            </div>
+          </div>
+          <button class="sw-row" type="button" role="switch" id="sw-hc" aria-checked="false"><span><b>Alto contraste</b><span class="hint">Fundo preto e letras brancas</span></span><span class="sw" aria-hidden="true"></span></button>
+          <button class="sw-row" type="button" role="switch" id="sw-rm" aria-checked="false"><span><b>Reduzir animações</b><span class="hint">A tela muda sem movimento</span></span><span class="sw" aria-hidden="true"></span></button>
+          <button class="btn btn-p full" type="button" id="btn-ouvir"><span class="i i20 i-speaker" aria-hidden="true"></span><span>Ouvir esta página</span></button>
+        </div>
+      </div>
+    </nav>
+    <div id="menu-cel" class="menu-ov" aria-hidden="true">
+      <a href="#/inicio" data-route="inicio" style="--d: 1">Início<span class="i i-right" aria-hidden="true"></span></a>
+      <a href="#/reportar" data-route="reportar" style="--d: 2">Reportar problema<span class="i i-right" aria-hidden="true"></span></a>
+      <a href="#/chamados" data-route="chamados" style="--d: 3">Meus chamados<span class="i i-right" aria-hidden="true"></span></a>
+      <a href="#/alerta" data-route="alerta" style="--d: 4">Alerta de chuva<span class="i i-right" aria-hidden="true"></span></a>
+      <a href="#/saude" data-route="saude" style="--d: 5">Saúde<span class="i i-right" aria-hidden="true"></span></a>
+      <a href="#/sobre" data-route="sobre" style="--d: 6">Sobre<span class="i i-right" aria-hidden="true"></span></a>
+      <p class="menu-sos"><span class="i i-phone" aria-hidden="true"></span><span>Em perigo agora? Ligue <b>199</b> (Defesa Civil) ou <b>193</b> (Bombeiros).</span></p>
+    </div>
+  </header>
+
+  <main id="conteudo" tabindex="-1">
+
+    <!-- =====================================================
+         INÍCIO
+         ===================================================== -->
+    <div class="page" data-page="inicio" data-title="Cuide do bairro, da casa e da saúde">
+      <section class="hero" aria-labelledby="titulo-hero">
+        <div class="wrap hero-g">
+          <div class="stack gap24">
+            <p class="eyebrow">Alto Tietê · SP</p>
+            <h1 id="titulo-hero" class="t-hero grad">Cuide do bairro,<br>da casa e da saúde<br>sem enfrentar fila.</h1>
+            <p class="lead">Avise sobre buraco e poste apagado, saiba antes quando vem chuva forte e descubra qual UBS tem o seu remédio. Em linguagem simples, para quem tem mais dificuldade com tecnologia.</p>
+            <div class="stack gap12" style="max-width: 640px; margin-top: 8px">
+              <label class="lbl" for="busca-topo" style="font-size: 20px; line-height: 28px">Do que você precisa hoje?</label>
+              <div class="search-box">
+                <form class="search" role="search" data-search>
+                  <span class="i i-search" aria-hidden="true"></span>
+                  <input id="busca-topo" type="search" autocomplete="off" placeholder="Ex.: tem um buraco na minha rua" aria-controls="sugestoes" aria-expanded="false">
+                  <button class="btn btn-p" type="submit">Mostrar o caminho<span class="i i20 i-right" aria-hidden="true"></span></button>
+                </form>
+                <div id="sugestoes" class="sugg" role="listbox" aria-label="Sugestões" hidden></div>
+              </div>
+              <div id="atalhos" class="chips" role="group" aria-label="Atalhos">
+                <a class="chip" href="#/reportar"><span class="i i20 i-road" aria-hidden="true"></span>Buraco</a>
+                <a class="chip" href="#/alerta"><span class="i i20 i-rain" aria-hidden="true"></span>Chuva forte</a>
+                <a class="chip" href="#/saude"><span class="i i20 i-pill" aria-hidden="true"></span>Remédio</a>
+                <a class="chip" href="#/chamados"><span class="i i20 i-list" aria-hidden="true"></span>Meu protocolo</a>
+              </div>
+            </div>
+            <ul class="proofs" aria-label="Por que usar">
+              <li class="proof"><span class="i i20 i-check" aria-hidden="true"></span>Sem cadastro e sem custo</li>
+              <li class="proof"><span class="i i20 i-check" aria-hidden="true"></span>Previsão do tempo atualizada</li>
+              <li class="proof"><span class="i i20 i-check" aria-hidden="true"></span>5 cidades do Alto Tietê</li>
+            </ul>
+          </div>
+
+          <div class="hero-vis" aria-hidden="true" style="position: relative; display: flex; justify-content: center; align-items: center; padding: 32px 0">
+            <div class="phone-mock">
+              <div class="phone-screen">
+                <div class="row between">
+                  <span class="row gap8" style="font-weight: 700"><span class="mark" style="width: 32px; height: 32px; border-radius: 8px"></span>Zela</span>
+                  <span class="bub" style="background: var(--s); color: var(--ink)"><span class="i i20 i-access"></span></span>
+                </div>
+                <div class="stack"><b class="t3">Olá, Dona Cida</b><span class="xs muted">Do que você precisa hoje?</span></div>
+                <div class="row gap8 xs muted mini" style="border-color: var(--line2); font-weight: 600"><span class="i i16 i-search"></span>tem um buraco na minha rua</div>
+                <div class="row gap12" style="background: var(--r-at); color: #FFFFFF; border-radius: 12px; padding: 12px 16px">
+                  <span class="i i-warn"></span>
+                  <span class="stack" style="flex: 1"><b class="small">Atenção · 24,5 mm</b><span class="xs">Mais forte das 15h às 18h</span></span>
+                  <span class="i i16 i-right"></span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+                  <span class="stack gap8 xs mini" style="font-weight: 700"><span class="bub" style="width: 32px; height: 32px"><span class="i i16 i-road"></span></span>Buraco</span>
+                  <span class="stack gap8 xs mini" style="font-weight: 700"><span class="bub" style="width: 32px; height: 32px"><span class="i i16 i-rain"></span></span>Chuva forte</span>
+                  <span class="stack gap8 xs mini" style="font-weight: 700"><span class="bub" style="width: 32px; height: 32px"><span class="i i16 i-pill"></span></span>Remédio</span>
+                  <span class="stack gap8 xs mini" style="font-weight: 700"><span class="bub" style="width: 32px; height: 32px"><span class="i i16 i-list"></span></span>Meu protocolo</span>
+                </div>
+                <div class="stack gap8 mini">
+                  <span class="row between gap8"><b class="xs">Buraco na rua</b><span class="badge b-and" style="padding: 2px 8px; font-size: 12px; line-height: 16px"><span class="i i-clock"></span>Em andamento</span></span>
+                  <span class="prog"><span style="width: 66%"></span></span>
+                  <span class="xs muted">ZL-24817 · 37 apoios</span>
+                </div>
+              </div>
+            </div>
+            <div class="float-card" style="left: -24px; top: 0">
+              <span class="stk ok" style="width: 40px; height: 40px"><span class="i i20 i-check"></span></span>
+              <span class="stack"><b class="small">Chamado enviado</b><span class="xs muted num">Protocolo ZL-26276</span></span>
+            </div>
+            <div class="float-card" style="right: -24px; bottom: 0">
+              <span class="stk ok" style="width: 40px; height: 40px"><span class="i i20 i-pill"></span></span>
+              <span class="stack"><b class="small">Losartana 50 mg</b><span class="xs muted">Disponível · UBS Vila Natal (exemplo)</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="rv" aria-labelledby="titulo-avisos" style="padding-bottom: 32px">
+        <div class="wrap stack gap16">
+          <h2 id="titulo-avisos" class="t3">Avisos para você</h2>
+          <div class="g2">
+            <div class="note n-at">
+              <span class="i i-warn" aria-hidden="true"></span>
+              <div class="stack gap4">
+                <b>Atenção em Mogi das Cruzes</b>
+                <p>24,5 mm de chuva previstos nas próximas 24 horas.</p>
+                <a href="#/alerta">Ver o que fazer e onde ficam os abrigos</a>
+              </div>
+            </div>
+            <div class="note n-in">
+              <span class="i i-info" aria-hidden="true"></span>
+              <div class="stack gap4">
+                <b>Seu chamado ZL-26276 foi recebido</b>
+                <p>Buraco na Rua Coronel Souza Franco. Prazo estimado: até 20 de novembro.</p>
+                <a href="#/chamados">Acompanhar meu chamado</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec rv" aria-labelledby="titulo-problema">
+        <div class="wrap">
+          <div class="sec-h">
+            <p class="eyebrow">O problema</p>
+            <h2 id="titulo-problema" class="t1">Três problemas, três canais diferentes</h2>
+            <p class="lead">Hoje cada serviço fica em um site, um telefone ou um balcão. Quem mais precisa é quem mais se perde no caminho.</p>
+          </div>
+          <div class="g2">
+            <div class="pcol" style="background: var(--reds)">
+              <h3 class="t2">Hoje</h3>
+              <ul class="stack gap16">
+                <li><span class="bub" style="background: var(--s); color: var(--red)"><span class="i i20 i-x" aria-hidden="true"></span></span><span><b>Buraco:</b> ligar para a prefeitura e esperar na linha ocupada.</span></li>
+                <li><span class="bub" style="background: var(--s); color: var(--red)"><span class="i i20 i-x" aria-hidden="true"></span></span><span><b>Chuva:</b> descobrir a enchente quando a água já entrou em casa.</span></li>
+                <li><span class="bub" style="background: var(--s); color: var(--red)"><span class="i i20 i-x" aria-hidden="true"></span></span><span><b>Remédio:</b> ir até a UBS e voltar sem nada porque está em falta.</span></li>
+              </ul>
+            </div>
+            <div class="pcol" style="background: var(--gs)">
+              <h3 class="t2">Com o Zela</h3>
+              <ul class="stack gap16">
+                <li><span class="bub" style="background: var(--g); color: var(--ong)"><span class="i i20 i-check" aria-hidden="true"></span></span><span><b>Buraco:</b> avisar em 4 passos curtos e receber um protocolo.</span></li>
+                <li><span class="bub" style="background: var(--g); color: var(--ong)"><span class="i i20 i-check" aria-hidden="true"></span></span><span><b>Chuva:</b> alerta no celular antes de a água subir.</span></li>
+                <li><span class="bub" style="background: var(--g); color: var(--ong)"><span class="i i20 i-check" aria-hidden="true"></span></span><span><b>Remédio:</b> ver qual UBS tem estoque antes de sair de casa.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec rv" aria-labelledby="titulo-ganhos" style="padding-top: 0">
+        <div class="wrap">
+          <div class="sec-h">
+            <p class="eyebrow">O que você ganha</p>
+            <h2 id="titulo-ganhos" class="t1">Quatro tarefas, cada uma em poucos toques</h2>
+          </div>
+          <div class="g4">
+            <article class="card pad stack gap16">
+              <span class="ibox"><span class="i i-road" aria-hidden="true"></span></span>
+              <h3 class="t3">Buraco consertado sem precisar ligar</h3>
+              <p class="small muted" style="flex: 1">Escolha o problema, marque o lugar e envie. Leva cerca de 2 minutos.</p>
+              <a href="#/reportar">Reportar problema</a>
+            </article>
+            <article class="card pad stack gap16">
+              <span class="ibox"><span class="i i-list" aria-hidden="true"></span></span>
+              <h3 class="t3">Saiba em que pé está o seu pedido</h3>
+              <p class="small muted" style="flex: 1">Cada chamado tem protocolo, prazo e uma linha do tempo com cada etapa.</p>
+              <a href="#/chamados">Ver meus chamados</a>
+            </article>
+            <article class="card pad stack gap16">
+              <span class="ibox"><span class="i i-rain" aria-hidden="true"></span></span>
+              <h3 class="t3">Saiba antes quando a água pode subir</h3>
+              <p class="small muted" style="flex: 1">Risco em uma palavra, o que fazer agora e os abrigos mais perto.</p>
+              <a href="#/alerta">Ver alerta de chuva</a>
+            </article>
+            <article class="card pad stack gap16">
+              <span class="ibox"><span class="i i-pill" aria-hidden="true"></span></span>
+              <h3 class="t3">Não perca a viagem até a UBS</h3>
+              <p class="small muted" style="flex: 1">Veja qual unidade tem o seu remédio e crie lembretes de consulta.</p>
+              <a href="#/saude">Procurar remédio</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec" aria-labelledby="titulo-promessa" style="padding: 128px 0">
+        <div class="wrap" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 64px; align-items: center">
+          <div class="stack gap24">
+            <p class="eyebrow">Nossa promessa</p>
+            <h2 id="titulo-promessa" class="tag" data-tagline>Seu bairro cuidado,<br>sua casa protegida da chuva e o seu remédio na mão.<br>Tudo no mesmo lugar.</h2>
+          </div>
+          <ul class="stack gap16">
+            <li class="card pad24 row gap16"><span class="ibox"><span class="i i-road" aria-hidden="true"></span></span><span class="stack gap4"><b class="t3">Bairro cuidado</b><span class="small muted">Buraco, poste, lixo e calçada com protocolo e prazo.</span></span></li>
+            <li class="card pad24 row gap16"><span class="ibox"><span class="i i-rain" aria-hidden="true"></span></span><span class="stack gap4"><b class="t3">Casa protegida da chuva</b><span class="small muted">Risco em uma palavra e o que fazer, antes de a água subir.</span></span></li>
+            <li class="card pad24 row gap16"><span class="ibox"><span class="i i-pill" aria-hidden="true"></span></span><span class="stack gap4"><b class="t3">Remédio na mão</b><span class="small muted">A UBS com estoque mais perto e lembrete de consulta.</span></span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="sec rv" aria-labelledby="titulo-como">
+        <div class="wrap">
+          <div class="sec-h">
+            <p class="eyebrow">Como funciona</p>
+            <h2 id="titulo-como" class="t1">Três passos, do aviso até a solução</h2>
+          </div>
+          <ol class="g3">
+            <li class="card pad stack gap16"><span class="bign">1</span><h3 class="t3">Conte o que aconteceu</h3><p class="small muted">Escreva com as suas palavras ou toque em um atalho. Não precisa saber o nome do serviço.</p></li>
+            <li class="card pad stack gap16"><span class="bign">2</span><h3 class="t3">Receba um protocolo</h3><p class="small muted">Você recebe um número como ZL-26276 e o prazo estimado de resposta.</p></li>
+            <li class="card pad stack gap16"><span class="bign">3</span><h3 class="t3">Acompanhe cada etapa</h3><p class="small muted">Veja quando o chamado é recebido, analisado e resolvido. Se quiser, receba aviso por SMS.</p></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="sec rv" aria-labelledby="titulo-confiar" style="padding-top: 0">
+        <div class="wrap">
+          <div class="sec-h">
+            <p class="eyebrow">Por que confiar</p>
+            <h2 id="titulo-confiar" class="t1">Feito para respeitar o seu tempo e os seus dados</h2>
+          </div>
+          <div class="g4">
+            <div class="stack gap12"><span class="ibox"><span class="i i-shield" aria-hidden="true"></span></span><h3 class="t3">Sem cadastro</h3><p class="small muted">Você usa tudo sem criar conta e sem senha.</p></div>
+            <div class="stack gap12"><span class="ibox"><span class="i i-mobile" aria-hidden="true"></span></span><h3 class="t3">Dados no seu aparelho</h3><p class="small muted">Lembretes e rascunhos ficam só no seu celular.</p></div>
+            <div class="stack gap12"><span class="ibox"><span class="i i-rain" aria-hidden="true"></span></span><h3 class="t3">Previsão de verdade</h3><p class="small muted">Os dados de chuva vêm do serviço aberto Open-Meteo e são atualizados a cada hora.</p></div>
+            <div class="stack gap12"><span class="ibox"><span class="i i-speaker" aria-hidden="true"></span></span><h3 class="t3">Para ler e ouvir</h3><p class="small muted">Aumente a letra, ligue o alto contraste ou ouça a página em voz alta.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec rv" aria-labelledby="titulo-faq" style="padding-top: 0">
+        <div class="wrap">
+          <div class="sec-h">
+            <p class="eyebrow">Perguntas frequentes</p>
+            <h2 id="titulo-faq" class="t1">Ficou alguma dúvida?</h2>
+          </div>
+          <div class="faqs" style="width: 100%">
+            <details class="faq" open><summary>Preciso criar uma conta?<span class="i i-caret" aria-hidden="true"></span></summary><p>Não. Você usa o Zela sem cadastro e sem senha. Só pedimos o celular se você quiser receber avisos.</p></details>
+            <details class="faq"><summary>Quanto custa?<span class="i i-caret" aria-hidden="true"></span></summary><p>Nada. O Zela é gratuito para todas as pessoas.</p></details>
+            <details class="faq"><summary>Não sei o nome da rua. E agora?<span class="i i-caret" aria-hidden="true"></span></summary><p>Toque em “Usar minha localização” ou escreva um ponto de referência, como “em frente ao mercado da praça”.</p></details>
+            <details class="faq"><summary>Como sei se meu chamado foi atendido?<span class="i i-caret" aria-hidden="true"></span></summary><p>Em Meus chamados, digite o protocolo. A linha do tempo mostra cada etapa. Se você deixar o celular, avisamos por SMS.</p></details>
+            <details class="faq"><summary>Já existe um chamado igual ao meu. O que faço?<span class="i i-caret" aria-hidden="true"></span></summary><p>Toque em “Isso também me afeta”. Cada apoio mostra à prefeitura o que é mais urgente no bairro.</p></details>
+            <details class="faq"><summary>O alerta de chuva substitui a Defesa Civil?<span class="i i-caret" aria-hidden="true"></span></summary><p>Não. Em perigo, ligue 199. O Zela ajuda você a se preparar antes, mas não substitui os alertas oficiais.</p></details>
+            <details class="faq"><summary>O estoque de remédio é atualizado?<span class="i i-caret" aria-hidden="true"></span></summary><p>Neste protótipo os estoques são exemplos. Na versão real, a ideia é atualizar a cada turno com os dados das UBS.</p></details>
+            <details class="faq"><summary>Tenho dificuldade para ler a tela.<span class="i i-caret" aria-hidden="true"></span></summary><p>Toque em Acessibilidade, no topo. Lá você aumenta a letra, liga o alto contraste e pode ouvir a página.</p></details>
+            <details class="faq"><summary>Quais cidades são atendidas?<span class="i i-caret" aria-hidden="true"></span></summary><p>Mogi das Cruzes, Suzano, Itaquaquecetuba, Poá e Ferraz de Vasconcelos.</p></details>
+          </div>
+        </div>
+      </section>
+
+      <section class="rv" aria-labelledby="titulo-cta" style="padding-bottom: 96px">
+        <div class="wrap">
+          <div class="cta">
+            <h2 id="titulo-cta" class="t1">Comece agora, sem cadastro</h2>
+            <p class="lead" style="color: #C5CEC7">Escreva do que você precisa. A gente mostra o caminho.</p>
+            <form class="search" role="search" data-search style="width: 100%; max-width: 640px; text-align: left">
+              <span class="i i-search" aria-hidden="true"></span>
+              <label class="sr" for="busca-fim">Do que você precisa hoje?</label>
+              <input id="busca-fim" type="search" autocomplete="off" placeholder="Ex.: remédio de pressão">
+              <button class="btn btn-p" type="submit">Mostrar o caminho<span class="i i20 i-right" aria-hidden="true"></span></button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =====================================================
+         REPORTAR PROBLEMA
+         ===================================================== -->
+    <div class="page" data-page="reportar" data-title="Reportar problema" hidden>
+      <div class="wrap">
+        <header class="phead">
+          <p class="eyebrow">Zeladoria urbana</p>
+          <h1 class="t1">Reportar problema</h1>
+          <p class="lead hide-m">Conte o que você viu na rua. São 4 passos curtos e o que você escreve fica salvo neste aparelho.</p>
+        </header>
+        <div class="wzg" style="padding-bottom: 96px">
+          <section class="card wz" id="wz" aria-labelledby="titulo-passo" aria-live="polite"></section>
+          <aside class="side hide-m" aria-label="Resumo">
+            <div class="card pad24 stack gap16">
+              <h2 class="t3">Seu chamado até agora</h2>
+              <ul class="stack gap12" id="wz-sum"></ul>
+            </div>
+            <div class="note n-er">
+              <span class="i i-warn" aria-hidden="true"></span>
+              <div class="stack gap4">
+                <b>Alguém está em perigo agora?</b>
+                <p>Não espere o chamado. Ligue <a href="tel:193">193</a> (Bombeiros) ou <a href="tel:199">199</a> (Defesa Civil).</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         MEUS CHAMADOS
+         ===================================================== -->
+    <div class="page" data-page="chamados" data-title="Meus chamados" hidden>
+      <div class="wrap">
+        <header class="phead">
+          <p class="eyebrow">Zeladoria urbana</p>
+          <h1 class="t1">Meus chamados</h1>
+          <p class="lead hide-m">Acompanhe o seu chamado e veja o que os vizinhos já avisaram no bairro.</p>
+        </header>
+        <div class="tools" role="search" style="margin-bottom: 16px">
+          <div class="field" style="flex: 1 1 320px">
+            <label class="lbl" for="ch-busca">Buscar</label>
+            <div class="inp-ic">
+              <span class="i i-search" aria-hidden="true"></span>
+              <input id="ch-busca" class="inp" type="search" placeholder="Protocolo, rua ou bairro">
+            </div>
+          </div>
+          <div class="field" style="flex: 0 1 260px">
+            <label class="lbl" for="ch-cidade">Cidade</label>
+            <div class="sel">
+              <select id="ch-cidade" class="inp">
+                <option>Todas as cidades</option><option>Mogi das Cruzes</option><option>Suzano</option><option>Itaquaquecetuba</option><option>Poá</option><option>Ferraz de Vasconcelos</option>
+              </select>
+              <span class="i i20 i-caret" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row wr between gap16" style="margin-bottom: 24px">
+          <div class="chips" role="group" aria-label="Situação" id="ch-chips">
+            <button class="chip" type="button" data-fs="all" aria-pressed="true">Todos</button>
+            <button class="chip" type="button" data-fs="rec" aria-pressed="false">Recebido</button>
+            <button class="chip" type="button" data-fs="and" aria-pressed="false">Em andamento</button>
+            <button class="chip" type="button" data-fs="res" aria-pressed="false">Resolvido</button>
+          </div>
+          <p class="small muted" aria-live="polite" style="font-weight: 600" id="ch-count"></p>
+        </div>
+        <div class="ld" style="padding-bottom: 96px">
+          <section aria-label="Lista de chamados" id="ch-list"></section>
+          <button class="scrim" type="button" id="ch-scrim" aria-label="Fechar detalhes" tabindex="-1"></button>
+          <aside class="card detail" id="ch-detail" aria-label="Detalhes do chamado"></aside>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         ALERTA DE CHUVA
+         ===================================================== -->
+    <div class="page" data-page="alerta" data-title="Alerta de chuva forte" hidden>
+      <div class="wrap">
+        <header class="phead">
+          <p class="eyebrow">Clima</p>
+          <h1 class="t1">Alerta de chuva forte</h1>
+          <p class="lead">Previsão para as próximas 24 horas, atualizada às 14:00. Fonte: Open-Meteo. Neste protótipo os números são de exemplo.</p>
+          <div class="field" style="max-width: 360px; margin-top: 8px">
+            <label class="lbl" for="al-cidade">Sua cidade</label>
+            <div class="sel">
+              <select id="al-cidade" class="inp">
+                <option>Mogi das Cruzes</option><option>Suzano</option><option>Itaquaquecetuba</option><option>Poá</option><option>Ferraz de Vasconcelos</option>
+              </select>
+              <span class="i i20 i-caret" aria-hidden="true"></span>
+            </div>
+          </div>
+        </header>
+
+        <section aria-label="Nível de risco" aria-live="polite" id="al-risk"></section>
+
+        <div class="g2" style="margin-top: 32px; align-items: start">
+          <section class="card pad stack gap24" aria-labelledby="t-grafico">
+            <div class="stack gap4">
+              <h2 id="t-grafico" class="t2">Chuva a cada 3 horas</h2>
+              <p class="small muted">Barra vermelha: mais de 5 mm, chuva forte.</p>
+            </div>
+            <div>
+              <div class="plot" role="img" id="al-plot">
+                <span class="thr" style="bottom: 55px"><span>5 mm</span></span>
+              </div>
+              <div class="axis" aria-hidden="true"><span>0h</span><span>3h</span><span>6h</span><span>9h</span><span>12h</span><span>15h</span><span>18h</span><span>21h</span></div>
+            </div>
+            <div class="row wr gap16 xs" style="font-weight: 600">
+              <span class="row gap8"><span class="legend-dot" style="background: var(--g)"></span>Até 5 mm</span>
+              <span class="row gap8"><span class="legend-dot" style="background: var(--red)"></span>Mais de 5 mm, chuva forte</span>
+            </div>
+          </section>
+
+          <section class="card pad stack gap24" aria-labelledby="t-fazer">
+            <div class="stack gap8">
+              <h2 id="t-fazer" class="t2">O que fazer agora</h2>
+              <p class="small muted" style="font-weight: 600" aria-live="polite" id="al-done"></p>
+              <div class="prog" aria-hidden="true"><span id="al-prog"></span></div>
+            </div>
+            <ul class="stack gap8" id="al-checks"></ul>
+            <p class="note n-er small"><span class="i i-phone" aria-hidden="true"></span><span>Em perigo, ligue <a href="tel:199">199</a>. O Zela não substitui a Defesa Civil.</span></p>
+          </section>
+        </div>
+
+        <section class="sec" aria-labelledby="t-abrigos" style="padding-bottom: 32px">
+          <div class="sec-h" style="margin-bottom: 32px">
+            <h2 id="t-abrigos" class="t2">Abrigos perto de você</h2>
+            <p class="small muted">Locais de exemplo, ordenados pela distância.</p>
+          </div>
+          <ul class="g3" id="al-shelters"></ul>
+        </section>
+
+        <section class="sec" aria-labelledby="t-receber" style="padding-top: 64px">
+          <div class="card pad g2" style="gap: 48px; align-items: start">
+            <div class="stack gap16">
+              <span class="ibox"><span class="i i-bell" aria-hidden="true"></span></span>
+              <h2 id="t-receber" class="t2">Receber alerta no celular</h2>
+              <p class="muted">Avisamos quando o risco subir na sua cidade. O SMS e a ligação funcionam em qualquer celular, mesmo sem internet.</p>
+            </div>
+            <form class="stack gap24" id="al-form" novalidate>
+              <div class="field" data-field="nome">
+                <label class="lbl" for="al-nome">Seu nome</label>
+                <input id="al-nome" class="inp" type="text" autocomplete="name" aria-describedby="e-al-nome">
+                <p id="e-al-nome" class="errmsg" hidden><span class="bang" aria-hidden="true">!</span>Escreva como quer ser chamada ou chamado na mensagem.</p>
+              </div>
+              <div class="field" data-field="cel">
+                <label class="lbl" for="al-cel">Celular com DDD</label>
+                <input id="al-cel" class="inp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 98472-3159" aria-describedby="e-al-cel">
+                <p id="e-al-cel" class="errmsg" hidden><span class="bang" aria-hidden="true">!</span>Confira o número. Use o DDD e os 9 dígitos, como (11) 98472-3159.</p>
+              </div>
+              <fieldset class="field" style="border: 0; padding: 0; margin: 0">
+                <legend class="lbl" style="margin-bottom: 8px">Como você prefere receber?</legend>
+                <div class="chips" role="radiogroup" id="al-canais">
+                  <button class="chip" type="button" role="radio" data-canal="SMS" aria-checked="true"><span class="i i20 i-mobile" aria-hidden="true"></span>SMS</button>
+                  <button class="chip" type="button" role="radio" data-canal="WhatsApp" aria-checked="false"><span class="i i20 i-phone" aria-hidden="true"></span>WhatsApp</button>
+                  <button class="chip" type="button" role="radio" data-canal="ligação de voz" aria-checked="false"><span class="i i20 i-speaker" aria-hidden="true"></span>Ligação de voz</button>
+                </div>
+              </fieldset>
+              <button class="btn btn-p" type="submit" style="align-self: flex-start"><span class="i i20 i-bell" aria-hidden="true"></span>Quero receber alertas</button>
+              <div class="note n-ok" role="status" id="al-ok" hidden></div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         SAÚDE
+         ===================================================== -->
+    <div class="page" data-page="saude" data-title="Saúde" hidden>
+      <div class="wrap">
+        <header class="phead">
+          <p class="eyebrow">Saúde</p>
+          <h1 class="t1">Remédio e consulta sem perder a viagem</h1>
+          <p class="lead">Veja qual UBS tem o seu remédio antes de sair de casa e crie lembretes para não esquecer.</p>
+        </header>
+
+        <section class="card pad stack gap24" aria-labelledby="t-ubs">
+          <h2 id="t-ubs" class="t2">Qual UBS tem meu remédio?</h2>
+          <div class="row wr gap16" style="align-items: flex-end">
+            <div class="field" style="flex: 1 1 360px">
+              <label class="lbl" for="sa-rem">Nome do remédio</label>
+              <div class="search-box">
+                <div class="inp-ic">
+                  <span class="i i-search" aria-hidden="true"></span>
+                  <input id="sa-rem" class="inp" type="search" autocomplete="off" placeholder="Ex.: losartana" value="Losartana 50 mg" role="combobox" aria-expanded="false" aria-controls="sa-sugg" aria-autocomplete="list">
+                </div>
+                <div id="sa-sugg" class="sugg" role="listbox" aria-label="Remédios" hidden></div>
+              </div>
+            </div>
+            <div class="field" style="flex: 0 1 280px">
+              <label class="lbl" for="sa-cidade">Cidade</label>
+              <div class="sel">
+                <select id="sa-cidade" class="inp">
+                  <option>Mogi das Cruzes</option><option>Suzano</option><option>Itaquaquecetuba</option><option>Poá</option><option>Ferraz de Vasconcelos</option>
+                </select>
+                <span class="i i20 i-caret" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+          <p id="sa-sum" class="note n-ok" aria-live="polite"></p>
+          <ul class="stack gap12" aria-label="UBS ordenadas por estoque e distância" id="sa-list"></ul>
+          <p class="xs muted">Estoque de exemplo, atualizado hoje às 13:40. Confirme por telefone antes de ir, se puder.</p>
+        </section>
+
+        <section class="sec" aria-labelledby="t-lemb" style="padding-top: 64px">
+          <div class="sec-h" style="margin-bottom: 32px">
+            <h2 id="t-lemb" class="t2">Meus lembretes</h2>
+            <p class="small muted">Ficam salvos só neste aparelho. Toque em Agenda para levar o lembrete para o calendário do celular.</p>
+          </div>
+          <div class="g2" style="align-items: start">
+            <form class="card pad stack gap24" id="sa-form" novalidate aria-label="Novo lembrete">
+              <fieldset class="field" style="border: 0; padding: 0; margin: 0">
+                <legend class="lbl" style="margin-bottom: 8px">É para quê?</legend>
+                <div class="yn" role="radiogroup" id="sa-tipo">
+                  <button class="chip" type="button" role="radio" data-tipo="cons" aria-checked="false"><span class="i i20 i-cal" aria-hidden="true"></span>Consulta</button>
+                  <button class="chip" type="button" role="radio" data-tipo="rem" aria-checked="true"><span class="i i20 i-pill" aria-hidden="true"></span>Remédio</button>
+                </div>
+              </fieldset>
+              <div class="field" data-field="desc">
+                <label class="lbl" for="sa-desc">Descrição</label>
+                <p class="hint" id="sa-desc-hint">Ex.: Losartana 50 mg, 1 comprimido</p>
+                <input id="sa-desc" class="inp" type="text" aria-describedby="sa-desc-hint e-sa-desc">
+                <p id="e-sa-desc" class="errmsg" hidden><span class="bang" aria-hidden="true">!</span>Escreva o que é o lembrete, por exemplo o nome do remédio.</p>
+              </div>
+              <div class="g2" style="gap: 16px">
+                <div class="field" data-field="dia">
+                  <label class="lbl" for="sa-dia">Dia</label>
+                  <input id="sa-dia" class="inp" type="date" aria-describedby="e-sa-dia">
+                  <p id="e-sa-dia" class="errmsg" hidden><span class="bang" aria-hidden="true">!</span>Escolha o dia.</p>
+                </div>
+                <div class="field" data-field="hora">
+                  <label class="lbl" for="sa-hora">Horário</label>
+                  <input id="sa-hora" class="inp" type="time" aria-describedby="e-sa-hora">
+                  <p id="e-sa-hora" class="errmsg" hidden><span class="bang" aria-hidden="true">!</span>Escolha o horário.</p>
+                </div>
+              </div>
+              <button class="btn btn-p" type="submit" style="align-self: flex-start"><span class="i i20 i-bell" aria-hidden="true"></span>Salvar lembrete</button>
+            </form>
+            <div aria-live="polite" id="sa-rems"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         SOBRE
+         ===================================================== -->
+    <div class="page" data-page="sobre" data-title="Sobre o projeto" hidden>
+      <div class="wrap">
+        <header class="phead">
+          <p class="eyebrow">Sobre o projeto</p>
+          <h1 class="t1">Serviço público em linguagem simples</h1>
+          <p class="lead">O Zela é um protótipo de CitizenTech que junta zeladoria, alerta de chuva e saúde para quem mora no Alto Tietê. Ele é independente e não faz parte de nenhum serviço oficial das prefeituras.</p>
+        </header>
+
+        <section class="sec rv" aria-labelledby="t-prob" style="padding-top: 48px">
+          <div class="g2" style="gap: 48px; align-items: start">
+            <div class="stack gap16">
+              <h2 id="t-prob" class="t2">O problema</h2>
+              <p class="muted">Avisar sobre um buraco, saber se vem enchente e descobrir onde tem remédio são três tarefas do dia a dia. Hoje cada uma mora em um lugar diferente: um site, um telefone que vive ocupado, um balcão com fila.</p>
+              <p class="muted">Quem tem mais dificuldade com tecnologia desiste no meio. O Zela organiza tudo em quatro tarefas curtas, com letra grande e sem cadastro.</p>
+            </div>
+            <article class="card pad stack gap16" aria-labelledby="t-persona">
+              <div class="row gap16">
+                <span class="bign" style="width: 64px; height: 64px; font-size: 24px; line-height: 32px" aria-hidden="true">DC</span>
+                <div class="stack"><p class="eyebrow">Para quem</p><h2 id="t-persona" class="t3">Dona Cida, 67 anos</h2></div>
+              </div>
+              <p class="muted">Mora em bairro de periferia perto de um córrego. Usa o celular para WhatsApp e ligações, enxerga mal letras pequenas e toma remédio de pressão todo dia. Quer resolver as coisas sozinha, sem depender dos netos.</p>
+              <ul class="stack gap8 small">
+                <li class="row gap8"><span class="i i20 i-x" aria-hidden="true" style="color: var(--red)"></span>Não sabe a quem reclamar do buraco</li>
+                <li class="row gap8"><span class="i i20 i-x" aria-hidden="true" style="color: var(--red)"></span>Descobre a enchente quando a água já entrou</li>
+                <li class="row gap8"><span class="i i20 i-x" aria-hidden="true" style="color: var(--red)"></span>Vai à UBS e o remédio está em falta</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="sec rv" aria-labelledby="t-jorn" style="padding-top: 0">
+          <div class="sec-h" style="margin-bottom: 32px"><h2 id="t-jorn" class="t2">A jornada</h2><p class="muted">Cada etapa tem uma dificuldade real e uma resposta no desenho.</p></div>
+          <ol style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px">
+            <li class="card pad24 stack gap12"><span class="row gap8"><span class="sn" style="background: var(--ink); color: var(--bg); border-color: var(--ink)">1</span><b class="t3">Chega</b></span><p class="small" style="background: var(--reds); padding: 12px; border-radius: 12px"><b style="display: block">Dificuldade</b>Não sabe o nome do serviço.</p><p class="small" style="background: var(--gs); padding: 12px; border-radius: 12px"><b style="display: block">Solução</b>Busca “Do que você precisa hoje?” com sugestões.</p></li>
+            <li class="card pad24 stack gap12"><span class="row gap8"><span class="sn" style="background: var(--ink); color: var(--bg); border-color: var(--ink)">2</span><b class="t3">Encontra</b></span><p class="small" style="background: var(--reds); padding: 12px; border-radius: 12px"><b style="display: block">Dificuldade</b>Menus longos e letra pequena.</p><p class="small" style="background: var(--gs); padding: 12px; border-radius: 12px"><b style="display: block">Solução</b>4 cartões grandes, texto de 18 px e botão Acessibilidade.</p></li>
+            <li class="card pad24 stack gap12"><span class="row gap8"><span class="sn" style="background: var(--ink); color: var(--bg); border-color: var(--ink)">3</span><b class="t3">Faz</b></span><p class="small" style="background: var(--reds); padding: 12px; border-radius: 12px"><b style="display: block">Dificuldade</b>Formulário longo, não sabe a rua, é interrompida.</p><p class="small" style="background: var(--gs); padding: 12px; border-radius: 12px"><b style="display: block">Solução</b>Passos com progresso, localização automática e rascunho salvo.</p></li>
+            <li class="card pad24 stack gap12"><span class="row gap8"><span class="sn" style="background: var(--ink); color: var(--bg); border-color: var(--ink)">4</span><b class="t3">Confirma</b></span><p class="small" style="background: var(--reds); padding: 12px; border-radius: 12px"><b style="display: block">Dificuldade</b>Não sabe se deu certo.</p><p class="small" style="background: var(--gs); padding: 12px; border-radius: 12px"><b style="display: block">Solução</b>Protocolo e prazo, risco em uma palavra, UBS com estoque.</p></li>
+            <li class="card pad24 stack gap12"><span class="row gap8"><span class="sn" style="background: var(--ink); color: var(--bg); border-color: var(--ink)">5</span><b class="t3">Acompanha</b></span><p class="small" style="background: var(--reds); padding: 12px; border-radius: 12px"><b style="display: block">Dificuldade</b>Esquece a consulta e perde o aviso.</p><p class="small" style="background: var(--gs); padding: 12px; border-radius: 12px"><b style="display: block">Solução</b>Linha do tempo, alerta por SMS e lembrete na agenda.</p></li>
+          </ol>
+        </section>
+
+        <section class="sec rv" aria-labelledby="t-acc" style="padding-top: 0">
+          <div class="card pad g2" style="gap: 48px">
+            <div class="stack gap16">
+              <span class="ibox"><span class="i i-access" aria-hidden="true"></span></span>
+              <h2 id="t-acc" class="t2">Acessibilidade desde o começo</h2>
+              <p class="muted">As decisões de interface priorizam quem tem mais dificuldade de acesso: pessoas idosas, pessoas com deficiência e moradores de área de risco.</p>
+            </div>
+            <ul class="stack gap12">
+              <li class="row gap12" style="align-items: flex-start"><span class="i i-check" aria-hidden="true" style="color: var(--g)"></span><span>HTML semântico, títulos em ordem e link para pular ao conteúdo</span></li>
+              <li class="row gap12" style="align-items: flex-start"><span class="i i-check" aria-hidden="true" style="color: var(--g)"></span><span>Contraste AA em todo texto, inclusive no título em degradê</span></li>
+              <li class="row gap12" style="align-items: flex-start"><span class="i i-check" aria-hidden="true" style="color: var(--g)"></span><span>Modo alto contraste com fundo preto e ações em amarelo</span></li>
+              <li class="row gap12" style="align-items: flex-start"><span class="i i-check" aria-hidden="true" style="color: var(--g)"></span><span>Foco sempre visível, com anel azul de 3 px</span></li>
+              <li class="row gap12" style="align-items: flex-start"><span class="i i-check" aria-hidden="true" style="color: var(--g)"></span><span>Rótulos em todos os campos e erros que dizem como corrigir</span></li>
+              <li class="row gap12" style="align-items: flex-start"><span class="i i-check" aria-hidden="true" style="color: var(--g)"></span><span>Áreas de toque com pelo menos 44 px</span></li>
+              <li class="row gap12" style="align-items: flex-start"><span class="i i-check" aria-hidden="true" style="color: var(--g)"></span><span>Ouvir a página em voz alta e aumentar o texto</span></li>
+              <li class="row gap12" style="align-items: flex-start"><span class="i i-check" aria-hidden="true" style="color: var(--g)"></span><span>Respeita as preferências do sistema: menos movimento, menos transparência e mais contraste</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="sec rv" aria-labelledby="t-ods" style="padding-top: 0">
+          <div class="sec-h" style="margin-bottom: 32px"><h2 id="t-ods" class="t2">Objetivos de Desenvolvimento Sustentável</h2><p class="muted">O projeto conversa com quatro ODS da ONU.</p></div>
+          <ul class="g4">
+            <li class="card pad24 stack gap12"><span class="row gap12"><span class="bign">3</span><span class="i i32 i-heart" aria-hidden="true" style="color: var(--g)"></span></span><h3 class="t3">Saúde e bem estar</h3><p class="small muted">Remédio encontrado antes de sair de casa e lembretes de consulta.</p></li>
+            <li class="card pad24 stack gap12"><span class="row gap12"><span class="bign">10</span><span class="i i32 i-users" aria-hidden="true" style="color: var(--g)"></span></span><h3 class="t3">Redução das desigualdades</h3><p class="small muted">Feito para quem tem mais dificuldade com tecnologia.</p></li>
+            <li class="card pad24 stack gap12"><span class="row gap12"><span class="bign">11</span><span class="i i32 i-house" aria-hidden="true" style="color: var(--g)"></span></span><h3 class="t3">Cidades sustentáveis</h3><p class="small muted">Zeladoria com protocolo, prazo e apoio dos vizinhos.</p></li>
+            <li class="card pad24 stack gap12"><span class="row gap12"><span class="bign">13</span><span class="i i32 i-rain" aria-hidden="true" style="color: var(--g)"></span></span><h3 class="t3">Ação contra a mudança do clima</h3><p class="small muted">Alerta de chuva forte com o que fazer e abrigos perto.</p></li>
+          </ul>
+        </section>
+
+        <section class="sec rv" aria-labelledby="t-eq" style="padding-top: 0">
+          <div class="sec-h" style="margin-bottom: 32px"><h2 id="t-eq" class="t2">Equipe</h2><p class="muted">Quem desenhou o Zela</p></div>
+          <ul class="g4">
+            <li class="card pad24 row gap16"><span class="bign" aria-hidden="true">FG</span><span class="stack"><b>Fabrício Gallo</b><span class="small muted">RM [NÚMERO]</span></span></li>
+            <li class="card pad24 row gap16"><span class="bign" aria-hidden="true" style="background: var(--ink)">?</span><span class="stack"><b>[Nome do integrante]</b><span class="small muted">RM [NÚMERO]</span></span></li>
+            <li class="card pad24 row gap16"><span class="bign" aria-hidden="true" style="background: var(--ink)">?</span><span class="stack"><b>[Nome do integrante]</b><span class="small muted">RM [NÚMERO]</span></span></li>
+            <li class="card pad24 row gap16"><span class="bign" aria-hidden="true" style="background: var(--ink)">?</span><span class="stack"><b>[Nome do integrante]</b><span class="small muted">RM [NÚMERO]</span></span></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         PRIVACIDADE E TERMOS
+         ===================================================== -->
+    <div class="page" data-page="privacidade" data-title="Privacidade e termos de uso" hidden>
+      <div class="wrap" style="max-width: 960px">
+        <header class="phead">
+          <p class="eyebrow">Privacidade</p>
+          <h1 class="t1">Seus dados ficam com você</h1>
+          <p class="lead">Explicamos aqui, sem juridiquês, o que o Zela guarda e o que não guarda. Última atualização: 8 de novembro de 2026.</p>
+        </header>
+        <ul class="g2" style="padding-bottom: 64px">
+          <li class="card pad stack gap12"><span class="ibox"><span class="i i-shield" aria-hidden="true"></span></span><h2 class="t3">Sem cadastro</h2><p class="small muted">Você não cria conta nem senha. Não pedimos CPF, email ou data de nascimento.</p></li>
+          <li class="card pad stack gap12"><span class="ibox"><span class="i i-mobile" aria-hidden="true"></span></span><h2 class="t3">Dados no seu aparelho</h2><p class="small muted">Rascunhos de chamado e lembretes ficam guardados só no seu celular. Se você limpar o navegador, eles somem.</p></li>
+          <li class="card pad stack gap12"><span class="ibox"><span class="i i-pin" aria-hidden="true"></span></span><h2 class="t3">Localização só quando você pede</h2><p class="small muted">Usamos a sua localização apenas quando você toca em “Usar minha localização”, e só naquele momento.</p></li>
+          <li class="card pad stack gap12"><span class="ibox"><span class="i i-eyeoff" aria-hidden="true"></span></span><h2 class="t3">Sem rastreamento</h2><p class="small muted">Não usamos cookies de propaganda nem ferramentas que seguem você por outros sites.</p></li>
+          <li class="card pad stack gap12"><span class="ibox"><span class="i i-phone" aria-hidden="true"></span></span><h2 class="t3">Celular só para avisos</h2><p class="small muted">Se você deixar o número, ele serve só para enviar o alerta ou a mudança do chamado. Você pode sair quando quiser.</p></li>
+          <li class="card pad stack gap12"><span class="ibox"><span class="i i-info" aria-hidden="true"></span></span><h2 class="t3">Não é um serviço oficial</h2><p class="small muted">O Zela é um protótipo independente e não faz parte dos serviços das prefeituras. Chamados, abrigos e estoques mostrados aqui são exemplos.</p></li>
+        </ul>
+        <section id="termos" class="card pad stack gap24" aria-labelledby="t-termos" style="margin-bottom: 96px">
+          <div class="stack gap8">
+            <p class="eyebrow">Termos de uso</p>
+            <h2 id="t-termos" class="t2">Combinados para usar o Zela</h2>
+          </div>
+          <ol class="stack gap16">
+            <li class="row gap16" style="align-items: flex-start"><span class="sn" style="width: 32px; height: 32px; font-size: 14px; line-height: 20px">1</span><span>O Zela é gratuito e serve para orientar. Em emergência, ligue 199, 193 ou 192.</span></li>
+            <li class="row gap16" style="align-items: flex-start"><span class="sn" style="width: 32px; height: 32px; font-size: 14px; line-height: 20px">2</span><span>Escreva chamados verdadeiros e sem ofensas. Chamados falsos atrasam o atendimento de todo mundo.</span></li>
+            <li class="row gap16" style="align-items: flex-start"><span class="sn" style="width: 32px; height: 32px; font-size: 14px; line-height: 20px">3</span><span>Fotos enviadas não devem mostrar o rosto de outras pessoas nem placas de carro.</span></li>
+            <li class="row gap16" style="align-items: flex-start"><span class="sn" style="width: 32px; height: 32px; font-size: 14px; line-height: 20px">4</span><span>A previsão de chuva vem do Open-Meteo e pode mudar. Confira os alertas oficiais da Defesa Civil.</span></li>
+            <li class="row gap16" style="align-items: flex-start"><span class="sn" style="width: 32px; height: 32px; font-size: 14px; line-height: 20px">5</span><span>O estoque de remédio é uma estimativa. Se puder, confirme com a UBS antes de ir.</span></li>
+          </ol>
+          <div class="note n-in"><span class="i i-info" aria-hidden="true"></span><p>Ficou com dúvida? Fale com a equipe do projeto pelo endereço [EMAIL DA EQUIPE].</p></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- =====================================================
+         404
+         ===================================================== -->
+    <div class="page" data-page="404" data-title="Página não encontrada" hidden>
+      <div class="wrap" style="max-width: 880px">
+        <section class="stack gap24" style="padding: 192px 0 128px; align-items: center; text-align: center">
+          <span class="ibig" style="width: 96px; height: 96px; background: var(--gs); color: var(--g)"><span class="i i48 i-pin" aria-hidden="true"></span></span>
+          <p class="eyebrow">Erro 404</p>
+          <h1 class="t1 grad">Não encontramos esta página</h1>
+          <p class="lead">O endereço pode ter mudado ou ter sido digitado com algum erro. Escolha para onde quer ir.</p>
+          <nav class="g4" aria-label="Atalhos" style="width: 100%; margin-top: 16px">
+            <a class="choice" href="#/inicio" style="text-decoration: none; min-height: 0"><span class="ibox"><span class="i i-house" aria-hidden="true"></span></span>Início</a>
+            <a class="choice" href="#/reportar" style="text-decoration: none; min-height: 0"><span class="ibox"><span class="i i-road" aria-hidden="true"></span></span>Reportar</a>
+            <a class="choice" href="#/alerta" style="text-decoration: none; min-height: 0"><span class="ibox"><span class="i i-rain" aria-hidden="true"></span></span>Alerta</a>
+            <a class="choice" href="#/saude" style="text-decoration: none; min-height: 0"><span class="ibox"><span class="i i-pill" aria-hidden="true"></span></span>Saúde</a>
+          </nav>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== Rodapé ===== -->
+  <footer class="foot">
+    <div class="wrap">
+      <div class="foot-g">
+        <div class="stack gap16">
+          <a class="logo" href="#/inicio"><span class="mark" aria-hidden="true"></span>Zela</a>
+          <p style="max-width: 320px">Zeladoria, alerta de chuva e saúde em um só lugar, em linguagem simples, para o Alto Tietê.</p>
+        </div>
+        <nav class="stack" aria-label="Serviços">
+          <h2>Serviços</h2>
+          <a href="#/reportar">Reportar problema</a>
+          <a href="#/chamados">Meus chamados</a>
+          <a href="#/alerta">Alerta de chuva</a>
+          <a href="#/saude">Saúde</a>
+        </nav>
+        <div class="stack">
+          <h2>Emergência</h2>
+          <a href="tel:199"><span class="i i20 i-phone" aria-hidden="true"></span>199 · Defesa Civil</a>
+          <a href="tel:193"><span class="i i20 i-phone" aria-hidden="true"></span>193 · Bombeiros</a>
+          <a href="tel:192"><span class="i i20 i-phone" aria-hidden="true"></span>192 · SAMU</a>
+        </div>
+        <nav class="stack" aria-label="Sobre">
+          <h2>Sobre</h2>
+          <a href="#/sobre">Sobre o projeto</a>
+          <a href="#/privacidade">Privacidade</a>
+          <a href="#/privacidade/termos">Termos de uso</a>
+        </nav>
+      </div>
+      <div class="foot-note">
+        <span class="i i20 i-info" aria-hidden="true" style="color: #C5CEC7; margin-top: 2px"></span>
+        <p>O Zela é um protótipo independente e não faz parte de nenhum serviço oficial das prefeituras do Alto Tietê. Abrigos, estoques de remédio e chamados mostrados aqui são exemplos.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><span class="i i20 i-check" aria-hidden="true"></span><span id="toast-txt"></span></div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
