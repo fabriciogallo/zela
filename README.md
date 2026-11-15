@@ -2,7 +2,7 @@
 
 > Sua rua avisa. A prefeitura responde.
 
-**Deploy:** [COLE AQUI O LINK DO GITHUB PAGES — ex.: https://SEU-USUARIO.github.io/zela/]
+**Deploy:** https://fabriciogallo.github.io/zela/ · **Repositório:** https://github.com/fabriciogallo/zela
 
 ## Integrantes
 
