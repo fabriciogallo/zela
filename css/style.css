@@ -150,11 +150,11 @@ button { cursor: pointer; }
 
 .badge {
   width: 72px; height: 72px; flex: 0 0 72px;
-  border-radius: var(--r-badge); background: var(--ink); color: var(--orange);
+  border-radius: var(--r-badge); background: var(--paper); color: var(--green);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-display); font-weight: 800; font-size: 2.25rem;
 }
-.badge svg { width: 40px; height: 40px; fill: var(--paper); }
+.badge svg { width: 40px; height: 40px; fill: var(--green); }
 
 /* ---------- Formulários ---------- */
 .field { display: flex; flex-direction: column; gap: 8px; }
