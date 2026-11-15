@@ -8,7 +8,7 @@
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=DM+Sans:opsz,wght@9..40,500;9..40,700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
   <script src="js/dados.js" defer></script>
@@ -53,7 +53,7 @@
       <!-- Formulário em etapas -->
       <div id="area-form">
         <div class="page-title row" style="flex-direction:row;align-items:flex-end;justify-content:space-between;gap:24px 48px">
-          <h1 class="t-page">Relatar Um Problema</h1>
+          <h1 class="t-page">Relatar um problema</h1>
           <ol class="list-reset progress" id="progresso" aria-label="Etapas do relato">
             <li class="is-current" aria-current="step"><span class="display">1</span><span>Tipo</span></li>
             <li><span class="display">2</span><span>Local</span></li>
@@ -67,7 +67,7 @@
 
             <section data-step="1" aria-labelledby="t-passo-1">
               <p>Passo 1 de 4</p>
-              <h2 id="t-passo-1" class="t-card" tabindex="-1">Que Tipo De Problema É?</h2>
+              <h2 id="t-passo-1" class="t-card" tabindex="-1">Que tipo de problema é?</h2>
               <fieldset style="margin-top:24px" aria-describedby="err-cat">
                 <legend class="legend">Escolha uma opção:</legend>
                 <div class="choices">
@@ -84,7 +84,7 @@
 
             <section data-step="2" aria-labelledby="t-passo-2">
               <p>Passo 2 de 4</p>
-              <h2 id="t-passo-2" class="t-card" tabindex="-1">Onde Fica?</h2>
+              <h2 id="t-passo-2" class="t-card" tabindex="-1">Onde fica?</h2>
               <div class="stack" style="gap:24px;margin-top:24px">
                 <div class="field">
                   <label for="f-end">Endereço do problema</label>
@@ -101,7 +101,7 @@
                   <input id="f-ref" name="referencia" class="input" type="text" placeholder="Ex.: em frente à padaria">
                 </div>
                 <section id="dup" class="dup panel--orange" aria-labelledby="dup-t" hidden>
-                  <h3 id="dup-t" class="t-tab" tabindex="-1">Um Vizinho Já Avisou Isso</h3>
+                  <h3 id="dup-t" class="t-tab" tabindex="-1">Um vizinho já avisou isso</h3>
                   <p id="dup-texto"></p>
                   <p>Apoiar faz o aviso subir na fila de prioridade. Criar outro igual não acelera.</p>
                   <div class="row" style="gap:12px">
@@ -114,7 +114,7 @@
 
             <section data-step="3" aria-labelledby="t-passo-3">
               <p>Passo 3 de 4</p>
-              <h2 id="t-passo-3" class="t-card" tabindex="-1">Conte Um Pouco Mais</h2>
+              <h2 id="t-passo-3" class="t-card" tabindex="-1">Conte um pouco mais</h2>
               <div class="stack" style="gap:24px;margin-top:24px">
                 <div class="field">
                   <label for="f-desc">Descreva o problema</label>
@@ -147,7 +147,7 @@
 
             <section data-step="4" aria-labelledby="t-passo-4">
               <p>Passo 4 de 4</p>
-              <h2 id="t-passo-4" class="t-card" tabindex="-1">Confira Antes De Enviar</h2>
+              <h2 id="t-passo-4" class="t-card" tabindex="-1">Confira antes de enviar</h2>
               <dl class="review" id="revisao" style="margin-top:24px"></dl>
               <label class="check" style="margin-top:24px"><input type="checkbox" name="anonimo" id="f-anon"> Não mostrar meu nome no mapa do bairro</label>
             </section>
@@ -162,7 +162,7 @@
           <aside class="col-side panel panel--green inv stack" style="justify-content:space-between;gap:40px" aria-labelledby="ajuda-t">
             <div class="stack" style="gap:16px">
               <span class="badge" aria-hidden="true">?</span>
-              <h2 id="ajuda-t" class="t-tab">Por Que Perguntamos Isso</h2>
+              <h2 id="ajuda-t" class="t-tab">Por que perguntamos isso</h2>
               <p id="ajuda-texto" style="font-size:1.25rem;line-height:1.5">Cada tipo de problema vai para um órgão diferente. Escolher o tipo certo faz o aviso chegar mais rápido a quem resolve.</p>
             </div>
             <div class="stack" style="gap:12px">
@@ -176,7 +176,7 @@
       <!-- Confirmação -->
       <div id="area-sucesso" class="row" style="padding-top:clamp(48px,6vw,88px)" hidden>
         <section class="col-main panel panel-lg panel--orange stack" style="gap:32px" aria-labelledby="ok-titulo">
-          <h1 id="ok-titulo" class="t-page" tabindex="-1">Aviso Enviado. Obrigado Por Cuidar Da Rua.</h1>
+          <h1 id="ok-titulo" class="t-page" tabindex="-1">Aviso enviado. Obrigado por cuidar da rua.</h1>
           <p id="ok-texto" style="font-size:1.25rem;line-height:1.5;max-width:640px"></p>
           <div class="protocol-box">
             <p class="stack"><span>Número do protocolo</span><span class="protocol-num" id="ok-protocolo"></span></p>
@@ -189,7 +189,7 @@
           </div>
         </section>
         <section class="col-side panel panel--green inv stack" style="gap:24px" aria-labelledby="prox-t">
-          <h2 id="prox-t" class="t-compact">O Que Acontece Agora</h2>
+          <h2 id="prox-t" class="t-compact">O que acontece agora</h2>
           <ol class="list-reset next-steps">
             <li><span class="display">Hoje</span><span>Seu aviso foi recebido e entrou na fila do bairro.</span></li>
             <li><span class="display">2 dias</span><span>Encaminhado ao órgão responsável. Você recebe uma mensagem.</span></li>
@@ -205,7 +205,7 @@
     <div class="wrap row footer-grid">
       <div class="closing panel panel--ink inv">
         <p class="brand-mark">Zela</p>
-        <p class="t-compact">Cuidar Da Rua É Coisa De Vizinho. Resolver É Coisa Da Prefeitura.</p>
+        <p class="t-compact">Cuidar da rua é coisa de vizinho. Resolver é coisa da prefeitura.</p>
         <a class="btn btn--primary" href="bairro.html" style="align-self:flex-start">Ver o mapa do bairro</a>
       </div>
       <div class="footer-side">

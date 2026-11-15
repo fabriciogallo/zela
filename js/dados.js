@@ -3,12 +3,12 @@
 window.ZELA = window.ZELA || {};
 
 ZELA.categorias = [
-  { id: "buraco",  nome: "Buraco na rua",    titulo: "Buraco Na Rua",    desc: "Asfalto afundado, cratera ou tampa de bueiro solta.", orgao: "Subprefeitura" },
-  { id: "luz",     nome: "Poste apagado",    titulo: "Poste Apagado",    desc: "Lâmpada queimada, piscando ou acesa de dia.",       orgao: "Iluminação pública" },
-  { id: "lixo",    nome: "Lixo ou entulho",  titulo: "Lixo E Entulho",   desc: "Descarte irregular ou coleta que não passou.",      orgao: "Serviço de limpeza" },
-  { id: "calcada", nome: "Calçada quebrada", titulo: "Calçada Quebrada", desc: "Piso solto, degrau perigoso ou rampa bloqueada.",   orgao: "Subprefeitura" },
-  { id: "arvore",  nome: "Árvore ou poda",   titulo: "Árvore E Poda",    desc: "Galho caído, risco de queda ou poda pedida.",       orgao: "Subprefeitura" },
-  { id: "outro",   nome: "Outro problema",   titulo: "Outro Problema",   desc: "Sinalização, praça, ponto de ônibus e mais.",       orgao: "Central de atendimento" }
+  { id: "buraco",  nome: "Buraco na rua",    titulo: "Buraco na rua",    desc: "Asfalto afundado, cratera ou tampa de bueiro solta.", orgao: "Subprefeitura" },
+  { id: "luz",     nome: "Poste apagado",    titulo: "Poste apagado",    desc: "Lâmpada queimada, piscando ou acesa de dia.",       orgao: "Iluminação pública" },
+  { id: "lixo",    nome: "Lixo ou entulho",  titulo: "Lixo e entulho",   desc: "Descarte irregular ou coleta que não passou.",      orgao: "Serviço de limpeza" },
+  { id: "calcada", nome: "Calçada quebrada", titulo: "Calçada quebrada", desc: "Piso solto, degrau perigoso ou rampa bloqueada.",   orgao: "Subprefeitura" },
+  { id: "arvore",  nome: "Árvore ou poda",   titulo: "Árvore e poda",    desc: "Galho caído, risco de queda ou poda pedida.",       orgao: "Subprefeitura" },
+  { id: "outro",   nome: "Outro problema",   titulo: "Outro problema",   desc: "Sinalização, praça, ponto de ônibus e mais.",       orgao: "Central de atendimento" }
 ];
 
 /* Ícones (paths em viewBox 0 0 40 40), desenhados como blocos sólidos */

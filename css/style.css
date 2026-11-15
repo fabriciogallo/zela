@@ -21,8 +21,8 @@
   --error: #a3300b;
   --error-on-dark: #ffb08a;
 
-  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
-  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
 
   --r-panel: 40px;
   --r-card: 32px;
@@ -51,7 +51,7 @@ body {
   background: var(--canvas);
   color: var(--ink);
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -86,14 +86,14 @@ button { cursor: pointer; }
 }
 
 /* ---------- Tipografia ---------- */
-.display { font-family: var(--font-display); font-weight: 800; letter-spacing: 0; }
-.t-poster { font-family: var(--font-display); font-weight: 800; font-size: clamp(3.25rem, 6.67vw, 6.5rem); line-height: .94; }
-.t-section { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.75rem, 5.6vw, 5rem); line-height: 1.1; }
-.t-page { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 5.6vw, 5rem); line-height: 1; }
-.t-card { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.25rem, 3.4vw, 3rem); line-height: 1; }
-.t-compact { font-family: var(--font-display); font-weight: 800; font-size: 2.5rem; line-height: 1; }
-.t-tab { font-family: var(--font-display); font-weight: 800; font-size: 2rem; line-height: 1; letter-spacing: .02em; }
-.t-number { font-family: var(--font-display); font-weight: 800; font-size: 4rem; line-height: 1; }
+.display { font-family: var(--font-display); font-weight: 700; letter-spacing: 0; }
+.t-poster { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.75rem, 5.6vw, 5.5rem); line-height: 1; letter-spacing: -.02em; }
+.t-section { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.25rem, 4.4vw, 4rem); line-height: 1.1; letter-spacing: -.02em; }
+.t-page { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.5rem, 4.6vw, 4rem); line-height: 1.05; letter-spacing: -.02em; }
+.t-card { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.875rem, 2.8vw, 2.5rem); line-height: 1.1; }
+.t-compact { font-family: var(--font-display); font-weight: 700; font-size: 2.125rem; line-height: 1.1; }
+.t-tab { font-family: var(--font-display); font-weight: 700; font-size: 1.625rem; line-height: 1.15; }
+.t-number { font-family: var(--font-display); font-weight: 700; font-size: 3.25rem; line-height: 1; }
 .t-lead { font-size: 1.125rem; line-height: 1.5; }
 .t-story { font-size: clamp(1.375rem, 2.1vw, 1.875rem); line-height: 1.5; }
 .t-small { font-size: .875rem; }
@@ -155,7 +155,7 @@ button { cursor: pointer; }
   width: 72px; height: 72px; flex: 0 0 72px;
   border-radius: var(--r-badge); background: var(--paper); color: var(--green-deep);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-weight: 800; font-size: 2.25rem;
+  font-family: var(--font-display); font-weight: 700; font-size: 2.25rem;
 }
 .badge svg { width: 40px; height: 40px; fill: var(--green-deep); }
 
@@ -207,7 +207,7 @@ main:focus { outline: none; }
   border-radius: 32px; padding: 8px 8px 8px 24px; min-height: 64px;
 }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-.brand-name { font-family: var(--font-display); font-weight: 800; font-size: 1.875rem; line-height: 1; }
+.brand-name { font-family: var(--font-display); font-weight: 700; font-size: 1.875rem; line-height: 1; }
 .v-rule { height: 28px; border-left: var(--dot); }
 .nav-list { display: flex; flex-wrap: wrap; gap: 4px 20px; }
 .nav-list a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; border-bottom: 3px solid transparent; }
@@ -258,7 +258,7 @@ main:focus { outline: none; }
   text-align: left; border: var(--dot); background: transparent; color: var(--ink);
   border-radius: var(--r-pill); padding: 0 32px; min-height: 80px;
   display: flex; align-items: center; gap: 16px;
-  font-family: var(--font-display); font-weight: 800; font-size: 2rem; line-height: 1; letter-spacing: .02em;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.625rem; line-height: 1.15;
 }
 .tab .tab-n { color: var(--green-deep); }
 .tab .tab-desc, .tab .badge { display: none; }
@@ -277,7 +277,7 @@ main:focus { outline: none; }
 .site-footer .halftone { position: absolute; inset: 0; width: 100%; height: 100%; }
 .footer-grid { position: relative; }
 .closing { flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; }
-.closing .brand-mark { font-family: var(--font-display); font-weight: 800; font-size: 2rem; line-height: 1; color: var(--ink); }
+.closing .brand-mark { font-family: var(--font-display); font-weight: 700; font-size: 2rem; line-height: 1; color: var(--ink); }
 .footer-side { flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: var(--gap); }
 .ods-row { display: flex; flex-wrap: wrap; gap: 12px; }
 .ods-disc {
@@ -285,7 +285,7 @@ main:focus { outline: none; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1;
 }
 .ods-disc span:first-child { font-size: .75rem; }
-.ods-disc span:last-child { font-family: var(--font-display); font-weight: 800; font-size: 2rem; }
+.ods-disc span:last-child { font-family: var(--font-display); font-weight: 700; font-size: 2rem; }
 .utility { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
 .utility nav ul { display: flex; flex-wrap: wrap; gap: 4px 24px; }
 .utility nav a { display: inline-flex; min-height: 44px; align-items: center; text-decoration: none; }
@@ -310,7 +310,7 @@ main:focus { outline: none; }
 .review dd { margin: 0; }
 .review dd.val { flex: 1 1 240px; font-size: 1.125rem; overflow-wrap: anywhere; }
 .protocol-box { background: var(--panel); border-radius: var(--r-card); padding: 24px 32px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
-.protocol-num { font-family: var(--font-display); font-weight: 800; font-size: 3.5rem; line-height: 1; }
+.protocol-num { font-family: var(--font-display); font-weight: 700; font-size: 2.75rem; line-height: 1; }
 .next-steps li { display: flex; gap: 16px; padding: 16px 0; border-bottom: var(--dot-light); }
 .next-steps li:last-child { border-bottom: 0; }
 .next-steps .display { font-size: 1.75rem; color: var(--ink); flex: 0 0 auto; min-width: 72px; }
@@ -321,12 +321,12 @@ main:focus { outline: none; }
 .t-mark {
   flex: 0 0 48px; height: 48px; border-radius: var(--r-badge);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-weight: 800; font-size: 1.375rem;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.375rem;
   border: var(--dot);
 }
 .timeline .is-done .t-mark { background: var(--olive); color: var(--ink); border: 0; }
 .timeline .is-current .t-mark { background: var(--orange); border: 0; }
-.timeline .t-title { font-family: var(--font-display); font-weight: 800; font-size: 1.75rem; line-height: 1.1; letter-spacing: .02em; }
+.timeline .t-title { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; line-height: 1.15; }
 .stat-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); }
 .stat-pair .proof { min-height: 0; padding: 32px; gap: 40px; }
 .switch {
@@ -351,7 +351,7 @@ main:focus { outline: none; }
   position: absolute; transform: translate(-50%, -50%);
   width: 48px; height: 48px; border-radius: 50%;
   border: 3px solid var(--ink); background: var(--paper); color: var(--ink);
-  font-family: var(--font-display); font-weight: 800; font-size: 1.375rem;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.375rem;
   display: flex; align-items: center; justify-content: center;
 }
 .pin[aria-pressed="true"] { background: var(--orange); color: var(--ink); border-color: var(--ink); }
@@ -365,11 +365,11 @@ main:focus { outline: none; }
 .report-n {
   flex: 0 0 56px; height: 56px; border-radius: var(--r-badge); border: 0;
   background: var(--olive); color: var(--ink);
-  font-family: var(--font-display); font-weight: 800; font-size: 1.625rem;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.625rem;
 }
 .report.is-selected .report-n { background: var(--orange); color: var(--ink); }
 .report-body { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-.report-body h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.75rem; line-height: 1.05; letter-spacing: .02em; }
+.report-body h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; line-height: 1.15; }
 .report-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .prio-alta { background: var(--olive); color: var(--ink); }
 .prio-media { background: var(--orange); color: var(--ink); }
@@ -381,7 +381,7 @@ main:focus { outline: none; }
 
 /* ---------- Sobre ---------- */
 .journey li { display: flex; flex-direction: column; gap: 16px; }
-.journey .step-n { font-family: var(--font-display); font-weight: 800; font-size: 4rem; line-height: 1; color: var(--green-deep); }
+.journey .step-n { font-family: var(--font-display); font-weight: 700; font-size: 3.25rem; line-height: 1; color: var(--green-deep); }
 .journey .panel--orange .step-n { color: var(--ink); }
 .journey .panel--ink .step-n { color: var(--ink); }
 .table-box { overflow-x: auto; }
@@ -418,7 +418,7 @@ tr:last-child td { border-bottom: 0; }
 .route-steps { display: flex; flex-direction: column; }
 .route-step { display: flex; gap: 20px; align-items: flex-start; padding: 20px 0; border-bottom: var(--dot); }
 .route-step:last-child { border-bottom: 0; padding-bottom: 0; }
-.route-n { flex: 0 0 48px; height: 48px; border-radius: var(--r-badge); background: var(--olive); color: var(--ink); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; }
+.route-n { flex: 0 0 48px; height: 48px; border-radius: var(--r-badge); background: var(--olive); color: var(--ink); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; }
 .route-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .route-tags li { padding: 4px 12px; border-radius: var(--r-pill); border: var(--dot); font-size: .875rem; background: var(--paper); }
 .route-list { margin: 0; padding-left: 1.25em; display: flex; flex-direction: column; gap: 10px; font-size: 1.0625rem; }
