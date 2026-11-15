@@ -94,6 +94,7 @@
       ZELA.anunciar("Apoio registrado. Agora " + (a.apoios + 1) + " vizinhos apoiam " + a.titulo + ".");
     }
     ZELA.store.set("apoiados", apoiados);
+    ZELA.conta.marcarApoio(id, !!apoiados[id]);
     selecionado = id;
     render();
     var b = document.querySelector('[data-apoiar="' + id + '"]');

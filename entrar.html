@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar — Zela</title>
+  <meta name="description" content="Entre no Zela com seu celular e guarde todos os seus avisos em um só lugar.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Pixelify+Sans:wght@500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
+  <script src="js/dados.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/entrar.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="nav-bar" id="nav-bar">
+      <a class="brand" href="index.html" aria-label="Zela, página inicial">
+        <svg width="28" height="28" viewBox="0 0 14 14" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><rect width="14" height="14" rx="3" fill="#4f8a4a"/><path d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z" fill="#0081c0"/><path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a"/><path d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z" fill="#f1e4b8"/></svg>
+        <span class="brand-name">Zela</span>
+      </a>
+      <span class="v-rule brand-rule" aria-hidden="true"></span>
+      <button type="button" class="menu-toggle btn btn--ghost btn--sm" aria-expanded="false" aria-controls="nav-collapsible">Menu</button>
+      <div class="nav-collapsible" id="nav-collapsible">
+        <nav aria-label="Principal">
+          <ul class="list-reset nav-list">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="relatar.html">Relatar</a></li>
+            <li><a href="acompanhar.html">Acompanhar</a></li>
+            <li><a href="bairro.html">Meu bairro</a></li>
+            <li><a href="rota.html">Rota acessível</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+          </ul>
+        </nav>
+        <div class="nav-spacer"></div>
+        <div class="text-size" role="group" aria-label="Tamanho do texto">
+          <button type="button" data-texto-menos aria-label="Diminuir o texto">A−</button>
+          <span class="v-rule" aria-hidden="true"></span>
+          <button type="button" data-texto-mais aria-label="Aumentar o texto" style="font-size:1.1875rem">A+</button>
+        </div>
+        <a class="btn btn--primary" href="relatar.html">Relatar problema</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="page-pad" tabindex="-1">
+    <div class="wrap">
+      <div class="page-title">
+        <p class="chip chip--lemon">Sua conta</p>
+        <h1 class="t-page">Entrar com o celular</h1>
+        <p class="t-lead">Sem senha para decorar. Mandamos um código por SMS e todos os seus avisos ficam guardados em um só lugar.</p>
+      </div>
+
+      <div class="row" style="align-items:flex-start">
+        <section class="col-main panel panel-lg stack" style="gap:24px" aria-labelledby="t-entrar">
+          <!-- Passo 1: celular -->
+          <form id="form-tel" class="stack" style="gap:24px" novalidate>
+            <h2 id="t-entrar" class="t-card" tabindex="-1">Qual é o seu celular?</h2>
+            <div class="field">
+              <label for="f-tel">Celular com DDD</label>
+              <p id="f-tel-dica" class="hint">Ex.: (11) 91234-5678. É para onde mandamos o código.</p>
+              <input id="f-tel" class="input" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(11) 91234-5678" aria-describedby="f-tel-dica err-tel" style="max-width:320px">
+              <p id="err-tel" class="error" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="f-nome">Como quer ser chamado? <span class="muted">(opcional)</span></label>
+              <input id="f-nome" class="input" type="text" autocomplete="given-name" maxlength="40" style="max-width:320px">
+            </div>
+            <div><button type="submit" class="btn btn--primary btn--lg">Receber código por SMS</button></div>
+          </form>
+
+          <!-- Passo 2: código -->
+          <form id="form-codigo" class="stack" style="gap:24px" novalidate hidden>
+            <h2 id="t-codigo" class="t-card" tabindex="-1">Digite o código</h2>
+            <p id="codigo-para" class="t-lead"></p>
+            <div class="sms-sim" role="note" aria-label="Mensagem de SMS simulada">
+              <span class="pill pill--cream">SMS simulado · protótipo</span>
+              <p id="sms-texto"></p>
+            </div>
+            <div class="field">
+              <label for="f-codigo">Código de 4 números</label>
+              <input id="f-codigo" class="input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="4" aria-describedby="err-codigo" style="max-width:180px;font-size:1.5rem;letter-spacing:.3em">
+              <p id="err-codigo" class="error" role="alert"></p>
+            </div>
+            <div class="row" style="gap:8px;align-items:center">
+              <button type="submit" class="btn btn--primary btn--lg">Entrar</button>
+              <button type="button" id="btn-trocar" class="btn btn--ghost btn--lg">Trocar número</button>
+              <button type="button" id="btn-reenviar" class="btn btn--ghost btn--lg" disabled>Reenviar código</button>
+            </div>
+            <p id="reenvio-msg" class="hint" role="status"></p>
+          </form>
+        </section>
+
+        <aside class="col-side panel panel--green stack" style="gap:16px" aria-labelledby="t-porque">
+          <h2 id="t-porque" class="t-tab">Por que entrar?</h2>
+          <ul class="checklist" style="grid-template-columns:1fr">
+            <li>Todos os seus avisos em uma lista, sem precisar guardar números</li>
+            <li>Veja em que etapa cada um está</li>
+            <li>Os avisos que você apoiou ficam salvos também</li>
+          </ul>
+          <p class="t-small muted rule-top">Neste protótipo os dados ficam só neste aparelho e nenhum SMS é enviado de verdade.</p>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="closing-band">
+      <div class="wrap closing-inner">
+        <span class="emblem" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 14 14" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><rect width="14" height="14" rx="3" fill="#4f8a4a"/><path d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z" fill="#0081c0"/><path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a"/><path d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z" fill="#f1e4b8"/></svg></span>
+        <h2 class="t-section closing-title">Cuidar da rua é coisa de vizinho. Resolver é coisa da prefeitura.</h2>
+        <p class="closing-sub">O Zela leva o seu aviso ao órgão certo e mostra cada passo até a solução.</p>
+        <a class="link-action" href="relatar.html"><span>Relatar problema</span></a>
+        <div class="utility-row">
+          <nav aria-label="Rodapé">
+            <ul class="list-reset">
+              <li><a href="index.html">Início</a></li>
+              <li><a href="relatar.html">Relatar</a></li>
+              <li><a href="acompanhar.html">Acompanhar</a></li>
+              <li><a href="bairro.html">Meu bairro</a></li>
+              <li><a href="rota.html">Rota acessível</a></li>
+              <li><a href="sobre.html">Sobre o projeto</a></li>
+            </ul>
+          </nav>
+          <p>Zela · protótipo acadêmico CitizenTech · dados simulados</p>
+        </div>
+      </div>
+    </div>
+    <div class="stripes stripes--mint" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="horizon" aria-hidden="true">
+      <svg class="pixel-scene" data-cena="horizonte" focusable="false"></svg>
+    </div>
+  </footer>
+  <p id="anuncio" class="sr-only" role="status" aria-live="polite"></p>
+</body>
+</html>

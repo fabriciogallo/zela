@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meus avisos — Zela</title>
+  <meta name="description" content="Veja os avisos que você fez e apoiou no Zela.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Pixelify+Sans:wght@500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
+  <script src="js/dados.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/meus-avisos.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="nav-bar" id="nav-bar">
+      <a class="brand" href="index.html" aria-label="Zela, página inicial">
+        <svg width="28" height="28" viewBox="0 0 14 14" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><rect width="14" height="14" rx="3" fill="#4f8a4a"/><path d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z" fill="#0081c0"/><path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a"/><path d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z" fill="#f1e4b8"/></svg>
+        <span class="brand-name">Zela</span>
+      </a>
+      <span class="v-rule brand-rule" aria-hidden="true"></span>
+      <button type="button" class="menu-toggle btn btn--ghost btn--sm" aria-expanded="false" aria-controls="nav-collapsible">Menu</button>
+      <div class="nav-collapsible" id="nav-collapsible">
+        <nav aria-label="Principal">
+          <ul class="list-reset nav-list">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="relatar.html">Relatar</a></li>
+            <li><a href="acompanhar.html">Acompanhar</a></li>
+            <li><a href="bairro.html">Meu bairro</a></li>
+            <li><a href="rota.html">Rota acessível</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+          </ul>
+        </nav>
+        <div class="nav-spacer"></div>
+        <div class="text-size" role="group" aria-label="Tamanho do texto">
+          <button type="button" data-texto-menos aria-label="Diminuir o texto">A−</button>
+          <span class="v-rule" aria-hidden="true"></span>
+          <button type="button" data-texto-mais aria-label="Aumentar o texto" style="font-size:1.1875rem">A+</button>
+        </div>
+        <a class="btn btn--primary" href="relatar.html">Relatar problema</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="page-pad" tabindex="-1">
+    <div class="wrap">
+      <!-- Sem conta -->
+      <section id="sem-conta" class="page-title" aria-labelledby="t-sem" hidden>
+        <p class="chip chip--lemon">Sua conta</p>
+        <h1 id="t-sem" class="t-page">Meus avisos</h1>
+        <p class="t-lead">Entre com seu celular para ver todos os avisos que você fez e apoiou.</p>
+        <div><a class="btn btn--primary btn--lg" href="entrar.html?volta=meus-avisos.html">Entrar com o celular</a></div>
+      </section>
+
+      <!-- Com conta -->
+      <div id="com-conta" hidden>
+        <div class="page-title">
+          <p class="chip chip--lemon">Sua conta</p>
+          <h1 id="t-ola" class="t-page" tabindex="-1"></h1>
+          <p class="t-lead">Aqui ficam os avisos que você fez e os que você apoiou.</p>
+          <p id="msg-guardados" role="status"></p>
+        </div>
+
+        <dl class="route-stats" style="margin-bottom:24px">
+          <div class="route-stat"><dt>Avisos feitos</dt><dd id="st-feitos" class="t-number"></dd></div>
+          <div class="route-stat"><dt>Em andamento</dt><dd id="st-andamento" class="t-number"></dd></div>
+          <div class="route-stat"><dt>Resolvidos</dt><dd id="st-resolvidos" class="t-number"></dd></div>
+          <div class="route-stat route-stat--orange"><dt>Avisos que apoiou</dt><dd id="st-apoios" class="t-number"></dd></div>
+        </dl>
+
+        <div class="row" style="align-items:flex-start">
+          <section class="col-main stack" style="gap:16px" aria-labelledby="t-feitos">
+            <h2 id="t-feitos" class="t-card">Avisos que você fez</h2>
+            <p id="vazio-feitos" class="panel" hidden>Você ainda não fez nenhum aviso com esta conta. <a href="relatar.html">Relatar um problema</a></p>
+            <ul id="lista-feitos" class="list-reset stack" style="gap:12px"></ul>
+
+            <h2 id="t-apoiados" class="t-card" style="margin-top:32px">Avisos que você apoiou</h2>
+            <p id="vazio-apoiados" class="panel" hidden>Nenhum apoio ainda. Em <a href="bairro.html">Meu bairro</a>, toque em “Eu também vi” nos problemas que você conhece.</p>
+            <ul id="lista-apoiados" class="list-reset stack" style="gap:12px"></ul>
+          </section>
+
+          <aside class="col-side panel stack" style="gap:16px" aria-labelledby="t-dados">
+            <h2 id="t-dados" class="t-tab">Seus dados</h2>
+            <dl class="review">
+              <div><dt>Nome</dt><dd id="d-nome" class="val"></dd></div>
+              <div><dt>Celular</dt><dd id="d-tel" class="val"></dd></div>
+            </dl>
+            <p class="t-small muted">Os dados deste protótipo ficam só neste aparelho.</p>
+            <div><button type="button" id="btn-sair" class="btn btn--ghost">Sair da conta</button></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="closing-band">
+      <div class="wrap closing-inner">
+        <span class="emblem" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 14 14" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><rect width="14" height="14" rx="3" fill="#4f8a4a"/><path d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z" fill="#0081c0"/><path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a"/><path d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z" fill="#f1e4b8"/></svg></span>
+        <h2 class="t-section closing-title">Cuidar da rua é coisa de vizinho. Resolver é coisa da prefeitura.</h2>
+        <p class="closing-sub">O Zela leva o seu aviso ao órgão certo e mostra cada passo até a solução.</p>
+        <a class="link-action" href="relatar.html"><span>Relatar problema</span></a>
+        <div class="utility-row">
+          <nav aria-label="Rodapé">
+            <ul class="list-reset">
+              <li><a href="index.html">Início</a></li>
+              <li><a href="relatar.html">Relatar</a></li>
+              <li><a href="acompanhar.html">Acompanhar</a></li>
+              <li><a href="bairro.html">Meu bairro</a></li>
+              <li><a href="rota.html">Rota acessível</a></li>
+              <li><a href="sobre.html">Sobre o projeto</a></li>
+            </ul>
+          </nav>
+          <p>Zela · protótipo acadêmico CitizenTech · dados simulados</p>
+        </div>
+      </div>
+    </div>
+    <div class="stripes stripes--mint" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="horizon" aria-hidden="true">
+      <svg class="pixel-scene" data-cena="horizonte" focusable="false"></svg>
+    </div>
+  </footer>
+  <p id="anuncio" class="sr-only" role="status" aria-live="polite"></p>
+</body>
+</html>

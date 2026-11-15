@@ -558,3 +558,12 @@ tr:last-child td { border-bottom: 0; }
 @media (min-width: 861px) {
   .nav-collapsible { display: contents; }
 }
+
+/* ---------- Conta ---------- */
+.account-link[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+.sms-sim {
+  max-width: 420px; padding: 16px; border-radius: var(--r-card);
+  background: var(--paper); border: var(--line); box-shadow: var(--shadow-sheet);
+  display: flex; flex-direction: column; gap: 8px; color: var(--ink);
+}
+.report .link-action { margin-left: auto; }

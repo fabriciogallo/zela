@@ -50,6 +50,8 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 | Acompanhar | `acompanhar.html` | Ver as etapas do aviso, ligar avisos por SMS, confirmar a solução |
 | Meu bairro | `bairro.html` | Filtrar avisos, ver no mapa e apoiar os mais urgentes |
 | Rota acessível | `rota.html` | Traçar o caminho com menos barreiras para quem tem mobilidade limitada |
+| Entrar | `entrar.html` | Entrar com o celular e um código por SMS (simulado), sem senha |
+| Meus avisos | `meus-avisos.html` | Lista dos avisos que a pessoa fez e apoiou, com a etapa de cada um |
 | Sobre | `sobre.html` | Como o Zela funciona, quem ganha com ele e integrantes |
 | Documentação (fora do menu) | `projeto.html` | Persona, problema, jornada, interações, ODS e acessibilidade — acesse por https://fabriciogallo.github.io/zela/projeto.html |
 
@@ -68,6 +70,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 | Relatar | Foto com prévia, revisão com "Alterar", copiar protocolo | Dá segurança antes de enviar e impede que o número se perca |
 | Acompanhar | Linha do tempo + avisos por SMS + "Ficou resolvido mesmo?" | Mostra o que acontece depois do envio e devolve a palavra ao morador |
 | Meu bairro | Filtros, mapa ligado à lista, "Eu também vi" | Prioriza o mais urgente e ajuda a achar avisos perto de casa |
+| Entrar / Meus avisos | Login sem senha (celular + código por SMS simulado), avisos e apoios guardados por pessoa, avisos feitos antes de entrar passam para a conta | Ninguém precisa guardar número de protocolo: tudo fica em um só lugar |
 | Rota acessível | Rota por perfil (cadeira de rodas, andador, carrinho, baixa visão) com algoritmo de Dijkstra, mapa com passos, "Ouvir as instruções" (voz do navegador), link para compartilhar | Desvia de escadas, ladeiras acima de 8%, calçadas quebradas e dos avisos abertos no Zela, e explica por que o caminho mais curto foi evitado |
 
 **Como testar:**
@@ -75,6 +78,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 - Busca de CEP: em Relatar, passo 2, digite **01310-100** (preenche Avenida Paulista) ou **99999-999** (mostra o erro).
 - Aviso repetido: em Relatar, escolha **Poste apagado** e digite **Rua das Palmeiras**.
 - Rota acessível: de **Escola** para **UBS** com **Cadeira de rodas** — o mapa mostra o caminho mais curto (tracejado) e o desvio da escadaria e da calçada quebrada.
+- Login: em Entrar, use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece na tela como um SMS simulado. Depois, os avisos feitos e apoiados aparecem em Meus avisos.
 - Um aviso novo gera um protocolo que fica salvo no navegador e pode ser consultado em Acompanhar.
 
 ## Acessibilidade
@@ -99,7 +103,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 - HTML, CSS e JavaScript puro (sem frameworks, sem build)
 - Dados simulados em `js/dados.js`
 - APIs públicas: [ViaCEP](https://viacep.com.br/) para buscar o endereço pelo CEP e [Nominatim / OpenStreetMap](https://nominatim.org/) para transformar a localização em endereço
-- `localStorage` para lembrar tamanho do texto, bairro, apoios e protocolos criados
+- `localStorage` para lembrar tamanho do texto, bairro, conta (sessão), apoios e protocolos criados — em produção, a conta e os avisos ficariam em um servidor
 - Fontes: Pixelify Sans (títulos em pixel, mais legível) e Inter (texto), via Google Fonts
 - Paisagens em pixel art geradas em SVG por código (`js/comum.js`), sem imagens externas
 
@@ -112,6 +116,8 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 ├── bairro.html
 ├── rota.html
 ├── sobre.html
+├── entrar.html
+├── meus-avisos.html
 ├── projeto.html      # documentação (persona, jornada, ODS) — fora do menu
 ├── css/style.css       # tokens, componentes e responsivo
 ├── js/dados.js         # dados simulados
@@ -120,6 +126,8 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 ├── js/relatar.js
 ├── js/acompanhar.js
 ├── js/bairro.js
+├── js/entrar.js       # login com celular + código
+├── js/meus-avisos.js  # avisos e apoios da conta
 ├── js/rota.js         # rota acessível (Dijkstra por perfil)
 └── img/favicon.svg
 ```

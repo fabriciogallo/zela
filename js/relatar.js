@@ -248,8 +248,9 @@
       var apoiados = ZELA.store.get("apoiados", {});
       apoiados[aviso.id] = true;
       ZELA.store.set("apoiados", apoiados);
+      ZELA.conta.marcarApoio(aviso.id, true);
       id = aviso.protocolo;
-      $("ok-titulo").textContent = "Apoio Registrado. Agora São " + (aviso.apoios + 1) + " Vizinhos.";
+      $("ok-titulo").textContent = "Apoio registrado. Agora são " + (aviso.apoios + 1) + " vizinhos.";
       texto = "Você apoiou o aviso “" + aviso.titulo + "” na " + aviso.local + ". Ele subiu na fila de prioridade e você pode acompanhar pelo mesmo protocolo.";
     } else {
       id = "ZL-2026-" + String(Math.floor(10000 + Math.random() * 89999));
@@ -260,14 +261,18 @@
         titulo: ZELA.nomeCategoria(cat).nome + ": " + $("f-desc").value.trim().slice(0, 60),
         local: $("f-end").value.trim(),
         atual: 0, dias: 0, apoios: 1,
-        datas: [hoje(), "Previsão: em até 2 dias úteis", "—", "—"]
+        datas: [hoje(), "Previsão: em até 2 dias úteis", "—", "—"],
+        dono: (ZELA.conta.atual() || {}).tel || null
       };
       ZELA.store.set("protocolos", meus);
-      texto = "Seu aviso chegou ao Zela e já está na fila do bairro. Guarde o número abaixo para acompanhar cada etapa.";
+      texto = ZELA.conta.atual()
+        ? "Seu aviso chegou ao Zela e já está na fila do bairro. Ele também ficou guardado em Meus avisos."
+        : "Seu aviso chegou ao Zela e já está na fila do bairro. Guarde o número abaixo ou entre com seu celular para salvar seus avisos.";
     }
     $("ok-texto").textContent = texto;
     $("ok-protocolo").textContent = id;
     $("link-acompanhar").href = "acompanhar.html?p=" + encodeURIComponent(id);
+    $("link-entrar").hidden = !!ZELA.conta.atual();
     $("area-form").hidden = true;
     $("area-sucesso").hidden = false;
     document.title = "Aviso enviado — Zela";

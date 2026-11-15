@@ -16,6 +16,62 @@
     }
   };
 
+  /* ---------- Conta do morador (protótipo: tudo fica neste aparelho) ----------
+     Login sem senha: celular + código por SMS (simulado). Cada aviso criado
+     guarda o celular de quem fez ("dono"), e cada conta guarda seus apoios. */
+  ZELA.conta = {
+    atual: function () {
+      var tel = ZELA.store.get("sessao", null);
+      var contas = ZELA.store.get("contas", {});
+      return tel && contas[tel] ? Object.assign({ tel: tel }, contas[tel]) : null;
+    },
+    entrar: function (tel, nome) {
+      var contas = ZELA.store.get("contas", {});
+      var nova = !contas[tel];
+      contas[tel] = contas[tel] || { nome: "", desde: new Date().toISOString(), apoios: {} };
+      if (nome) contas[tel].nome = nome;
+      ZELA.store.set("contas", contas);
+      ZELA.store.set("sessao", tel);
+      /* avisos feitos neste aparelho antes de entrar passam a ser desta conta */
+      var protos = ZELA.store.get("protocolos", {}), guardados = 0;
+      Object.keys(protos).forEach(function (id) { if (!protos[id].dono) { protos[id].dono = tel; guardados++; } });
+      ZELA.store.set("protocolos", protos);
+      return { nova: nova, guardados: guardados };
+    },
+    sair: function () { ZELA.store.set("sessao", null); },
+    avisos: function () {
+      var u = ZELA.conta.atual(); if (!u) return [];
+      var protos = ZELA.store.get("protocolos", {});
+      return Object.keys(protos).filter(function (id) { return protos[id].dono === u.tel; })
+        .map(function (id) { return Object.assign({ id: id }, protos[id]); }).reverse();
+    },
+    marcarApoio: function (avisoId, ligado) {
+      var u = ZELA.conta.atual(); if (!u) return;
+      var contas = ZELA.store.get("contas", {});
+      var c = contas[u.tel]; c.apoios = c.apoios || {};
+      if (ligado) c.apoios[avisoId] = true; else delete c.apoios[avisoId];
+      ZELA.store.set("contas", contas);
+    },
+    formatarTel: function (tel) {
+      var d = String(tel).replace(/\D/g, "");
+      return d.length === 11 ? "(" + d.slice(0, 2) + ") " + d.slice(2, 7) + "-" + d.slice(7) : d;
+    }
+  };
+
+  /* Link "Entrar" / "Meus avisos" no menu de todas as páginas */
+  function iniciarLinkConta() {
+    var cta = document.querySelector(".nav-collapsible > .btn--primary");
+    if (!cta) return;
+    var u = ZELA.conta.atual();
+    var a = document.createElement("a");
+    a.className = "btn btn--ghost account-link";
+    a.href = u ? "meus-avisos.html" : "entrar.html";
+    a.textContent = u ? "Meus avisos" + (u.nome ? " · " + u.nome.split(" ")[0] : "") : "Entrar";
+    var aqui = location.pathname.split("/").pop();
+    if (aqui === a.getAttribute("href")) a.setAttribute("aria-current", "page");
+    cta.parentNode.insertBefore(a, cta);
+  }
+
   /* ---------- Anúncios para leitores de tela ---------- */
   ZELA.anunciar = function (texto) {
     var el = document.getElementById("anuncio");
@@ -283,6 +339,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     iniciarTamanhoTexto();
     iniciarMenu();
+    iniciarLinkConta();
     desenharCenas();
   });
 })();
