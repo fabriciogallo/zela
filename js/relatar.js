@@ -94,6 +94,61 @@
     }
   }
 
+  /* ---------- CEP (API pública ViaCEP) ---------- */
+  var ultimoCep = "";
+
+  function mascararCep() {
+    var campo = $("f-cep");
+    var d = campo.value.replace(/\D/g, "").slice(0, 8);
+    campo.value = d.length > 5 ? d.slice(0, 5) + "-" + d.slice(5) : d;
+    limparErro("f-cep", "err-cep");
+    if (d.length === 8 && d !== ultimoCep) buscarCep();
+  }
+
+  function buscarCep() {
+    var campo = $("f-cep"), msg = $("cep-msg"), botao = $("btn-cep");
+    var cep = campo.value.replace(/\D/g, "");
+    msg.textContent = "";
+    if (cep.length !== 8) {
+      return erro("f-cep", "err-cep", "O CEP tem 8 números, assim: 04913-000. Confira e tente de novo.");
+    }
+    limparErro("f-cep", "err-cep");
+    ultimoCep = cep;
+    botao.disabled = true;
+    msg.textContent = "Buscando o CEP…";
+    fetch("https://viacep.com.br/ws/" + cep + "/json/")
+      .then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
+      .then(function (d) {
+        if (d.erro) {
+          msg.textContent = "";
+          erro("f-cep", "err-cep", "Não encontramos o CEP " + campo.value + ". Confira os números ou digite o endereço abaixo.");
+          return;
+        }
+        var rua = d.logradouro || "";
+        var lugar = [d.bairro, d.localidade && d.uf ? d.localidade + "/" + d.uf : d.localidade].filter(Boolean).join(" — ");
+        var end = $("f-end");
+        end.value = rua ? rua + ", " + (lugar ? " — " + lugar : "") : lugar;
+        limparErro("f-end", "err-end");
+        checarRepetido();
+        if (rua) {
+          msg.textContent = "Encontramos: " + rua + (lugar ? ", " + lugar : "") + ". Agora digite o número da casa ou do prédio mais perto.";
+          end.focus();
+          var pos = rua.length + 2;
+          end.setSelectionRange(pos, pos);
+        } else {
+          msg.textContent = "Esse CEP é da cidade toda (" + lugar + "). Digite o nome da rua no campo abaixo.";
+          end.focus();
+          end.setSelectionRange(0, 0);
+        }
+      })
+      .catch(function () {
+        ultimoCep = "";
+        msg.textContent = "Não conseguimos consultar o CEP agora (sem internet?). Digite o endereço abaixo, por favor.";
+      })
+      .then(function () { botao.disabled = false; });
+    return true;
+  }
+
   /* ---------- Localização (API real com alternativa) ---------- */
   function usarLocalizacao() {
     var msg = $("loc-msg");
@@ -169,7 +224,7 @@
     var temFoto = !$("foto-cheia").hidden;
     var linhas = [
       ["Tipo", cat.nome, 1, "o tipo de problema"],
-      ["Local", $("f-end").value.trim() + (ref ? " (" + ref + ")" : ""), 2, "o local"],
+      ["Local", $("f-end").value.trim() + (ref ? " (" + ref + ")" : "") + ($("f-cep").value ? " · CEP " + $("f-cep").value : ""), 2, "o local"],
       ["Descrição", $("f-desc").value.trim(), 3, "a descrição"],
       ["Foto", temFoto ? "Sim, 1 foto" : "Sem foto", 3, "a foto"],
       ["Risco", valor("risco") === "alto" ? "Sim, há risco de acidente" : "Não, mas atrapalha", 3, "o risco"],
@@ -255,6 +310,9 @@
     });
     $("f-end").addEventListener("input", function () { limparErro("f-end", "err-end"); checarRepetido(); });
     $("btn-loc").addEventListener("click", usarLocalizacao);
+    $("f-cep").addEventListener("input", mascararCep);
+    $("f-cep").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); buscarCep(); } });
+    $("btn-cep").addEventListener("click", buscarCep);
     $("btn-apoiar").addEventListener("click", function () { concluir(true); });
     $("btn-outro").addEventListener("click", function () {
       dupIgnorado = true;

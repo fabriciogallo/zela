@@ -62,6 +62,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 | Início | Abas "Como funciona" com setas do teclado | Explica o serviço aos poucos, sem texto longo |
 | Início | Avisos por bairro + consulta rápida de protocolo | Mostra que vizinhos já usam e avisa na hora se o número está errado |
 | Relatar | Passos com progresso, validação e foco no título | Divide a tarefa, evita erro no fim e orienta leitores de tela |
+| Relatar | Busca por CEP (API ViaCEP) com máscara automática | Preenche rua, bairro e cidade sozinho; a pessoa só digita o número |
 | Relatar | "Usar minha localização" (API OpenStreetMap/Nominatim) | Poupa digitação de endereço |
 | Relatar | Detecção de aviso repetido → "Apoiar esse aviso" | Evita filas duplicadas e mostra que outros vizinhos se importam |
 | Relatar | Foto com prévia, revisão com "Alterar", copiar protocolo | Dá segurança antes de enviar e impede que o número se perca |
@@ -71,6 +72,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 
 **Como testar:**
 - Protocolos de exemplo: `ZL-2026-04817`, `ZL-2026-03991` (resolvido), `ZL-2026-05102`.
+- Busca de CEP: em Relatar, passo 2, digite **01310-100** (preenche Avenida Paulista) ou **99999-999** (mostra o erro).
 - Aviso repetido: em Relatar, escolha **Poste apagado** e digite **Rua das Palmeiras**.
 - Rota acessível: de **Escola** para **UBS** com **Cadeira de rodas** — o mapa mostra o caminho mais curto (tracejado) e o desvio da escadaria e da calçada quebrada.
 - Um aviso novo gera um protocolo que fica salvo no navegador e pode ser consultado em Acompanhar.
@@ -96,7 +98,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 
 - HTML, CSS e JavaScript puro (sem frameworks, sem build)
 - Dados simulados em `js/dados.js`
-- API pública: [Nominatim / OpenStreetMap](https://nominatim.org/) para transformar a localização em endereço
+- APIs públicas: [ViaCEP](https://viacep.com.br/) para buscar o endereço pelo CEP e [Nominatim / OpenStreetMap](https://nominatim.org/) para transformar a localização em endereço
 - `localStorage` para lembrar tamanho do texto, bairro, apoios e protocolos criados
 - Fontes: Bricolage Grotesque (títulos) e Atkinson Hyperlegible Next (texto, feita para pessoas com baixa visão), via Google Fonts
 

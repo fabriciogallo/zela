@@ -87,6 +87,16 @@
               <h2 id="t-passo-2" class="t-card" tabindex="-1">Onde fica?</h2>
               <div class="stack" style="gap:24px;margin-top:24px">
                 <div class="field">
+                  <label for="f-cep">CEP <span class="muted">(opcional)</span></label>
+                  <p id="f-cep-dica" class="hint">Com o CEP, a rua e o bairro aparecem sozinhos. Não sabe? Pode pular e digitar o endereço.</p>
+                  <div class="inline-form">
+                    <input id="f-cep" name="cep" class="input cep-input" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" aria-describedby="f-cep-dica err-cep cep-msg">
+                    <button type="button" id="btn-cep" class="btn btn--ghost btn--lg">Buscar CEP</button>
+                  </div>
+                  <p id="err-cep" class="error" role="alert"></p>
+                  <p id="cep-msg" role="status"></p>
+                </div>
+                <div class="field">
                   <label for="f-end">Endereço do problema</label>
                   <p id="f-end-dica" class="hint">Rua e número. Se não souber o número, diga só a rua.</p>
                   <div class="inline-form">
