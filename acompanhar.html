@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acompanhar protocolo — Zela</title>
+  <meta name="description" content="Digite o número do protocolo e veja em que etapa está o seu aviso.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=DM+Sans:opsz,wght@9..40,500;9..40,700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
+  <script src="js/dados.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/acompanhar.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="nav-bar" id="nav-bar">
+      <a class="brand" href="index.html" aria-label="Zela, página inicial">
+        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" focusable="false"><rect width="36" height="36" rx="10" fill="#000000"/><circle cx="18" cy="15" r="7" fill="#f26b21"/><path d="M12 19l6 10 6-10z" fill="#f26b21"/><circle cx="18" cy="15" r="2.6" fill="#000000"/></svg>
+        <span class="brand-name">Zela</span>
+      </a>
+      <span class="v-rule brand-rule" aria-hidden="true"></span>
+      <button type="button" class="menu-toggle btn btn--ghost btn--sm" aria-expanded="false" aria-controls="nav-collapsible">Menu</button>
+      <div class="nav-collapsible" id="nav-collapsible">
+        <nav aria-label="Principal">
+          <ul class="list-reset nav-list">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="relatar.html">Relatar</a></li>
+            <li><a href="acompanhar.html" aria-current="page">Acompanhar</a></li>
+            <li><a href="bairro.html">Meu bairro</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+          </ul>
+        </nav>
+        <div class="nav-spacer"></div>
+        <div class="text-size" role="group" aria-label="Tamanho do texto">
+          <button type="button" data-texto-menos aria-label="Diminuir o texto">A−</button>
+          <span class="v-rule" aria-hidden="true"></span>
+          <button type="button" data-texto-mais aria-label="Aumentar o texto" style="font-size:1.1875rem">A+</button>
+        </div>
+        <a class="btn btn--primary" href="relatar.html">Relatar problema</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="page-pad" tabindex="-1">
+    <div class="wrap">
+      <div class="page-title">
+        <h1 class="t-page">Onde Está O Seu Aviso?</h1>
+      </div>
+
+      <form id="form-busca" class="panel panel--cream stack" style="gap:12px" role="search" novalidate>
+        <label for="f-proto" class="t-lead">Número do protocolo</label>
+        <div class="inline-form">
+          <input id="f-proto" name="p" class="input" type="text" autocomplete="off" autocapitalize="characters" placeholder="ZL-2026-04817" aria-describedby="f-proto-dica f-proto-erro" style="min-height:64px;font-size:1.125rem">
+          <button type="submit" class="btn btn--primary" style="min-height:64px;padding-inline:32px">Consultar</button>
+        </div>
+        <p id="f-proto-dica" class="hint">Está no comprovante que você recebeu ao enviar o aviso.</p>
+        <p id="f-proto-erro" class="error" role="alert"></p>
+        <div class="rule-top row" style="align-items:center;gap:8px">
+          <span>Exemplos para testar:</span>
+          <button type="button" class="btn btn--ghost btn--sm" data-exemplo="ZL-2026-04817">ZL-2026-04817</button>
+          <button type="button" class="btn btn--ghost btn--sm" data-exemplo="ZL-2026-03991">ZL-2026-03991</button>
+          <button type="button" class="btn btn--ghost btn--sm" data-exemplo="ZL-2026-05102">ZL-2026-05102</button>
+          <span id="meus-protocolos" class="row" style="gap:8px"></span>
+        </div>
+      </form>
+
+      <div id="resultado" class="row" style="margin-top:16px" hidden>
+        <section class="col-main panel panel-lg panel--cream stack" style="gap:32px" aria-labelledby="res-titulo">
+          <div class="stack" style="gap:8px">
+            <p class="chip chip--lemon" id="res-chip"></p>
+            <h2 id="res-titulo" class="t-card" tabindex="-1"></h2>
+            <p id="res-local"></p>
+          </div>
+          <ol class="list-reset timeline" id="res-etapas" aria-label="Etapas do aviso"></ol>
+        </section>
+
+        <div class="col-side stack" style="gap:16px">
+          <div class="stat-pair">
+            <div class="proof"><span class="t-lead">Dias desde o aviso</span><span class="t-number" id="res-dias"></span></div>
+            <div class="proof"><span class="t-lead">Vizinhos apoiam</span><span class="t-number" id="res-apoios"></span></div>
+          </div>
+
+          <section class="panel panel--green inv stack" style="gap:20px" aria-labelledby="sms-t">
+            <h2 id="sms-t" class="t-tab">Avisar Quando Mudar</h2>
+            <p>Mandamos uma mensagem por SMS a cada nova etapa. Funciona em qualquer celular.</p>
+            <button type="button" class="switch" id="btn-sms" aria-pressed="false">
+              <span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span>
+              <span id="sms-rotulo">Receber avisos por SMS</span>
+            </button>
+            <p id="sms-msg" role="status"></p>
+          </section>
+
+          <section id="avaliacao" class="panel panel--ink inv stack" style="gap:20px" aria-labelledby="aval-t" hidden>
+            <h2 id="aval-t" class="t-tab">Ficou Resolvido Mesmo?</h2>
+            <p>A prefeitura marcou como resolvido. Só você, que passa lá todo dia, pode confirmar.</p>
+            <div class="row" style="gap:12px">
+              <button type="button" class="btn btn--primary" data-aval="sim">Sim, está resolvido</button>
+              <button type="button" class="btn btn--ghost" data-aval="nao">Não, continua igual</button>
+            </div>
+            <p id="aval-msg" role="status"></p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap row footer-grid">
+      <div class="closing panel panel--ink inv">
+        <p class="brand-mark">Zela</p>
+        <p class="t-compact">Viu Outro Problema? Avise Em 3 Minutos.</p>
+        <a class="btn btn--primary" href="relatar.html" style="align-self:flex-start">Relatar problema</a>
+      </div>
+      <div class="footer-side">
+        <div class="utility panel panel--cream">
+          <nav aria-label="Rodapé">
+            <ul class="list-reset">
+              <li><a href="index.html">Início</a></li>
+              <li><a href="relatar.html">Relatar</a></li>
+              <li><a href="bairro.html">Meu bairro</a></li>
+              <li><a href="sobre.html">Sobre o projeto</a></li>
+            </ul>
+          </nav>
+          <p class="rule-top t-small">Zela · protótipo acadêmico CitizenTech · dados simulados</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <p id="anuncio" class="sr-only" role="status" aria-live="polite"></p>
+</body>
+</html>

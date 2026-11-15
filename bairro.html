@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meu bairro — Zela</title>
+  <meta name="description" content="Veja os problemas que os vizinhos relataram no seu bairro e apoie os mais urgentes.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=DM+Sans:opsz,wght@9..40,500;9..40,700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
+  <script src="js/dados.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/bairro.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="nav-bar" id="nav-bar">
+      <a class="brand" href="index.html" aria-label="Zela, página inicial">
+        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" focusable="false"><rect width="36" height="36" rx="10" fill="#000000"/><circle cx="18" cy="15" r="7" fill="#f26b21"/><path d="M12 19l6 10 6-10z" fill="#f26b21"/><circle cx="18" cy="15" r="2.6" fill="#000000"/></svg>
+        <span class="brand-name">Zela</span>
+      </a>
+      <span class="v-rule brand-rule" aria-hidden="true"></span>
+      <button type="button" class="menu-toggle btn btn--ghost btn--sm" aria-expanded="false" aria-controls="nav-collapsible">Menu</button>
+      <div class="nav-collapsible" id="nav-collapsible">
+        <nav aria-label="Principal">
+          <ul class="list-reset nav-list">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="relatar.html">Relatar</a></li>
+            <li><a href="acompanhar.html">Acompanhar</a></li>
+            <li><a href="bairro.html" aria-current="page">Meu bairro</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+          </ul>
+        </nav>
+        <div class="nav-spacer"></div>
+        <div class="text-size" role="group" aria-label="Tamanho do texto">
+          <button type="button" data-texto-menos aria-label="Diminuir o texto">A−</button>
+          <span class="v-rule" aria-hidden="true"></span>
+          <button type="button" data-texto-mais aria-label="Aumentar o texto" style="font-size:1.1875rem">A+</button>
+        </div>
+        <a class="btn btn--primary" href="relatar.html">Relatar problema</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="page-pad" tabindex="-1">
+    <div class="wrap">
+      <div class="page-title">
+        <p class="chip chip--lemon"><span id="chip-bairro">Jardim Ângela</span>&nbsp;· dados simulados</p>
+        <h1 class="t-page">O Que Os Vizinhos Viram</h1>
+        <p class="t-lead" style="max-width:640px">Se você também passa por um desses problemas, toque em “Eu também vi”. Cada apoio sobe o aviso na fila de prioridade.</p>
+      </div>
+
+      <form class="panel panel--cream filters" aria-label="Filtros" onsubmit="return false">
+        <div class="field">
+          <label for="f-bairro">Bairro</label>
+          <select id="f-bairro" class="input">
+            <option value="angela">Jardim Ângela</option>
+            <option value="grajau">Grajaú</option>
+            <option value="tiradentes">Cidade Tiradentes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-cat">Tipo de problema</label>
+          <select id="f-cat" class="input">
+            <option value="todos">Todos</option>
+            <option value="buraco">Buraco na rua</option>
+            <option value="luz">Poste apagado</option>
+            <option value="lixo">Lixo ou entulho</option>
+            <option value="calcada">Calçada quebrada</option>
+            <option value="arvore">Árvore ou poda</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-status">Situação</label>
+          <select id="f-status" class="input">
+            <option value="abertos">Em aberto</option>
+            <option value="todos">Todos</option>
+            <option value="Resolvido">Resolvidos</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-ord">Ordenar por</label>
+          <select id="f-ord" class="input">
+            <option value="prioridade">Mais urgente primeiro</option>
+            <option value="apoios">Mais apoiados</option>
+            <option value="recentes">Mais recentes</option>
+          </select>
+        </div>
+        <p class="count" id="contagem" role="status"></p>
+      </form>
+
+      <div class="row" style="margin-top:16px;align-items:flex-start">
+        <section class="col-side panel panel--green inv stack map-col" style="gap:20px" aria-labelledby="mapa-t">
+          <h2 id="mapa-t" class="t-tab">Mapa Do Bairro</h2>
+          <div class="map" id="mapa">
+            <svg viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <g stroke="#f2f2f2" stroke-opacity=".55" fill="none" stroke-linecap="round">
+                <path d="M-10 120 C 120 100, 260 140, 410 110" stroke-width="10"/>
+                <path d="M-10 260 C 140 250, 260 290, 410 270" stroke-width="7"/>
+                <path d="M90 -10 C 100 140, 70 260, 110 410" stroke-width="7"/>
+                <path d="M250 -10 C 240 120, 290 260, 260 410" stroke-width="10"/>
+                <path d="M330 -10 L 340 410" stroke-width="4"/>
+                <path d="M-10 340 L 410 360" stroke-width="4"/>
+              </g>
+              <rect x="150" y="300" width="70" height="50" rx="12" fill="#f26b21" fill-opacity=".35"/>
+            </svg>
+          </div>
+          <p>Toque num número para ver o aviso na lista. Laranja = selecionado. Mapa ilustrativo.</p>
+        </section>
+
+        <section class="col-main" aria-labelledby="lista-t">
+          <h2 id="lista-t" class="sr-only">Lista de avisos</h2>
+          <p id="vazio" class="panel panel--cream t-lead" hidden>Nenhum aviso com esses filtros. Tente “Todos” ou <a href="relatar.html">relate um problema novo</a>.</p>
+          <ul class="list-reset stack" style="gap:16px" id="lista"></ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <svg class="halftone" data-reticula="cinza" aria-hidden="true" focusable="false"></svg>
+    <div class="wrap row footer-grid">
+      <div class="closing panel panel--ink inv">
+        <p class="brand-mark">Zela</p>
+        <p class="t-compact">Não Achou O Seu Problema Na Lista? Seja O Primeiro A Avisar.</p>
+        <a class="btn btn--primary" href="relatar.html" style="align-self:flex-start">Relatar problema</a>
+      </div>
+      <div class="footer-side">
+        <div class="utility panel panel--cream">
+          <nav aria-label="Rodapé">
+            <ul class="list-reset">
+              <li><a href="index.html">Início</a></li>
+              <li><a href="relatar.html">Relatar</a></li>
+              <li><a href="acompanhar.html">Acompanhar</a></li>
+              <li><a href="sobre.html">Sobre o projeto</a></li>
+            </ul>
+          </nav>
+          <p class="rule-top t-small">Zela · protótipo acadêmico CitizenTech · dados simulados</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <p id="anuncio" class="sr-only" role="status" aria-live="polite"></p>
+</body>
+</html>

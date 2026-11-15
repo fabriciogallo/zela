@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Relatar um problema — Zela</title>
+  <meta name="description" content="Relate um problema da sua rua em 4 passos curtos e receba um número de protocolo para acompanhar.">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=DM+Sans:opsz,wght@9..40,500;9..40,700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
+  <script src="js/dados.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/relatar.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="nav-bar" id="nav-bar">
+      <a class="brand" href="index.html" aria-label="Zela, página inicial">
+        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" focusable="false"><rect width="36" height="36" rx="10" fill="#000000"/><circle cx="18" cy="15" r="7" fill="#f26b21"/><path d="M12 19l6 10 6-10z" fill="#f26b21"/><circle cx="18" cy="15" r="2.6" fill="#000000"/></svg>
+        <span class="brand-name">Zela</span>
+      </a>
+      <span class="v-rule brand-rule" aria-hidden="true"></span>
+      <button type="button" class="menu-toggle btn btn--ghost btn--sm" aria-expanded="false" aria-controls="nav-collapsible">Menu</button>
+      <div class="nav-collapsible" id="nav-collapsible">
+        <nav aria-label="Principal">
+          <ul class="list-reset nav-list">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="relatar.html" aria-current="page">Relatar</a></li>
+            <li><a href="acompanhar.html">Acompanhar</a></li>
+            <li><a href="bairro.html">Meu bairro</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+          </ul>
+        </nav>
+        <div class="nav-spacer"></div>
+        <div class="text-size" role="group" aria-label="Tamanho do texto">
+          <button type="button" data-texto-menos aria-label="Diminuir o texto">A−</button>
+          <span class="v-rule" aria-hidden="true"></span>
+          <button type="button" data-texto-mais aria-label="Aumentar o texto" style="font-size:1.1875rem">A+</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="page-pad" tabindex="-1">
+    <div class="wrap">
+
+      <!-- Formulário em etapas -->
+      <div id="area-form">
+        <div class="page-title row" style="flex-direction:row;align-items:flex-end;justify-content:space-between;gap:24px 48px">
+          <h1 class="t-page">Relatar Um Problema</h1>
+          <ol class="list-reset progress" id="progresso" aria-label="Etapas do relato">
+            <li class="is-current" aria-current="step"><span class="display">1</span><span>Tipo</span></li>
+            <li><span class="display">2</span><span>Local</span></li>
+            <li><span class="display">3</span><span>Detalhes</span></li>
+            <li><span class="display">4</span><span>Enviar</span></li>
+          </ol>
+        </div>
+
+        <div class="row">
+          <form id="form-relato" class="wizard panel panel-lg panel--cream col-main" novalidate>
+
+            <section data-step="1" aria-labelledby="t-passo-1">
+              <p>Passo 1 de 4</p>
+              <h2 id="t-passo-1" class="t-card" tabindex="-1">Que Tipo De Problema É?</h2>
+              <fieldset style="margin-top:24px" aria-describedby="err-cat">
+                <legend class="legend">Escolha uma opção:</legend>
+                <div class="choices">
+                  <label class="choice"><input type="radio" name="cat" value="buraco"> Buraco na rua</label>
+                  <label class="choice"><input type="radio" name="cat" value="luz"> Poste apagado</label>
+                  <label class="choice"><input type="radio" name="cat" value="lixo"> Lixo ou entulho</label>
+                  <label class="choice"><input type="radio" name="cat" value="calcada"> Calçada quebrada</label>
+                  <label class="choice"><input type="radio" name="cat" value="arvore"> Árvore ou poda</label>
+                  <label class="choice"><input type="radio" name="cat" value="outro"> Outro problema</label>
+                </div>
+                <p id="err-cat" class="error" role="alert" style="margin-top:16px"></p>
+              </fieldset>
+            </section>
+
+            <section data-step="2" aria-labelledby="t-passo-2">
+              <p>Passo 2 de 4</p>
+              <h2 id="t-passo-2" class="t-card" tabindex="-1">Onde Fica?</h2>
+              <div class="stack" style="gap:24px;margin-top:24px">
+                <div class="field">
+                  <label for="f-end">Endereço do problema</label>
+                  <p id="f-end-dica" class="hint">Rua e número. Se não souber o número, diga só a rua.</p>
+                  <div class="inline-form">
+                    <input id="f-end" name="endereco" class="input" type="text" autocomplete="street-address" aria-describedby="f-end-dica err-end loc-msg">
+                    <button type="button" id="btn-loc" class="btn btn--ghost btn--lg">Usar minha localização</button>
+                  </div>
+                  <p id="err-end" class="error" role="alert"></p>
+                  <p id="loc-msg" role="status"></p>
+                </div>
+                <div class="field">
+                  <label for="f-ref">Ponto de referência <span class="muted">(opcional)</span></label>
+                  <input id="f-ref" name="referencia" class="input" type="text" placeholder="Ex.: em frente à padaria">
+                </div>
+                <section id="dup" class="dup panel--orange" aria-labelledby="dup-t" hidden>
+                  <h3 id="dup-t" class="t-tab" tabindex="-1">Um Vizinho Já Avisou Isso</h3>
+                  <p id="dup-texto"></p>
+                  <p>Apoiar faz o aviso subir na fila de prioridade. Criar outro igual não acelera.</p>
+                  <div class="row" style="gap:12px">
+                    <button type="button" id="btn-apoiar" class="btn btn--ink">Apoiar esse aviso</button>
+                    <button type="button" id="btn-outro" class="btn btn--ghost">É outro problema</button>
+                  </div>
+                </section>
+              </div>
+            </section>
+
+            <section data-step="3" aria-labelledby="t-passo-3">
+              <p>Passo 3 de 4</p>
+              <h2 id="t-passo-3" class="t-card" tabindex="-1">Conte Um Pouco Mais</h2>
+              <div class="stack" style="gap:24px;margin-top:24px">
+                <div class="field">
+                  <label for="f-desc">Descreva o problema</label>
+                  <p id="f-desc-dica" class="hint">Uma frase basta. Ex.: o buraco ocupa metade da pista.</p>
+                  <textarea id="f-desc" name="descricao" class="input" rows="4" maxlength="300" aria-describedby="f-desc-dica f-desc-cont err-desc"></textarea>
+                  <p id="f-desc-cont" class="hint t-small" aria-live="polite">0 de 300 caracteres</p>
+                  <p id="err-desc" class="error" role="alert"></p>
+                </div>
+                <div class="field">
+                  <span class="legend" id="foto-rotulo">Foto do local <span class="muted">(opcional)</span></span>
+                  <div id="foto-vazia">
+                    <input id="f-foto" name="foto" type="file" accept="image/*" capture="environment" class="sr-only file-input" aria-labelledby="foto-btn-texto foto-rotulo">
+                    <label for="f-foto" class="btn btn--ghost btn--lg" id="foto-btn-texto">Tirar ou escolher foto</label>
+                  </div>
+                  <div id="foto-cheia" class="photo-chip" hidden>
+                    <img id="foto-preview" src="" alt="" width="44" height="44" style="width:44px;height:44px;border-radius:12px;object-fit:cover">
+                    <span id="foto-nome"></span>
+                    <button type="button" id="btn-remover-foto" class="btn btn--ink btn--sm">Remover foto</button>
+                  </div>
+                </div>
+                <fieldset>
+                  <legend class="legend">Isso coloca alguém em risco agora?</legend>
+                  <div class="choices" style="margin-top:12px">
+                    <label class="choice"><input type="radio" name="risco" value="baixo" checked> Não, mas atrapalha</label>
+                    <label class="choice"><input type="radio" name="risco" value="alto"> Sim, há risco de acidente</label>
+                  </div>
+                </fieldset>
+              </div>
+            </section>
+
+            <section data-step="4" aria-labelledby="t-passo-4">
+              <p>Passo 4 de 4</p>
+              <h2 id="t-passo-4" class="t-card" tabindex="-1">Confira Antes De Enviar</h2>
+              <dl class="review" id="revisao" style="margin-top:24px"></dl>
+              <label class="check" style="margin-top:24px"><input type="checkbox" name="anonimo" id="f-anon"> Não mostrar meu nome no mapa do bairro</label>
+            </section>
+
+            <div class="wizard-nav">
+              <button type="button" id="btn-voltar" class="btn btn--ghost btn--lg">Voltar</button>
+              <a id="btn-cancelar" class="btn btn--ghost btn--lg" href="index.html">Cancelar</a>
+              <button type="submit" id="btn-avancar" class="btn btn--primary btn--lg" style="margin-left:auto">Continuar</button>
+            </div>
+          </form>
+
+          <aside class="col-side panel panel--green inv stack" style="justify-content:space-between;gap:40px" aria-labelledby="ajuda-t">
+            <div class="stack" style="gap:16px">
+              <span class="badge" aria-hidden="true">?</span>
+              <h2 id="ajuda-t" class="t-tab">Por Que Perguntamos Isso</h2>
+              <p id="ajuda-texto" style="font-size:1.25rem;line-height:1.5">Cada tipo de problema vai para um órgão diferente. Escolher o tipo certo faz o aviso chegar mais rápido a quem resolve.</p>
+            </div>
+            <div class="stack" style="gap:12px">
+              <p class="rule-top">Precisa de ajuda? Ligue 156 ou peça a um agente no posto de saúde do bairro.</p>
+              <p class="t-small">Para testar o aviso repetido: escolha “Poste apagado” e digite “Rua das Palmeiras”.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Confirmação -->
+      <div id="area-sucesso" class="row" style="padding-top:clamp(48px,6vw,88px)" hidden>
+        <section class="col-main panel panel-lg panel--orange stack" style="gap:32px" aria-labelledby="ok-titulo">
+          <h1 id="ok-titulo" class="t-page" tabindex="-1">Aviso Enviado. Obrigado Por Cuidar Da Rua.</h1>
+          <p id="ok-texto" style="font-size:1.25rem;line-height:1.5;max-width:640px"></p>
+          <div class="protocol-box">
+            <p class="stack"><span>Número do protocolo</span><span class="protocol-num" id="ok-protocolo"></span></p>
+            <button type="button" id="btn-copiar" class="btn btn--ink">Copiar número</button>
+          </div>
+          <p id="copia-msg" role="status"></p>
+          <div class="row" style="gap:12px">
+            <a id="link-acompanhar" class="btn btn--ink btn--lg" href="acompanhar.html">Acompanhar meu aviso</a>
+            <a class="btn btn--ghost btn--lg" href="relatar.html">Relatar outro problema</a>
+          </div>
+        </section>
+        <section class="col-side panel panel--green inv stack" style="gap:24px" aria-labelledby="prox-t">
+          <h2 id="prox-t" class="t-compact">O Que Acontece Agora</h2>
+          <ol class="list-reset next-steps">
+            <li><span class="display">Hoje</span><span>Seu aviso foi recebido e entrou na fila do bairro.</span></li>
+            <li><span class="display">2 dias</span><span>Encaminhado ao órgão responsável. Você recebe uma mensagem.</span></li>
+            <li><span class="display">Depois</span><span>A equipe vai ao local. Quando terminar, você confirma se ficou resolvido.</span></li>
+          </ol>
+          <p class="t-small">Prazos simulados para o protótipo.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap row footer-grid">
+      <div class="closing panel panel--ink inv">
+        <p class="brand-mark">Zela</p>
+        <p class="t-compact">Cuidar Da Rua É Coisa De Vizinho. Resolver É Coisa Da Prefeitura.</p>
+        <a class="btn btn--primary" href="bairro.html" style="align-self:flex-start">Ver o mapa do bairro</a>
+      </div>
+      <div class="footer-side">
+        <div class="utility panel panel--cream">
+          <nav aria-label="Rodapé">
+            <ul class="list-reset">
+              <li><a href="index.html">Início</a></li>
+              <li><a href="acompanhar.html">Acompanhar</a></li>
+              <li><a href="bairro.html">Meu bairro</a></li>
+              <li><a href="sobre.html">Sobre o projeto</a></li>
+            </ul>
+          </nav>
+          <p class="rule-top t-small">Zela · protótipo acadêmico CitizenTech · dados simulados</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <p id="anuncio" class="sr-only" role="status" aria-live="polite"></p>
+</body>
+</html>
