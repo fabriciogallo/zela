@@ -6,11 +6,13 @@
 
 ## Integrantes
 
-| Nome | Papel |
+| Nome | RM |
 | --- | --- |
-| [NOME 1] | [ex.: UX e pesquisa] |
-| [NOME 2] | [ex.: Front-end] |
-| [NOME 3] | [ex.: Conteúdo e acessibilidade] |
+| Edu Eder Batagelo Rodrigues Carvalho | RM573260 |
+| Fabricio Costa Gallo | RM570263 |
+| Kauã Aurelio Silva | RM568854 |
+| Matheus Santos Matta | RM570854 |
+| Patrick de Souza Bigi dos Santos | RM572748 |
 
 ## O problema
 
