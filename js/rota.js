@@ -270,7 +270,7 @@
     if (curto && rota && curto.map(function (x) { return x.t.id; }).join() !== rota.map(function (x) { return x.t.id; }).join()) {
       curto.forEach(function (x) { el("path", { d: pontoMeio(x.t).d, stroke: "#000", "stroke-width": 3, "stroke-dasharray": "8 7" }, ruas); });
     }
-    if (rota) rota.forEach(function (x) { el("path", { d: pontoMeio(x.t).d, stroke: "#f26b21", "stroke-width": 9 }, ruas); });
+    if (rota) rota.forEach(function (x) { el("path", { d: pontoMeio(x.t).d, stroke: "#0081c0", "stroke-width": 9 }, ruas); });
 
     /* Avisos abertos no caminho */
     R.trechos.forEach(function (t) {
@@ -285,7 +285,7 @@
     Object.keys(R.lugares).forEach(function (k) {
       var l = R.lugares[k], noCaminho = p && (k === p.de || k === p.para);
       if (l.destino) {
-        el("rect", { x: l.x - 9, y: l.y - 9, width: 18, height: 18, rx: 5, fill: noCaminho ? "#f26b21" : "#f2f2f2", stroke: "#000", "stroke-width": 2.5 }, svg);
+        el("rect", { x: l.x - 9, y: l.y - 9, width: 18, height: 18, rx: 5, fill: noCaminho ? "#1f1f29" : "#ffffff", stroke: "#000", "stroke-width": 2.5 }, svg);
         var nome = el("text", { x: l.x, y: l.y + (l.y > 300 ? -18 : 30), "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: "#000",
           stroke: "#f2f2f2", "stroke-width": 4, "paint-order": "stroke" }, svg);
         nome.textContent = l.curto;

@@ -82,7 +82,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 - HTML semântico (`header`, `nav`, `main`, `footer`) e títulos em ordem
 - Link "Pular para o conteúdo" e foco visível em todos os elementos, inclusive os criados com JS
 - `label` em todos os campos; erros com `role="alert"` e `aria-invalid`; confirmações em `role="status"`
-- Contraste mínimo de 4,5:1 — texto preto sobre fundos claros (laranja #f26b21, verdes #d5e0b0 / #b7c88a / #839a4c)
+- Contraste mínimo de 4,5:1 — texto grafite sobre marfim, branco sobre o azul #006fa6 e sobre o vidro escuro da abertura
 - Alvos de toque com pelo menos 44 px; navegação completa pelo teclado (abas com setas, Esc fecha o menu)
 - Ícones decorativos com `aria-hidden`; prévia da foto com texto alternativo
 - Respeita `prefers-reduced-motion`; tamanho do texto ajustável
@@ -100,7 +100,8 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 - Dados simulados em `js/dados.js`
 - APIs públicas: [ViaCEP](https://viacep.com.br/) para buscar o endereço pelo CEP e [Nominatim / OpenStreetMap](https://nominatim.org/) para transformar a localização em endereço
 - `localStorage` para lembrar tamanho do texto, bairro, apoios e protocolos criados
-- Fontes: Bricolage Grotesque (títulos) e Atkinson Hyperlegible Next (texto, feita para pessoas com baixa visão), via Google Fonts
+- Fontes: Jacquard 12 (títulos em serifa pixelada) e Inter (texto), via Google Fonts
+- Paisagens em pixel art geradas em SVG por código (`js/comum.js`), sem imagens externas
 
 ## Estrutura
 

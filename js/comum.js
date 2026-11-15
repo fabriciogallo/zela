@@ -94,68 +94,195 @@
     });
   }
 
-  /* ---------- Retícula de pontos (decorativa, gerada em SVG) ---------- */
-  function caminhoPontos(w, h, passo, raio) {
-    var partes = [];
-    for (var y = passo / 2; y < h; y += passo) {
-      for (var x = passo / 2; x < w; x += passo) {
-        var r = raio(x, y);
-        if (r > 0.6) {
-          r = Math.round(r * 10) / 10;
-          partes.push("M" + (x - r).toFixed(1) + " " + y.toFixed(1) +
-            "a" + r + " " + r + " 0 1 0 " + 2 * r + " 0" +
-            "a" + r + " " + r + " 0 1 0 " + -2 * r + " 0");
-        }
-      }
-    }
-    return partes.join("");
+  /* ---------- Paisagens em pixel art (decorativas, geradas em SVG) ----------
+     Cada cena é uma grade pequena de "pixels" (retângulos de 1×1) ampliada
+     com bordas nítidas. Cores iguais viram um único <path>, então fica leve. */
+  function sorteio(semente) {
+    return function () { semente = (semente * 1664525 + 1013904223) >>> 0; return semente / 4294967296; };
   }
 
-  var RETICULAS = {
-    hero: {
-      w: 1328, h: 765, passo: 22, fundo: "#d5e0b0", cor: "#f26b21",
-      raio: function (x, y) {
-        var a = 0.5 + 0.5 * Math.sin(x / 150 + Math.sin(y / 200) * 2);
-        var b = 0.5 + 0.5 * Math.cos(y / 110 - x / 310);
-        return 0.8 + 9 * a * b;
-      }
-    },
-    "hero-sm": {
-      w: 400, h: 240, passo: 14, fundo: "#d5e0b0", cor: "#f26b21",
-      raio: function (x, y) { return RETICULAS.hero.raio(x * 3.3, y * 3.2) * 0.62; }
-    },
-    cinza: {
-      w: 1600, h: 700, passo: 26, fundo: null, cor: "rgba(0,0,0,0.07)",
-      raio: function (x, y) {
-        var dx = (x - 1100) / 700, dy = (y - 300) / 420;
-        var env = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy));
-        return 2 + 9 * env * (0.6 + 0.4 * Math.sin(x / 90 + y / 140));
+  function Grade(w, h, semente) { this.w = w; this.h = h; this.px = new Array(w * h); this.r = sorteio(semente); }
+  Grade.prototype.p = function (x, y, cor) {
+    x = Math.round(x); y = Math.round(y);
+    if (x >= 0 && y >= 0 && x < this.w && y < this.h) this.px[y * this.w + x] = cor;
+  };
+  Grade.prototype.ret = function (x, y, w, h, cor) {
+    for (var j = 0; j < h; j++) for (var i = 0; i < w; i++) this.p(x + i, y + j, cor);
+  };
+  /* mancha de folhagem: elipse com borda "comida" por pixels aleatórios */
+  Grade.prototype.copa = function (cx, cy, rx, ry, cores, densidade) {
+    for (var y = Math.floor(cy - ry); y <= cy + ry; y++) {
+      for (var x = Math.floor(cx - rx); x <= cx + rx; x++) {
+        var d = ((x - cx) * (x - cx)) / (rx * rx) + ((y - cy) * (y - cy)) / (ry * ry);
+        if (d > 1) continue;
+        if (d > 0.55 && this.r() > (densidade || 0.75)) continue;
+        var luz = (y - cy) / ry - (x - cx) / rx * 0.3; /* luz vindo de cima */
+        var i = luz < -0.35 ? 0 : luz < 0.35 ? 1 : 2;
+        if (this.r() < 0.12) i = Math.min(cores.length - 1, i + 1);
+        this.p(x, y, cores[Math.min(i, cores.length - 1)]);
       }
     }
   };
-
-  function desenharReticulas() {
-    var ns = "http://www.w3.org/2000/svg";
-    document.querySelectorAll("svg[data-reticula]").forEach(function (svg) {
-      var cfg = RETICULAS[svg.getAttribute("data-reticula")];
-      if (!cfg) return;
-      svg.setAttribute("viewBox", "0 0 " + cfg.w + " " + cfg.h);
-      svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
-      if (cfg.fundo) {
-        var rect = document.createElementNS(ns, "rect");
-        rect.setAttribute("width", cfg.w); rect.setAttribute("height", cfg.h); rect.setAttribute("fill", cfg.fundo);
-        svg.appendChild(rect);
+  Grade.prototype.svg = function (svg) {
+    var ns = "http://www.w3.org/2000/svg", porCor = {};
+    for (var y = 0; y < this.h; y++) {
+      var x = 0;
+      while (x < this.w) {
+        var c = this.px[y * this.w + x];
+        if (!c) { x++; continue; }
+        var ini = x;
+        while (x < this.w && this.px[y * this.w + x] === c) x++;
+        (porCor[c] = porCor[c] || []).push("M" + ini + " " + y + "h" + (x - ini) + "v1h-" + (x - ini) + "z");
       }
-      var path = document.createElementNS(ns, "path");
-      path.setAttribute("d", caminhoPontos(cfg.w, cfg.h, cfg.passo, cfg.raio));
-      path.setAttribute("fill", cfg.cor);
-      svg.appendChild(path);
+    }
+    svg.setAttribute("viewBox", "0 0 " + this.w + " " + this.h);
+    svg.setAttribute("shape-rendering", "crispEdges");
+    Object.keys(porCor).forEach(function (c) {
+      var p = document.createElementNS(ns, "path");
+      p.setAttribute("d", porCor[c].join(""));
+      p.setAttribute("fill", c);
+      svg.appendChild(p);
+    });
+  };
+
+  function ceu(g, faixas, ate) {
+    var n = faixas.length;
+    for (var y = 0; y < ate; y++) {
+      var t = y / ate * n, i = Math.floor(t);
+      /* degrau com pontilhado entre faixas, como em jogos antigos */
+      for (var x = 0; x < g.w; x++) {
+        var cor = faixas[Math.min(n - 1, i)];
+        if (t - i > 0.75 && (x + y) % 2 === 0 && i + 1 < n) cor = faixas[i + 1];
+        g.p(x, y, cor);
+      }
+    }
+  }
+
+  function nuvem(g, x, y, larg) {
+    g.ret(x, y + 2, larg, 3, "#f4f8fb");
+    g.ret(x + 2, y + 1, larg - 5, 1, "#f4f8fb");
+    g.ret(x + 4, y, Math.max(2, larg - 10), 1, "#ffffff");
+    g.ret(x + 1, y + 5, larg - 2, 1, "#d6e6f2");
+  }
+
+  function predios(g, base, cores, janela) {
+    var x = 0;
+    while (x < g.w) {
+      var w = 6 + Math.floor(g.r() * 9), h = 5 + Math.floor(g.r() * 12), cor = cores[Math.floor(g.r() * cores.length)];
+      g.ret(x, base - h, w, h, cor);
+      if (g.r() < 0.5) g.ret(x + 1, base - h - 1, w - 2, 1, cor); /* telhado */
+      for (var j = base - h + 2; j < base - 1; j += 3) for (var i = x + 1; i < x + w - 1; i += 2) if (g.r() < 0.45) g.p(i, j, janela);
+      x += w + (g.r() < 0.3 ? 1 : 0);
+    }
+  }
+
+  function pessoa(g, x, y, roupa) {
+    g.p(x, y, "#3b2a22"); g.p(x, y + 1, roupa); g.p(x, y + 2, roupa); g.p(x, y + 3, "#2e3640");
+  }
+
+  function poste(g, x, y, h, luz) {
+    g.ret(x, y - h, 1, h, "#2f3a3a");
+    g.ret(x - 1, y - h - 1, 3, 1, luz);
+  }
+
+  var CENAS = {
+    /* Abertura: parque do bairro numa tarde de outono, céu azul e copas douradas */
+    abertura: function () {
+      var g = new Grade(192, 112, 7);
+      ceu(g, ["#2b6fb3", "#3a82c6", "#4d96d6", "#6aaee3", "#90c6ec", "#b9dcf2"], 66);
+      nuvem(g, 12, 14, 22); nuvem(g, 140, 10, 26); nuvem(g, 160, 28, 16); nuvem(g, 30, 34, 14);
+      predios(g, 66, ["#7f9fb9", "#8eadc4", "#9db9cd", "#87a6be"], "#d5e4ef");
+      g.ret(0, 62, g.w, 6, "#7aa874");
+      for (var i = 0; i < 9; i++) g.copa(10 + i * 22 + g.r() * 8, 62, 9 + g.r() * 5, 5 + g.r() * 2, ["#6a9f5a", "#4f8a4a", "#3d7442"], 0.7);
+      g.ret(0, 68, g.w, 44, "#79b858");
+      for (var y = 68; y < 112; y++) for (var x = 0; x < g.w; x++) if (g.r() < 0.06) g.p(x, y, "#6aa94c");
+      /* caminho iluminado em direção ao centro */
+      for (var yy = 68; yy < 112; yy++) {
+        var t = (yy - 68) / 44, meio = 112 + Math.sin(t * 2.2) * 10, larg = 2 + t * 26;
+        g.ret(meio - larg / 2, yy, larg, 1, yy % 7 === 0 ? "#e9d9a9" : "#f1e4b8");
+      }
+      /* lago */
+      for (var ly = 76; ly < 88; ly++) {
+        var lw = 30 - Math.abs(ly - 82) * 2.4;
+        g.ret(150 - lw / 2, ly, lw, 1, ly % 3 === 0 ? "#7fc1e6" : "#5aa9d8");
+      }
+      g.ret(140, 79, 4, 1, "#ffffff"); g.ret(152, 84, 3, 1, "#ffffff");
+      /* árvores do parque */
+      [[60, 74, 10], [86, 78, 8], [168, 70, 9], [40, 90, 12]].forEach(function (a) {
+        g.ret(a[0], a[1], 2, a[2], "#5a3e2b");
+        g.copa(a[0] + 1, a[1] - 3, a[2] * 0.9, a[2] * 0.7, ["#f2c14e", "#e8892e", "#c4522b"], 0.8);
+      });
+      poste(g, 100, 92, 12, "#fff3b0"); poste(g, 128, 84, 9, "#fff3b0");
+      pessoa(g, 108, 88, "#e8742a"); pessoa(g, 111, 89, "#2f78c4"); pessoa(g, 120, 80, "#f2c14e");
+      pessoa(g, 70, 96, "#c4522b"); g.ret(73, 98, 2, 1, "#c8a27a"); /* cachorrinho */
+      pessoa(g, 160, 92, "#3f8a6a");
+      /* galhos de outono emoldurando o céu: massas nos cantos de cima */
+      for (var b = 0; b < 34; b++) { g.p(b * 1.2, b * 0.9, "#4a3426"); g.p(b * 1.2 + 1, b * 0.9, "#4a3426"); g.p(g.w - 1 - b * 1.2, b * 0.8, "#4a3426"); g.p(g.w - 2 - b * 1.2, b * 0.8, "#4a3426"); }
+      var outono = [["#f6c24a", "#e8892e", "#c4522b"], ["#ffd36a", "#f2a23a", "#d0642c"], ["#f2b33d", "#d9682a", "#a83e26"]];
+      for (var k = 0; k < 46; k++) {
+        var u = g.r(), v = g.r() * (1 - u * 0.85);
+        g.copa(u * 58, v * 40, 5 + g.r() * 6, 3 + g.r() * 4, outono[k % 3], 0.72);
+        u = g.r(); v = g.r() * (1 - u * 0.85);
+        g.copa(g.w - u * 62, v * 44, 5 + g.r() * 6, 3 + g.r() * 4, outono[(k + 1) % 3], 0.72);
+      }
+      /* folhagem escura no canto de baixo à direita */
+      g.copa(186, 108, 18, 10, ["#3d7442", "#2f5e3a", "#244a2e"], 0.8);
+      return g;
+    },
+    /* Horizonte: avenida iluminada entre copas escuras, ao entardecer */
+    horizonte: function () {
+      var g = new Grade(192, 64, 21);
+      ceu(g, ["#2d5a5e", "#4c7f7c", "#86ad9c", "#cfd9b0", "#f4e7b4", "#fff4cf"], 34);
+      for (var x = 0; x < g.w; x++) {
+        var dist = Math.abs(x - 96) / 96;
+        for (var y = 0; y < 34; y++) if (dist > 0.55 && g.r() < (dist - 0.55) * 1.6) g.p(x, y, y < 12 ? "#2d5a5e" : "#4c7f7c");
+      }
+      predios(g, 36, ["#7f9c94", "#8faa9f", "#6f8d86"], "#f6e7b4");
+      g.ret(0, 36, g.w, 28, "#3f7a52");
+      for (var yy = 36; yy < 64; yy++) {
+        var t = (yy - 36) / 28, larg = 2 + t * 70;
+        g.ret(96 - larg / 2, yy, larg, 1, "#e9dfb6");
+        g.ret(96 - larg / 2 - 2, yy, 2, 1, "#c9c39a"); g.ret(96 + larg / 2, yy, 2, 1, "#c9c39a");
+      }
+      for (var i = 0; i < 7; i++) {
+        var px = 96 - 8 - i * 7 - i * i, qx = 96 + 8 + i * 7 + i * i, by = 40 + i * 4;
+        poste(g, px, by, 4 + i * 2, "#fff3b0"); poste(g, qx, by, 4 + i * 2, "#fff3b0");
+      }
+      for (var k = 0; k < 18; k++) {
+        g.copa(6 + k * 2.5 + g.r() * 5, 10 + k * 2.6, 12 + g.r() * 6, 8 + g.r() * 3, ["#2f6b55", "#245446", "#183c34"], 0.75);
+        g.copa(g.w - 6 - k * 2.5 - g.r() * 5, 10 + k * 2.6, 12 + g.r() * 6, 8 + g.r() * 3, ["#2f6b55", "#245446", "#183c34"], 0.75);
+      }
+      pessoa(g, 90, 50, "#e8742a"); pessoa(g, 101, 54, "#2f78c4"); pessoa(g, 95, 44, "#f2c14e");
+      return g;
+    },
+    /* Espécime: uma flor de ipê-amarelo em pixel (crescimento do bairro) */
+    flor: function () {
+      var g = new Grade(40, 60, 3);
+      var amarelo = ["#ffe58a", "#f6c24a", "#d99a26"];
+      [[20, 14, 9, 7], [12, 18, 7, 6], [28, 18, 7, 6], [16, 9, 6, 5], [25, 9, 6, 5], [20, 21, 7, 5]].forEach(function (f) {
+        g.copa(f[0], f[1], f[2], f[3], amarelo, 0.85);
+      });
+      g.ret(18, 13, 4, 4, "#8a5a1e"); g.ret(19, 14, 2, 2, "#b47a2a");
+      for (var y = 24; y < 58; y++) g.ret(19 + Math.round(Math.sin(y / 6)), y, 2, 1, y % 5 ? "#4f8a4a" : "#3d7442");
+      g.copa(13, 38, 6, 3, ["#7cc06a", "#4f8a4a", "#3d7442"], 0.9);
+      g.copa(27, 46, 6, 3, ["#7cc06a", "#4f8a4a", "#3d7442"], 0.9);
+      g.ret(14, 58, 13, 2, "#a07a52");
+      return g;
+    }
+  };
+
+  function desenharCenas() {
+    document.querySelectorAll("svg[data-cena]").forEach(function (svg) {
+      var fazer = CENAS[svg.getAttribute("data-cena")];
+      if (!fazer || svg.childNodes.length) return;
+      fazer().svg(svg);
+      if (!svg.hasAttribute("preserveAspectRatio")) svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
     });
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     iniciarTamanhoTexto();
     iniciarMenu();
-    desenharReticulas();
+    desenharCenas();
   });
 })();

@@ -8,7 +8,7 @@
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jacquard+12&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
   <script src="js/dados.js" defer></script>
@@ -20,7 +20,7 @@
   <header class="site-header">
     <div class="nav-bar" id="nav-bar">
       <a class="brand" href="index.html" aria-label="Zela, página inicial">
-        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true" focusable="false"><rect width="36" height="36" rx="10" fill="#000000"/><circle cx="18" cy="15" r="7" fill="#f26b21"/><path d="M12 19l6 10 6-10z" fill="#f26b21"/><circle cx="18" cy="15" r="2.6" fill="#000000"/></svg>
+        <svg width="28" height="28" viewBox="0 0 14 14" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><rect width="14" height="14" rx="3" fill="#4f8a4a"/><path d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z" fill="#0081c0"/><path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a"/><path d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z" fill="#f1e4b8"/></svg>
         <span class="brand-name">Zela</span>
       </a>
       <span class="v-rule brand-rule" aria-hidden="true"></span>
@@ -55,13 +55,57 @@
         <p class="t-lead" style="max-width:720px">O Zela liga quem vê o problema a quem pode resolver. O morador avisa em poucos minutos, a prefeitura recebe o pedido organizado e todo mundo acompanha até o fim.</p>
       </div>
 
-      <section class="panel panel-lg panel--green stack" style="gap:24px" aria-labelledby="oque-t">
-        <h2 id="oque-t" class="t-card">O que é o Zela</h2>
-        <p class="t-story" style="max-width:960px">Uma plataforma de zeladoria colaborativa. Buraco na rua, poste apagado, lixo acumulado, calçada quebrada: quem passa por ali todo dia é quem percebe primeiro. O Zela transforma esse olhar em um aviso claro, com local, foto e número de protocolo, e mostra a cada vizinho o que está sendo feito.</p>
+      <section class="specimen chapter" style="padding-top:clamp(40px,6vw,96px)" aria-labelledby="oque-t">
+        <div class="specimen-art">
+          <svg data-cena="flor" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Ilustração em pixel art de uma flor de ipê-amarelo"></svg>
+        </div>
+        <div class="specimen-text">
+          <p class="t-lead">Uma plataforma de zeladoria colaborativa. Quem passa pela rua todo dia é quem percebe primeiro o buraco, o poste apagado, o lixo acumulado ou a calçada quebrada.</p>
+          <h2 id="oque-t" class="t-section">O Zela transforma esse olhar em um aviso claro, com local, foto e protocolo, e mostra a cada vizinho o que está sendo feito.</h2>
+        </div>
       </section>
 
       <section class="chapter" aria-labelledby="como-t">
-        <div class="section-head"><h2 id="como-t" class="t-section">Como funciona</h2></div>
+        <div class="section-head">
+          <h2 id="como-t" class="t-section">Como funciona</h2>
+          <p class="t-lead">Avisos soltos viram uma fila organizada. Os apoios dos vizinhos ligam os pontos e mostram o que é mais urgente.</p>
+        </div>
+        <div class="frame" style="margin-bottom:24px">
+          <div class="schema">
+            <figure>
+              <div class="sheet">
+                <svg viewBox="0 0 200 150" aria-hidden="true" focusable="false" fill="none" stroke="#b4b8b4" stroke-width="1">
+                  <circle cx="100" cy="75" r="44" stroke-dasharray="2 4"/>
+                  <rect x="40" y="30" width="18" height="18"/><rect x="132" y="22" width="26" height="26"/><rect x="150" y="96" width="14" height="14"/>
+                  <rect x="56" y="100" width="24" height="24"/><rect x="92" y="62" width="14" height="14"/><rect x="20" y="78" width="12" height="12"/>
+                </svg>
+              </div>
+              <figcaption>Fig. 1 · Avisos soltos</figcaption>
+            </figure>
+            <figure>
+              <div class="sheet">
+                <svg viewBox="0 0 200 150" aria-hidden="true" focusable="false" fill="none" stroke="#b4b8b4" stroke-width="1">
+                  <ellipse cx="100" cy="75" rx="70" ry="30"/><ellipse cx="100" cy="75" rx="40" ry="56" stroke-dasharray="2 4"/>
+                  <rect x="24" y="66" width="18" height="18"/><rect x="158" y="64" width="20" height="20"/><rect x="92" y="12" width="16" height="16"/>
+                  <rect x="90" y="122" width="20" height="20" stroke="#5c5c5c"/><rect x="93" y="68" width="14" height="14" stroke="#5c5c5c"/>
+                  <path d="M42 75H93M107 75h51M100 28v40M100 82v40" stroke-dasharray="1 3"/>
+                </svg>
+              </div>
+              <figcaption>Fig. 2 · Vizinhos apoiam e ligam os pontos</figcaption>
+            </figure>
+            <figure>
+              <div class="sheet">
+                <svg viewBox="0 0 200 150" aria-hidden="true" focusable="false" fill="none" stroke="#b4b8b4" stroke-width="1">
+                  <g stroke="#5c5c5c"><circle cx="40" cy="40" r="10"/><circle cx="70" cy="40" r="10"/><circle cx="100" cy="40" r="10"/></g>
+                  <circle cx="130" cy="40" r="10"/><circle cx="160" cy="40" r="10"/>
+                  <circle cx="40" cy="75" r="10"/><circle cx="70" cy="75" r="10"/><circle cx="100" cy="75" r="10"/><circle cx="130" cy="75" r="10"/><circle cx="160" cy="75" r="10"/>
+                  <circle cx="40" cy="110" r="10"/><circle cx="70" cy="110" r="10"/><circle cx="100" cy="110" r="10"/><circle cx="130" cy="110" r="10"/><circle cx="160" cy="110" r="10"/>
+                </svg>
+              </div>
+              <figcaption>Fig. 3 · Fila organizada por prioridade</figcaption>
+            </figure>
+          </div>
+        </div>
         <ol class="list-reset grid-auto journey" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
           <li class="panel panel--cream">
             <span class="step-n" aria-hidden="true">01</span>
@@ -162,26 +206,30 @@
   </main>
 
   <footer class="site-footer">
-    <svg class="halftone" data-reticula="cinza" aria-hidden="true" focusable="false"></svg>
-    <div class="wrap row footer-grid">
-      <div class="closing panel panel--ink inv">
-        <p class="brand-mark">Zela</p>
-        <p class="t-compact">Cuidar da rua é coisa de vizinho. Resolver é coisa da prefeitura.</p>
-        <a class="btn btn--primary" href="relatar.html" style="align-self:flex-start">Relatar problema</a>
-      </div>
-      <div class="footer-side">
-        <div class="utility panel panel--cream">
+    <div class="closing-band">
+      <div class="wrap closing-inner">
+        <span class="emblem" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 14 14" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><rect width="14" height="14" rx="3" fill="#4f8a4a"/><path d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z" fill="#0081c0"/><path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a"/><path d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z" fill="#f1e4b8"/></svg></span>
+        <h2 class="t-section closing-title">Cuidar da rua é coisa de vizinho. Resolver é coisa da prefeitura.</h2>
+        <p class="closing-sub">O Zela leva o seu aviso ao órgão certo e mostra cada passo até a solução.</p>
+        <a class="link-action" href="relatar.html"><span>Relatar problema</span></a>
+        <div class="utility-row">
           <nav aria-label="Rodapé">
             <ul class="list-reset">
               <li><a href="index.html">Início</a></li>
               <li><a href="relatar.html">Relatar</a></li>
               <li><a href="acompanhar.html">Acompanhar</a></li>
               <li><a href="bairro.html">Meu bairro</a></li>
+              <li><a href="rota.html">Rota acessível</a></li>
+              <li><a href="sobre.html">Sobre o projeto</a></li>
             </ul>
           </nav>
-          <p class="rule-top t-small">Zela · protótipo acadêmico CitizenTech · dados simulados</p>
+          <p>Zela · protótipo acadêmico CitizenTech · dados simulados</p>
         </div>
       </div>
+    </div>
+    <div class="stripes stripes--mint" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="horizon" aria-hidden="true">
+      <svg class="pixel-scene" data-cena="horizonte" focusable="false"></svg>
     </div>
   </footer>
   <p id="anuncio" class="sr-only" role="status" aria-live="polite"></p>

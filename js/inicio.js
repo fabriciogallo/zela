@@ -95,7 +95,7 @@
       ok.innerHTML = '<p class="row" style="gap:8px 16px;align-items:center">' +
         "<span>" + ZELA.escapar(r.dados.titulo) + "</span>" +
         '<span class="pill pill--cream">' + etapa + "</span>" +
-        '<a href="acompanhar.html?p=' + encodeURIComponent(r.id) + '" style="color:var(--paper)">Ver todas as etapas</a></p>';
+        '<a href="acompanhar.html?p=' + encodeURIComponent(r.id) + '" >Ver todas as etapas</a></p>';
     });
   }
 
