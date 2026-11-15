@@ -227,7 +227,7 @@
       ["Local", $("f-end").value.trim() + (ref ? " (" + ref + ")" : "") + ($("f-cep").value ? " · CEP " + $("f-cep").value : ""), 2, "o local"],
       ["Descrição", $("f-desc").value.trim(), 3, "a descrição"],
       ["Foto", temFoto ? "Sim, 1 foto" : "Sem foto", 3, "a foto"],
-      ["Risco", valor("risco") === "alto" ? "Sim, há risco de acidente" : "Não, mas atrapalha", 3, "o risco"],
+      ["Risco", valor("risco") === "alto" ? "Sim, há riscos." : "Não, mas atrapalha", 3, "o risco"],
       ["Vai para", cat.orgao, 1, "o órgão responsável"]
     ];
     $("revisao").innerHTML = linhas.map(function (l) {
