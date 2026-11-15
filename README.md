@@ -49,6 +49,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 | Relatar | `relatar.html` | Fazer um aviso em 4 passos e receber o protocolo |
 | Acompanhar | `acompanhar.html` | Ver as etapas do aviso, ligar avisos por SMS, confirmar a solução |
 | Meu bairro | `bairro.html` | Filtrar avisos, ver no mapa e apoiar os mais urgentes |
+| Rota acessível | `rota.html` | Traçar o caminho com menos barreiras para quem tem mobilidade limitada |
 | Sobre | `sobre.html` | Persona, jornada, interações, ODS e acessibilidade |
 
 ## Interações em JavaScript e o problema que cada uma resolve
@@ -65,10 +66,12 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 | Relatar | Foto com prévia, revisão com "Alterar", copiar protocolo | Dá segurança antes de enviar e impede que o número se perca |
 | Acompanhar | Linha do tempo + avisos por SMS + "Ficou resolvido mesmo?" | Mostra o que acontece depois do envio e devolve a palavra ao morador |
 | Meu bairro | Filtros, mapa ligado à lista, "Eu também vi" | Prioriza o mais urgente e ajuda a achar avisos perto de casa |
+| Rota acessível | Rota por perfil (cadeira de rodas, andador, carrinho, baixa visão) com algoritmo de Dijkstra, mapa com passos, "Ouvir as instruções" (voz do navegador), link para compartilhar | Desvia de escadas, ladeiras acima de 8%, calçadas quebradas e dos avisos abertos no Zela, e explica por que o caminho mais curto foi evitado |
 
 **Como testar:**
 - Protocolos de exemplo: `ZL-2026-04817`, `ZL-2026-03991` (resolvido), `ZL-2026-05102`.
 - Aviso repetido: em Relatar, escolha **Poste apagado** e digite **Rua das Palmeiras**.
+- Rota acessível: de **Escola** para **UBS** com **Cadeira de rodas** — o mapa mostra o caminho mais curto (tracejado) e o desvio da escadaria e da calçada quebrada.
 - Um aviso novo gera um protocolo que fica salvo no navegador e pode ser consultado em Acompanhar.
 
 ## Acessibilidade
@@ -76,7 +79,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 - HTML semântico (`header`, `nav`, `main`, `footer`) e títulos em ordem
 - Link "Pular para o conteúdo" e foco visível em todos os elementos, inclusive os criados com JS
 - `label` em todos os campos; erros com `role="alert"` e `aria-invalid`; confirmações em `role="status"`
-- Contraste mínimo de 4,5:1 — texto preto sobre o laranja #fc5000 (o branco não passaria)
+- Contraste mínimo de 4,5:1 — texto preto sobre fundos claros (laranja #f26b21, verdes #d5e0b0 / #b7c88a / #839a4c)
 - Alvos de toque com pelo menos 44 px; navegação completa pelo teclado (abas com setas, Esc fecha o menu)
 - Ícones decorativos com `aria-hidden`; prévia da foto com texto alternativo
 - Respeita `prefers-reduced-motion`; tamanho do texto ajustável
@@ -103,6 +106,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 ├── relatar.html
 ├── acompanhar.html
 ├── bairro.html
+├── rota.html
 ├── sobre.html
 ├── css/style.css       # tokens, componentes e responsivo
 ├── js/dados.js         # dados simulados
@@ -111,6 +115,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 ├── js/relatar.js
 ├── js/acompanhar.js
 ├── js/bairro.js
+├── js/rota.js         # rota acessível (Dijkstra por perfil)
 └── img/favicon.svg
 ```
 

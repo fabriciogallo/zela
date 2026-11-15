@@ -59,3 +59,50 @@ ZELA.protocolos = {
 };
 
 ZELA.formatoProtocolo = /^ZL-\d{4}-\d{5}$/;
+
+/* Rota acessível — trechos de calçada do Jardim Ângela (simulados).
+   Em produção viriam de um levantamento de calçadas (ex.: GeoSampa) + avisos do Zela.
+   x/y = posição no mapa (viewBox 600 x 420). */
+ZELA.rota = {
+  lugares: {
+    casa:     { nome: "Casa da Dona Cida", curto: "Casa",       ref: "Rua das Palmeiras, 140", x: 70,  y: 70,  destino: true },
+    palm:     { nome: "esquina da Palmeiras com a Avenida Central", x: 240, y: 70 },
+    ubs:      { nome: "UBS Jardim Ângela", curto: "UBS",       ref: "Avenida Central, 980",   x: 420, y: 70,  destino: true },
+    jato:     { nome: "esquina da Avenida Central com a Rua Jatobá", x: 540, y: 70 },
+    ipe:      { nome: "esquina da Rua Ipê Roxo com a Rua Sabiá",     x: 70,  y: 210 },
+    praca:    { nome: "Praça da Paz", curto: "Praça",            ref: "tem bancos e banheiro",  x: 240, y: 210, destino: true },
+    morro:    { nome: "alto da Rua do Morro", art: "o",    x: 420, y: 210 },
+    creche:   { nome: "Creche Pequeno Sabiá", curto: "Creche",    ref: "Rua Jatobá, 18",         x: 540, y: 210, destino: true },
+    escola:   { nome: "Escola Estadual Ipê", curto: "Escola",     ref: "Rua Ipê Roxo, 33",       x: 70,  y: 350, destino: true },
+    mercado:  { nome: "Mercado do Bairro", art: "o", curto: "Mercado",       ref: "Rua Sabiá, 300",         x: 240, y: 350, destino: true },
+    terminal: { nome: "Terminal de ônibus", art: "o", curto: "Terminal",      ref: "Avenida do Terminal",    x: 420, y: 350, destino: true }
+  },
+  /* incl = subida em %; piso = bom | irregular | ruim; rampa = rampas nas esquinas;
+     luz = iluminado à noite; tatil = piso tátil; banco = lugar para sentar; aviso = id em ZELA.avisos */
+  trechos: [
+    { id: "t1",  de: "casa",  para: "palm",     rua: "Rua das Palmeiras", m: 160, incl: 2,  piso: "bom",       rampa: true,  luz: false, aviso: 1 },
+    { id: "t2",  de: "palm",  para: "ubs",      rua: "Avenida Central (calçada da UBS)", m: 180, incl: 3, piso: "ruim", rampa: true, luz: true, aviso: 2 },
+    { id: "t2b", de: "palm",  para: "ubs",      rua: "Avenida Central (calçada do outro lado)", m: 210, incl: 3, piso: "bom", rampa: true, luz: true, tatil: true,
+      travessia: "Atravesse duas vezes na faixa com semáforo sonoro: na esquina e em frente à UBS.", curva: -26 },
+    { id: "t3",  de: "ubs",   para: "jato",     rua: "Avenida Central", m: 120, incl: 2,  piso: "bom",       rampa: true,  luz: true },
+    { id: "t4",  de: "casa",  para: "ipe",      rua: "Rua Ipê Roxo",     m: 140, incl: 6,  piso: "irregular", rampa: true,  luz: true },
+    { id: "t5",  de: "ipe",   para: "escola",   rua: "Rua Ipê Roxo",     m: 140, incl: 3,  piso: "bom",       rampa: true,  luz: true, aviso: 3 },
+    { id: "t6",  de: "palm",  para: "praca",    rua: "Rua da Praça",     m: 140, incl: 1,  piso: "bom",       rampa: true,  luz: true, tatil: true, banco: true },
+    { id: "t7",  de: "ipe",   para: "praca",    rua: "Rua Sabiá",        m: 170, incl: 2,  piso: "irregular", rampa: false, luz: true },
+    { id: "t8",  de: "praca", para: "mercado",  rua: "Rua Sabiá",        m: 140, incl: 2,  piso: "bom",       rampa: true,  luz: true, tatil: true, banco: true },
+    { id: "t9",  de: "escola",para: "mercado",  rua: "Rua das Escolas",  m: 170, incl: 1,  piso: "bom",       rampa: true,  luz: true },
+    { id: "t10", de: "mercado",para: "terminal",rua: "Avenida do Terminal", m: 180, incl: 1, piso: "bom",    rampa: true,  luz: true, tatil: true, banco: true },
+    { id: "t11", de: "praca", para: "morro",    rua: "Rua do Morro",     m: 180, incl: 11, piso: "bom",       rampa: true,  luz: false },
+    { id: "t12", de: "morro", para: "ubs",      rua: "Escadaria do Morro", m: 70, incl: 0, piso: "bom",       rampa: false, luz: false, escada: 36 },
+    { id: "t13", de: "morro", para: "terminal", rua: "Rua do Morro",     m: 140, incl: 9,  piso: "irregular", rampa: true,  luz: true },
+    { id: "t14", de: "terminal",para: "creche", rua: "Rua Jatobá",       m: 170, incl: 5,  piso: "bom",       rampa: true,  luz: true },
+    { id: "t15", de: "creche",para: "jato",     rua: "Rua Jatobá",       m: 140, incl: 4,  piso: "irregular", rampa: true,  luz: true, aviso: 4 },
+    { id: "t16", de: "morro", para: "creche",   rua: "Travessa Ipê",     m: 120, incl: 3,  piso: "ruim",      rampa: false, luz: false }
+  ],
+  perfis: {
+    cadeira:  { nome: "Cadeira de rodas",            mPorMin: 50 },
+    andador:  { nome: "Bengala, andador ou dificuldade para andar", mPorMin: 35 },
+    carrinho: { nome: "Carrinho de bebê ou mala",    mPorMin: 60 },
+    visual:   { nome: "Baixa visão ou cegueira",     mPorMin: 50 }
+  }
+};

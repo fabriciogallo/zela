@@ -113,7 +113,7 @@
 
   var RETICULAS = {
     hero: {
-      w: 1328, h: 765, passo: 22, fundo: "#5e7231", cor: "#f26b21",
+      w: 1328, h: 765, passo: 22, fundo: "#d5e0b0", cor: "#f26b21",
       raio: function (x, y) {
         var a = 0.5 + 0.5 * Math.sin(x / 150 + Math.sin(y / 200) * 2);
         var b = 0.5 + 0.5 * Math.cos(y / 110 - x / 310);
@@ -121,7 +121,7 @@
       }
     },
     "hero-sm": {
-      w: 400, h: 240, passo: 14, fundo: "#5e7231", cor: "#f26b21",
+      w: 400, h: 240, passo: 14, fundo: "#d5e0b0", cor: "#f26b21",
       raio: function (x, y) { return RETICULAS.hero.raio(x * 3.3, y * 3.2) * 0.62; }
     },
     cinza: {
