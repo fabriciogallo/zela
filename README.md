@@ -50,7 +50,8 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 | Acompanhar | `acompanhar.html` | Ver as etapas do aviso, ligar avisos por SMS, confirmar a solução |
 | Meu bairro | `bairro.html` | Filtrar avisos, ver no mapa e apoiar os mais urgentes |
 | Rota acessível | `rota.html` | Traçar o caminho com menos barreiras para quem tem mobilidade limitada |
-| Sobre | `sobre.html` | Persona, jornada, interações, ODS e acessibilidade |
+| Sobre | `sobre.html` | Como o Zela funciona, quem ganha com ele e integrantes |
+| Documentação (fora do menu) | `projeto.html` | Persona, problema, jornada, interações, ODS e acessibilidade — acesse por https://fabriciogallo.github.io/zela/projeto.html |
 
 ## Interações em JavaScript e o problema que cada uma resolve
 
@@ -108,6 +109,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 ├── bairro.html
 ├── rota.html
 ├── sobre.html
+├── projeto.html      # documentação (persona, jornada, ODS) — fora do menu
 ├── css/style.css       # tokens, componentes e responsivo
 ├── js/dados.js         # dados simulados
 ├── js/comum.js         # texto, menu, retícula, utilidades
