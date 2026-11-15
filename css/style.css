@@ -38,7 +38,7 @@
   --focus: #1f1f29;
   --error: #a3300b;
 
-  --font-display: "Jacquard 12", Georgia, serif;
+  --font-display: "Pixelify Sans", "Inter", Arial, sans-serif;
   --font-body: "Inter", Arial, sans-serif;
 
   --r-frame: 24px;
@@ -109,19 +109,19 @@ button { cursor: pointer; }
 }
 
 /* ---------- Tipografia ---------- */
-.display { font-family: var(--font-display); font-weight: 400; letter-spacing: 0; }
+.display { font-family: var(--font-display); font-weight: 500; letter-spacing: 0; }
 .t-poster, .t-section, .t-page, .t-card, .t-compact, .t-promise {
-  font-family: var(--font-display); font-weight: 400; color: var(--ink);
-  line-height: 1.1; letter-spacing: -.02em; font-feature-settings: "liga" 0;
+  font-family: var(--font-display); font-weight: 500; color: var(--ink);
+  line-height: 1.15; letter-spacing: -.01em; font-feature-settings: "liga" 0;
 }
-.t-poster  { font-size: clamp(2.5rem, 4.4vw, 3.375rem); }
-.t-section { font-size: clamp(2.125rem, 4vw, 3rem); }
-.t-page    { font-size: clamp(2.375rem, 4.4vw, 3.375rem); }
-.t-card    { font-size: clamp(1.875rem, 2.8vw, 2.5rem); }
-.t-compact { font-size: 2.25rem; }
-.t-promise { font-size: clamp(2rem, 3.2vw, 2.5rem); color: #fff; }
+.t-poster  { font-size: clamp(2.25rem, 4vw, 3rem); }
+.t-section { font-size: clamp(1.875rem, 3.6vw, 2.625rem); }
+.t-page    { font-size: clamp(2.125rem, 4vw, 3rem); }
+.t-card    { font-size: clamp(1.625rem, 2.4vw, 2.125rem); }
+.t-compact { font-size: 2rem; }
+.t-promise { font-size: clamp(1.875rem, 2.9vw, 2.25rem); color: #fff; }
 .t-tab { font-family: var(--font-body); font-weight: 600; font-size: 1.1875rem; line-height: 1.3; letter-spacing: -.01em; color: var(--ink); }
-.t-number { font-family: var(--font-display); font-weight: 400; font-size: 3.5rem; line-height: 1; color: var(--ink); }
+.t-number { font-family: var(--font-display); font-weight: 500; font-size: 3.5rem; line-height: 1; color: var(--ink); }
 .t-lead { font-size: 1.0625rem; line-height: 1.5; }
 .t-story { font-size: clamp(1.125rem, 1.6vw, 1.375rem); line-height: 1.5; }
 .t-small { font-size: .875rem; }
@@ -278,7 +278,7 @@ main:focus { outline: none; }
 }
 .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
 .brand svg { width: 28px; height: 28px; shape-rendering: crispEdges; }
-.brand-name { font-family: var(--font-display); font-weight: 400; font-size: 1.6875rem; line-height: 1; letter-spacing: -.04em; color: var(--ink); }
+.brand-name { font-family: var(--font-display); font-weight: 500; font-size: 1.5rem; line-height: 1; letter-spacing: 0; color: var(--ink); }
 .v-rule { height: 24px; border-left: var(--line); }
 .nav-list { display: flex; flex-wrap: wrap; gap: 0 4px; }
 .nav-list a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; border-radius: var(--r-ctl); text-decoration: none; color: var(--body); font-size: .9375rem; }
@@ -303,7 +303,7 @@ main:focus { outline: none; }
 .landscape > .pixel-scene { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
 .identity {
   position: absolute; top: clamp(72px, 9vw, 112px); left: 50%; transform: translateX(-50%);
-  text-align: center; color: #fff; font-family: var(--font-display); font-size: 1.6875rem; line-height: 1.5; letter-spacing: -.04em;
+  text-align: center; color: #fff; font-family: var(--font-display); font-size: 1.5rem; line-height: 1.4; letter-spacing: 0;
   text-shadow: 0 1px 0 rgba(0, 40, 80, .45);
   white-space: nowrap;
 }
@@ -362,12 +362,12 @@ main:focus { outline: none; }
   display: flex; align-items: center; gap: 14px;
   font-family: var(--font-body); font-weight: 600; font-size: 1.125rem; line-height: 1.3;
 }
-.tab .tab-n { font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; color: var(--sky-deep); }
+.tab .tab-n { font-family: var(--font-display); font-weight: 500; font-size: 1.5rem; color: var(--sky-deep); }
 .tab .tab-desc, .tab .badge { display: none; }
 .tab[aria-selected="true"] {
   background: var(--panel); border-radius: var(--r-card);
   padding: 28px; flex-direction: column; align-items: flex-start; gap: 16px;
-  font-family: var(--font-display); font-weight: 400; font-size: 2.25rem; line-height: 1.1; cursor: default;
+  font-family: var(--font-display); font-weight: 500; font-size: 2rem; line-height: 1.15; cursor: default;
 }
 .tab[aria-selected="true"] .tab-n { display: none; }
 .tab[aria-selected="true"] .badge { display: flex; }
@@ -483,7 +483,7 @@ main:focus { outline: none; }
 
 /* ---------- Sobre ---------- */
 .journey li { display: flex; flex-direction: column; gap: 12px; }
-.journey .step-n { font-family: var(--font-display); font-weight: 400; font-size: 3rem; line-height: 1; color: var(--sky-deep); }
+.journey .step-n { font-family: var(--font-display); font-weight: 500; font-size: 3rem; line-height: 1; color: var(--sky-deep); }
 .journey .panel--orange .step-n { color: #fff; }
 .table-box { overflow-x: auto; }
 table { width: 100%; min-width: 680px; border-collapse: collapse; text-align: left; }
