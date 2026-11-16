@@ -661,3 +661,7 @@ body { padding-bottom: 88px; }
 .ok-panel { border-top: 6px solid var(--sky-deep); }
 .ok-panel #ok-texto { color: var(--body); }
 .protocol-box .stack > span:first-child { color: var(--muted); font-size: .9375rem; }
+
+/* ---------- Contraste: etiquetas e rótulos dentro dos cartões azuis ---------- */
+.proof .pill, .proof .pill * { color: var(--ink); background: var(--paper); border-color: var(--paper); }
+.route-stat--orange dt { color: #fff; }
