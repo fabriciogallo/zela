@@ -57,6 +57,7 @@
     }).join("");
 
     var mapa = $("mapa");
+    if (mapa.dataset.bairro !== f.bairro) { ZELA.mapaReal(mapa, ZELA.centros[f.bairro], 1); mapa.dataset.bairro = f.bairro; }
     mapa.querySelectorAll(".pin").forEach(function (p) { p.remove(); });
     lista.forEach(function (it, i) {
       var b = document.createElement("button");

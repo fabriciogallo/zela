@@ -102,6 +102,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 
 - HTML, CSS e JavaScript puro (sem frameworks, sem build)
 - Dados simulados em `js/dados.js`
+- Mapas reais com blocos do [OpenStreetMap](https://www.openstreetmap.org/copyright) em Meu bairro e Rota acessível
 - APIs públicas: [ViaCEP](https://viacep.com.br/) para buscar o endereço pelo CEP e [Nominatim / OpenStreetMap](https://nominatim.org/) para transformar a localização em endereço
 - `localStorage` para lembrar tamanho do texto, bairro, conta (sessão), apoios e protocolos criados — em produção, a conta e os avisos ficariam em um servidor
 - Fontes: Montserrat (títulos) e Inter (texto), via Google Fonts

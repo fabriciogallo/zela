@@ -259,12 +259,14 @@
 
   function desenharMapa(rota, curto, p) {
     var svg = $("rota-mapa");
+    var caixa = svg.parentNode;
+    if (!caixa.querySelector(".map-tiles")) ZELA.mapaReal(caixa, ZELA.centros.angela, 420 / 600);
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     var ruas = el("g", { fill: "none", "stroke-linecap": "round" }, svg);
 
     R.trechos.forEach(function (t) {
       var g = pontoMeio(t);
-      el("path", { d: g.d, stroke: "#f2f2f2", "stroke-width": t.escada ? 6 : 12 }, ruas);
+      el("path", { d: g.d, stroke: "rgba(31, 31, 41, 0.35)", "stroke-width": t.escada ? 4 : 6 }, ruas);
       if (t.escada) el("path", { d: g.d, stroke: "#000", "stroke-width": 12, "stroke-dasharray": "2 6" }, ruas);
     });
 

@@ -30,6 +30,13 @@ ZELA.bairros = {
   tiradentes: "Cidade Tiradentes"
 };
 
+/* Centro de cada bairro no mapa real (OpenStreetMap): perto do terminal de ônibus */
+ZELA.centros = {
+  angela:     { lat: -23.6905, lon: -46.7739 },
+  grajau:     { lat: -23.7372, lon: -46.6973 },
+  tiradentes: { lat: -23.5832, lon: -46.4079 }
+};
+
 /* Avisos abertos por bairro (mapa e listas). x/y = posição no mapa em % */
 ZELA.avisos = [
   { id: 1,  bairro: "angela", cat: "luz",     titulo: "Poste apagado há 9 dias",          local: "Rua das Palmeiras, 140", status: "Encaminhado", apoios: 23, dias: 9,  risco: true,  x: 22, y: 28, protocolo: "ZL-2026-04790" },

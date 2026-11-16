@@ -72,6 +72,31 @@
     lado.insertBefore(a, lado.firstChild);
   }
 
+
+  /* ---------- Mapa real: blocos do OpenStreetMap (projeção Web Mercator) ----------
+     Desenha uma área de 3 blocos de largura em volta do centro, dentro do contêiner. */
+  ZELA.mapaReal = function (conteiner, centro, proporcao) {
+    var z = 16, larg = 768, alt = larg * (proporcao || 1);
+    var n = Math.pow(2, z) * 256, r = centro.lat * Math.PI / 180;
+    var cx = (centro.lon + 180) / 360 * n, cy = (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n;
+    var esq = cx - larg / 2, topo = cy - alt / 2;
+    var camada = conteiner.querySelector(".map-tiles");
+    if (!camada) { camada = document.createElement("div"); camada.className = "map-tiles"; camada.setAttribute("aria-hidden", "true"); conteiner.insertBefore(camada, conteiner.firstChild); }
+    camada.innerHTML = "";
+    for (var x = Math.floor(esq / 256); x <= Math.floor((esq + larg) / 256); x++) {
+      for (var y = Math.floor(topo / 256); y <= Math.floor((topo + alt) / 256); y++) {
+        var img = document.createElement("img");
+        img.alt = ""; img.loading = "lazy";
+        img.src = "https://tile.openstreetmap.org/" + z + "/" + x + "/" + y + ".png";
+        img.style.left = ((x * 256 - esq) / larg * 100) + "%";
+        img.style.top = ((y * 256 - topo) / alt * 100) + "%";
+        img.style.width = (256 / larg * 100) + "%";
+        img.style.height = (256 / alt * 100) + "%";
+        camada.appendChild(img);
+      }
+    }
+  };
+
   /* ---------- Anúncios para leitores de tela ---------- */
   ZELA.anunciar = function (texto) {
     var el = document.getElementById("anuncio");
