@@ -104,8 +104,8 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 - Dados simulados em `js/dados.js`
 - APIs públicas: [ViaCEP](https://viacep.com.br/) para buscar o endereço pelo CEP e [Nominatim / OpenStreetMap](https://nominatim.org/) para transformar a localização em endereço
 - `localStorage` para lembrar tamanho do texto, bairro, conta (sessão), apoios e protocolos criados — em produção, a conta e os avisos ficariam em um servidor
-- Fontes: Pixelify Sans (títulos em pixel, mais legível) e Inter (texto), via Google Fonts
-- Paisagens em pixel art geradas em SVG por código (`js/comum.js`), sem imagens externas
+- Fontes: Montserrat (títulos) e Inter (texto), via Google Fonts
+- Paisagens em pixel art geradas em SVG por código (`js/comum.js`); a abertura usa uma versão animada (`img/abertura-animada.svg`, para de se mexer com "reduzir movimento") e há um GIF da cena em `img/abertura.gif`
 
 ## Estrutura
 

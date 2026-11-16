@@ -5,9 +5,12 @@ window.ZELA = window.ZELA || {};
 ZELA.categorias = [
   { id: "buraco",  nome: "Buraco na rua",    titulo: "Buraco na rua",    desc: "Asfalto afundado, cratera ou tampa de bueiro solta.", orgao: "Subprefeitura" },
   { id: "luz",     nome: "Poste apagado",    titulo: "Poste apagado",    desc: "Lâmpada queimada, piscando ou acesa de dia.",       orgao: "Iluminação pública" },
-  { id: "lixo",    nome: "Lixo ou entulho",  titulo: "Lixo e entulho",   desc: "Descarte irregular ou coleta que não passou.",      orgao: "Serviço de limpeza" },
+  { id: "lixo",    nome: "Entulho ou descarte irregular",  titulo: "Lixo e entulho",   desc: "Descarte irregular ou coleta que não passou.",      orgao: "Serviço de limpeza" },
   { id: "calcada", nome: "Calçada quebrada", titulo: "Calçada quebrada", desc: "Piso solto, degrau perigoso ou rampa bloqueada.",   orgao: "Subprefeitura" },
   { id: "arvore",  nome: "Árvore ou poda",   titulo: "Árvore e poda",    desc: "Galho caído, risco de queda ou poda pedida.",       orgao: "Subprefeitura" },
+  { id: "bueiro",  nome: "Bueiro entupido ou alagamento", titulo: "Bueiro e alagamento", desc: "Boca de lobo entupida, água parada na rua.", orgao: "Subprefeitura" },
+  { id: "mato",    nome: "Mato alto ou terreno sujo", titulo: "Mato alto", desc: "Praça, canteiro ou terreno sem limpeza.", orgao: "Subprefeitura" },
+  { id: "sinal",   nome: "Placa ou semáforo com defeito", titulo: "Sinalização", desc: "Sinalização apagada, caída ou pichada.", orgao: "CET" },
   { id: "outro",   nome: "Outro problema",   titulo: "Outro problema",   desc: "Sinalização, praça, ponto de ônibus e mais.",       orgao: "Central de atendimento" }
 ];
 

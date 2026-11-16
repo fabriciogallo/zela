@@ -10,6 +10,13 @@
     "Uma frase basta. A foto ajuda, mas não é obrigatória. Se houver risco de acidente, o aviso ganha prioridade.",
     "Você pode mudar qualquer resposta antes de enviar. Depois do envio, você recebe um número de protocolo para acompanhar."
   ];
+  var DICAS = [
+    ["Escolha o que mais parece com o problema", "Na dúvida, use “Outro problema”", "Você pode mudar depois, na revisão"],
+    ["Com o CEP, a rua aparece sozinha", "Sem número? Diga só a rua e um ponto de referência", "“Usar minha localização” funciona no celular"],
+    ["Uma frase basta: o que é e há quanto tempo", "A foto ajuda, mas não é obrigatória", "Se há risco, marque “Sim, há riscos.”"],
+    ["Confira cada resposta antes de enviar", "Toque em “Alterar” para corrigir", "Depois do envio, você recebe o protocolo"]
+  ];
+  var AJUDA_TITULO = ["Escolher o tipo certo", "Achar o lugar", "Contar o que acontece", "Antes de enviar"];
   var ROTULOS = ["Tipo", "Local", "Detalhes", "Enviar"];
 
   var passo = 1;
@@ -37,6 +44,9 @@
       itens[i].lastElementChild.innerHTML = ROTULOS[i] + (num < n ? '<span class="sr-only"> (concluído)</span>' : "");
     }
     $("ajuda-texto").textContent = AJUDA[n - 1];
+    $("ajuda-passo").textContent = "Ajuda do passo " + n;
+    $("ajuda-t").textContent = AJUDA_TITULO[n - 1];
+    $("ajuda-dicas").innerHTML = DICAS[n - 1].map(function (t) { return "<li>" + ZELA.escapar(t) + "</li>"; }).join("");
     $("btn-voltar").hidden = n === 1;
     $("btn-cancelar").hidden = n !== 1;
     $("btn-avancar").textContent = n === 4 ? "Enviar aviso" : "Continuar";

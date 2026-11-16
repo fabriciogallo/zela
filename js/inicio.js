@@ -15,11 +15,26 @@
         aba.tabIndex = on ? 0 : -1;
       });
       painel.setAttribute("aria-labelledby", abas[i].id);
-      document.getElementById("como-historia").textContent = abas[i].dataset.historia;
-      document.getElementById("como-rodape").textContent = abas[i].dataset.rodape;
-      document.getElementById("como-etapa").textContent = "Etapa " + (i + 1) + " de " + abas.length;
+      var d = abas[i].dataset, $ = function (id) { return document.getElementById(id); };
+      $("como-etapa").textContent = "Etapa " + (i + 1) + " de " + abas.length;
+      $("como-titulo-etapa").textContent = d.titulo;
+      $("como-historia").textContent = d.historia;
+      $("como-itens").innerHTML = d.itens.split("|").map(function (t) { return "<li>" + ZELA.escapar(t) + "</li>"; }).join("");
+      $("como-cta").textContent = d.cta;
+      $("como-cta").href = d.href;
+      painel.querySelectorAll(".step-bar span").forEach(function (b, j) { b.classList.toggle("on", j <= i); });
+      $("como-ant").disabled = i === 0;
+      $("como-prox").disabled = i === abas.length - 1;
+      atual = i;
       if (focar) abas[i].focus();
     }
+    var atual = 0;
+    document.getElementById("como-ant").addEventListener("click", function () {
+      if (atual > 0) { ativar(atual - 1, false); ZELA.anunciar("Etapa " + (atual + 1) + ": " + abas[atual].dataset.titulo); }
+    });
+    document.getElementById("como-prox").addEventListener("click", function () {
+      if (atual < abas.length - 1) { ativar(atual + 1, false); ZELA.anunciar("Etapa " + (atual + 1) + ": " + abas[atual].dataset.titulo); }
+    });
 
     abas.forEach(function (aba, i) {
       aba.addEventListener("click", function () { ativar(i, false); });

@@ -8,7 +8,7 @@
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Pixelify+Sans:wght@500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
   <script src="js/dados.js" defer></script>
@@ -50,8 +50,8 @@
 
   <main id="conteudo" class="page-pad" tabindex="-1">
     <!-- Abertura: paisagem em pixel art com promessa no vidro -->
-    <section class="landscape wrap" aria-labelledby="hero-titulo" style="margin-top:16px">
-      <svg class="pixel-scene" data-cena="abertura" aria-hidden="true" focusable="false"></svg>
+    <section class="landscape" aria-labelledby="hero-titulo" style="margin-top:16px">
+      <img class="pixel-scene" src="img/abertura-animada.svg" alt="">
       <p class="identity">Zela<br>zeladoria colaborativa</p>
       <div class="glass">
         <h1 id="hero-titulo" class="t-promise">Sua rua avisa. A prefeitura responde.</h1>
@@ -62,7 +62,7 @@
         </div>
       </div>
     </section>
-    <div class="stripes stripes--dusk wrap hero-stripes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="stripes stripes--dusk hero-stripes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
 
     <!-- Tipos de problema -->
     <section class="wrap chapter" aria-labelledby="cat-titulo">
@@ -105,25 +105,39 @@
       </div>
       <div class="row">
         <div class="tabs" role="tablist" aria-label="Etapas do Zela">
-          <button type="button" class="tab" role="tab" id="tab-1" aria-selected="true" aria-controls="painel-como" data-historia="Você escolhe o tipo de problema, marca o endereço e, se quiser, manda uma foto. Se um vizinho já avisou, o Zela mostra o aviso e você só apoia — sem criar fila repetida." data-rodape="Funciona no celular e com internet fraca">
+          <button type="button" class="tab" role="tab" id="tab-1" aria-selected="true" aria-controls="painel-como" data-titulo="Você conta o que viu" data-historia="Em 4 passos curtos: o tipo de problema, onde fica e, se quiser, uma foto." data-itens="O CEP ou a localização do celular preenchem o endereço|Se um vizinho já avisou, você só apoia o aviso|Funciona no celular e com internet fraca" data-cta="Relatar um problema" data-href="relatar.html">
             <span class="badge" aria-hidden="true">01</span><span class="tab-n" aria-hidden="true">01</span>
             <span>Relate</span>
             <span class="tab-desc">Tipo, local e foto. Leva uns 3 minutos.</span>
           </button>
-          <button type="button" class="tab" role="tab" id="tab-2" aria-selected="false" aria-controls="painel-como" tabindex="-1" data-historia="O aviso segue para quem resolve: subprefeitura, empresa de energia ou serviço de limpeza. Quanto mais vizinhos apoiam e quanto maior o risco, mais alta fica a prioridade." data-rodape="Prioridade = apoios + risco + tempo aberto">
+          <button type="button" class="tab" role="tab" id="tab-2" aria-selected="false" aria-controls="painel-como" tabindex="-1" data-titulo="O aviso chega a quem resolve" data-historia="O Zela manda o pedido para o órgão certo e organiza a fila do bairro." data-itens="Subprefeitura, iluminação pública ou serviço de limpeza|Mais apoios e mais risco deixam o aviso mais urgente|Avisos repetidos viram um só, com todos os apoios" data-cta="Ver avisos do meu bairro" data-href="bairro.html">
             <span class="badge" aria-hidden="true">02</span><span class="tab-n" aria-hidden="true">02</span>
             <span>Encaminhamos</span>
             <span class="tab-desc">O aviso vai direto ao órgão responsável.</span>
           </button>
-          <button type="button" class="tab" role="tab" id="tab-3" aria-selected="false" aria-controls="painel-como" tabindex="-1" data-historia="Com o protocolo você vê onde o aviso está: recebido, encaminhado, em execução e resolvido. No fim, você confirma se o problema foi resolvido de verdade ou pede para reabrir." data-rodape="Você recebe aviso a cada mudança">
+          <button type="button" class="tab" role="tab" id="tab-3" aria-selected="false" aria-controls="painel-como" tabindex="-1" data-titulo="Você acompanha até o fim" data-historia="Com o número do protocolo, você vê cada etapa e decide se ficou resolvido." data-itens="Recebido, encaminhado, em execução e resolvido|Aviso por SMS a cada mudança, se você quiser|Se não resolveu, você reabre o aviso" data-cta="Acompanhar um protocolo" data-href="acompanhar.html">
             <span class="badge" aria-hidden="true">03</span><span class="tab-n" aria-hidden="true">03</span>
             <span>Acompanhe</span>
             <span class="tab-desc">Veja cada etapa pelo número do protocolo.</span>
           </button>
         </div>
-        <div class="tab-panel panel panel-lg panel--green inv" id="painel-como" role="tabpanel" aria-labelledby="tab-1" tabindex="0">
-          <p class="t-story" id="como-historia">Você escolhe o tipo de problema, marca o endereço e, se quiser, manda uma foto. Se um vizinho já avisou, o Zela mostra o aviso e você só apoia — sem criar fila repetida.</p>
-          <p class="rule-top row" style="gap:8px 24px"><span id="como-etapa">Etapa 1 de 3</span><span id="como-rodape">Funciona no celular e com internet fraca</span></p>
+        <div class="tab-panel step-card" id="painel-como" role="tabpanel" aria-labelledby="tab-1" tabindex="0">
+          <div class="sheet step-sheet">
+            <div class="stack" style="gap:10px">
+              <p class="t-small muted" id="como-etapa">Etapa 1 de 3</p>
+              <div class="step-bar" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+            </div>
+            <h3 class="t-card" id="como-titulo-etapa">Você conta o que viu</h3>
+            <p class="t-lead" id="como-historia">Em 4 passos curtos: o tipo de problema, onde fica e, se quiser, uma foto.</p>
+            <ul class="list-reset tick-list" id="como-itens"><li>O CEP ou a localização do celular preenchem o endereço</li><li>Se um vizinho já avisou, você só apoia o aviso</li><li>Funciona no celular e com internet fraca</li></ul>
+            <div class="step-actions">
+              <a class="btn btn--primary" id="como-cta" href="relatar.html">Relatar um problema</a>
+              <div class="row" style="gap:8px">
+                <button type="button" class="btn btn--ghost btn--sm" id="como-ant" disabled>← Etapa anterior</button>
+                <button type="button" class="btn btn--ghost btn--sm" id="como-prox">Próxima etapa →</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

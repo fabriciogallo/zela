@@ -8,7 +8,7 @@
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Pixelify+Sans:wght@500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
   <script src="js/dados.js" defer></script>
@@ -71,12 +71,15 @@
               <fieldset style="margin-top:24px" aria-describedby="err-cat">
                 <legend class="legend">Escolha uma opção:</legend>
                 <div class="choices">
-                  <label class="choice"><input type="radio" name="cat" value="buraco"> Buraco na rua</label>
-                  <label class="choice"><input type="radio" name="cat" value="luz"> Poste apagado</label>
-                  <label class="choice"><input type="radio" name="cat" value="lixo"> Lixo ou entulho</label>
-                  <label class="choice"><input type="radio" name="cat" value="calcada"> Calçada quebrada</label>
-                  <label class="choice"><input type="radio" name="cat" value="arvore"> Árvore ou poda</label>
-                  <label class="choice"><input type="radio" name="cat" value="outro"> Outro problema</label>
+                  <label class="choice choice--desc"><input type="radio" name="cat" value="arvore"><span><strong>Árvore ou poda</strong><span class="choice-d">Galho caído, árvore com risco de queda ou poda</span></span></label>
+                  <label class="choice choice--desc"><input type="radio" name="cat" value="buraco"><span><strong>Buraco na rua</strong><span class="choice-d">Asfalto afundado ou cratera (tapa-buraco)</span></span></label>
+                  <label class="choice choice--desc"><input type="radio" name="cat" value="lixo"><span><strong>Entulho ou descarte irregular</strong><span class="choice-d">Entulho, móveis velhos ou lixo jogado na rua</span></span></label>
+                  <label class="choice choice--desc"><input type="radio" name="cat" value="luz"><span><strong>Poste apagado</strong><span class="choice-d">Lâmpada queimada, piscando ou acesa de dia</span></span></label>
+                  <label class="choice choice--desc"><input type="radio" name="cat" value="bueiro"><span><strong>Bueiro entupido ou alagamento</strong><span class="choice-d">Boca de lobo entupida, água parada na rua</span></span></label>
+                  <label class="choice choice--desc"><input type="radio" name="cat" value="calcada"><span><strong>Calçada quebrada</strong><span class="choice-d">Piso solto, degrau ou rampa bloqueada</span></span></label>
+                  <label class="choice choice--desc"><input type="radio" name="cat" value="mato"><span><strong>Mato alto ou terreno sujo</strong><span class="choice-d">Praça, canteiro ou terreno sem limpeza</span></span></label>
+                  <label class="choice choice--desc"><input type="radio" name="cat" value="sinal"><span><strong>Placa ou semáforo com defeito</strong><span class="choice-d">Sinalização apagada, caída ou pichada</span></span></label>
+                  <label class="choice choice--desc"><input type="radio" name="cat" value="outro"><span><strong>Outro problema</strong><span class="choice-d">Ponto de ônibus, praça, pichação e mais</span></span></label>
                 </div>
                 <p id="err-cat" class="error" role="alert" style="margin-top:16px"></p>
               </fieldset>
@@ -169,15 +172,19 @@
             </div>
           </form>
 
-          <aside class="col-side panel panel--green inv stack" style="justify-content:space-between;gap:40px" aria-labelledby="ajuda-t">
-            <div class="stack" style="gap:16px">
-              <span class="badge" aria-hidden="true">?</span>
-              <h2 id="ajuda-t" class="t-tab">Por que perguntamos isso</h2>
-              <p id="ajuda-texto" style="font-size:1.25rem;line-height:1.5">Cada tipo de problema vai para um órgão diferente. Escolher o tipo certo faz o aviso chegar mais rápido a quem resolve.</p>
+          <aside class="col-side stack help-col" aria-labelledby="ajuda-t">
+            <div class="step-card">
+              <div class="sheet step-sheet" style="gap:16px">
+                <p class="t-small muted" id="ajuda-passo">Ajuda do passo 1</p>
+                <h2 id="ajuda-t" class="t-tab">Escolher o tipo certo</h2>
+                <ul class="list-reset tick-list" id="ajuda-dicas"></ul>
+                <p class="help-why"><strong>Por que perguntamos:</strong> <span id="ajuda-texto">Cada tipo de problema vai para um órgão diferente. Escolher o tipo certo faz o aviso chegar mais rápido a quem resolve.</span></p>
+              </div>
             </div>
-            <div class="stack" style="gap:12px">
-              <p class="rule-top">Precisa de ajuda? Ligue 156 ou peça a um agente no posto de saúde do bairro.</p>
-              <p class="t-small">Para testar o aviso repetido: escolha “Poste apagado” e digite “Rua das Palmeiras”.</p>
+            <div class="panel stack" style="gap:6px;padding:20px 24px">
+              <p><strong>Prefere falar com alguém?</strong></p>
+              <p>Ligue 156 (Prefeitura) ou peça ajuda a um agente no posto de saúde do bairro.</p>
+              <p class="t-small muted rule-top" style="margin-top:8px;padding-top:12px">Para testar o aviso repetido: escolha “Poste apagado” e digite “Rua das Palmeiras”.</p>
             </div>
           </aside>
         </div>
@@ -219,6 +226,7 @@
         <h2 class="t-section closing-title">Cuidar da rua é coisa de vizinho. Resolver é coisa da prefeitura.</h2>
         <p class="closing-sub">O Zela leva o seu aviso ao órgão certo e mostra cada passo até a solução.</p>
         <a class="link-action" href="bairro.html"><span>Ver o mapa do bairro</span></a>
+        <p class="urgente"><strong>É urgente?</strong> Fio caído, árvore sobre a rua ou alagamento com risco: ligue agora. 199 Defesa Civil · 193 Bombeiros · 156 Prefeitura (sem urgência).</p>
         <div class="utility-row">
           <nav aria-label="Rodapé">
             <ul class="list-reset">
