@@ -618,3 +618,19 @@ tr:last-child td { border-bottom: 0; }
 .route-stats--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .route-stats--2 .route-stat { padding: 18px 20px; }
 .route-stats--2 dd { font-size: clamp(1.75rem, 2.6vw, 2.25rem); }
+
+/* ---------- Cabeçalho: navegação à esquerda, ações na lateral direita ---------- */
+.site-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px 16px; }
+.site-header .nav-bar { margin: 0; }
+.header-actions {
+  pointer-events: auto; display: flex; align-items: center; gap: 8px;
+  min-height: 56px; padding: 6px;
+  background: linear-gradient(to right, rgba(249, 250, 247, .9), rgba(249, 250, 247, .96));
+  border: 1px solid rgba(222, 226, 222, .9); border-radius: var(--r-sheet);
+  backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px); box-shadow: var(--shadow-glass);
+}
+.header-actions:empty { display: none; }
+@media (max-width: 860px) {
+  .site-header { flex-direction: column; align-items: stretch; }
+  .header-actions { justify-content: flex-end; min-height: 0; }
+}

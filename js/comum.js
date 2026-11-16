@@ -60,8 +60,8 @@
 
   /* Link "Entrar" / "Meus avisos" no menu de todas as páginas */
   function iniciarLinkConta() {
-    var cta = document.querySelector(".nav-collapsible > .btn--primary");
-    if (!cta) return;
+    var lado = document.querySelector(".header-actions");
+    if (!lado) return;
     var u = ZELA.conta.atual();
     var a = document.createElement("a");
     a.className = "btn btn--ghost account-link";
@@ -69,7 +69,7 @@
     a.textContent = u ? "Meus avisos" + (u.nome ? " · " + u.nome.split(" ")[0] : "") : "Entrar";
     var aqui = location.pathname.split("/").pop();
     if (aqui === a.getAttribute("href")) a.setAttribute("aria-current", "page");
-    cta.parentNode.insertBefore(a, cta);
+    lado.insertBefore(a, lado.firstChild);
   }
 
   /* ---------- Anúncios para leitores de tela ---------- */
