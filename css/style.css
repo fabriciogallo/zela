@@ -669,3 +669,8 @@ tr:last-child td { border-bottom: 0; }
 body { min-height: 100vh; display: flex; flex-direction: column; }
 body > main { flex: 1 0 auto; }
 .site-footer { flex-shrink: 0; }
+
+/* ---------- Botões dentro de cartões azuis: cor própria do botão, nunca a do cartão ---------- */
+.panel--orange a.btn--ink, .panel--orange a.btn--ghost, .panel--orange .btn--ink, .panel--orange .btn--ghost { color: var(--ink); }
+.panel--orange a.btn--primary, .panel--orange .btn--primary { color: #fff; }
+.panel--orange .link-action { color: #fff; }
