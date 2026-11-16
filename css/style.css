@@ -638,7 +638,6 @@ tr:last-child td { border-bottom: 0; }
 /* ---------- Menu centralizado; ações fixas no canto inferior direito ---------- */
 .site-header { justify-content: center; }
 .header-actions { position: fixed; right: clamp(12px, 2vw, 24px); bottom: clamp(12px, 2vw, 24px); z-index: 40; }
-body { padding-bottom: 88px; }
 /* Início: a paisagem sobe até o topo e o menu flutua sobre ela */
 .site-header--sobre { position: fixed; top: 0; left: 0; right: 0; }
 .landscape--topo { margin-top: 0 !important; padding-top: 104px; min-height: clamp(640px, 64vw, 840px); }
@@ -665,3 +664,8 @@ body { padding-bottom: 88px; }
 /* ---------- Contraste: etiquetas e rótulos dentro dos cartões azuis ---------- */
 .proof .pill, .proof .pill * { color: var(--ink); background: var(--paper); border-color: var(--paper); }
 .route-stat--orange dt { color: #fff; }
+
+/* ---------- Rodapé sempre no fim da tela, sem faixa em branco embaixo ---------- */
+body { min-height: 100vh; display: flex; flex-direction: column; }
+body > main { flex: 1 0 auto; }
+.site-footer { flex-shrink: 0; }
