@@ -656,3 +656,8 @@ body { padding-bottom: 88px; }
 .route-map { position: relative; }
 .route-map svg { position: relative; z-index: 1; }
 .cat-foot { justify-content: flex-end; }
+
+/* ---------- Relatar: cartão de "Aviso enviado" (fundo claro, texto escuro) ---------- */
+.ok-panel { border-top: 6px solid var(--sky-deep); }
+.ok-panel #ok-texto { color: var(--body); }
+.protocol-box .stack > span:first-child { color: var(--muted); font-size: .9375rem; }
