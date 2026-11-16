@@ -62,38 +62,63 @@
         </div>
       </div>
     </section>
-    <div class="stripes stripes--dusk hero-stripes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
 
     <!-- Tipos de problema -->
     <section class="wrap chapter" aria-labelledby="cat-titulo">
-      <div class="section-head">
-        <h2 id="cat-titulo" class="t-section">Tudo que atrapalha a sua rua tem um caminho</h2>
-        <p class="t-lead">Escolha o tipo de problema. O Zela já sabe para qual órgão mandar.</p>
+      <div class="cat-head">
+        <div class="stack" style="gap:12px;max-width:640px">
+          <p class="t-small muted">Os pedidos mais comuns em São Paulo</p>
+          <h2 id="cat-titulo" class="t-section">O que está atrapalhando a sua rua?</h2>
+        </div>
+        <p class="t-lead muted" style="max-width:380px">Escolha o tipo de problema. O Zela já sabe para qual órgão mandar.</p>
       </div>
-      <ul class="list-reset grid-auto">
-        <li><a class="tile" href="relatar.html?tipo=buraco">
-          <span class="badge" aria-hidden="true"><svg viewBox="0 0 40 40"><path fill-rule="evenodd" d="M4 24c0-5 7-9 16-9s16 4 16 9-7 9-16 9S4 29 4 24zm7 0c0 2.5 4 4.5 9 4.5s9-2 9-4.5-4-4.5-9-4.5-9 2-9 4.5z"/></svg></span>
-          <span class="tile-text"><span class="t-tab">Buraco na rua</span><span>Asfalto afundado, cratera ou tampa de bueiro solta.</span></span>
+      <ul class="list-reset cat-grid">
+        <li class="cat-destaque"><a class="cat-card cat-card--big" href="relatar.html?tipo=arvore">
+          <span class="cat-flag">O pedido mais comum</span>
+          <img class="cat-img" src="img/cat-arvore.svg" alt="">
+          <span class="cat-t">Árvore ou poda</span>
+          <span class="cat-d">Galho caído, árvore com risco de queda ou poda.</span>
+          <span class="cat-foot"><span class="pill pill--dotted">Vai para: Subprefeitura</span><span class="link-action"><span>Relatar agora</span></span></span>
         </a></li>
-        <li><a class="tile" href="relatar.html?tipo=luz">
-          <span class="badge" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 5a10 10 0 0 1 6 18v4H14v-4A10 10 0 0 1 20 5zM15 29h10v3H15zm2 4h6v3h-6z"/></svg></span>
-          <span class="tile-text"><span class="t-tab">Poste apagado</span><span>Lâmpada queimada, piscando ou acesa de dia.</span></span>
+        <li><a class="cat-card" href="relatar.html?tipo=buraco">
+          <img class="cat-img" src="img/cat-buraco.svg" alt="">
+          <span class="cat-t">Buraco na rua</span>
+          <span class="cat-d">Asfalto afundado ou cratera (tapa-buraco).</span>
         </a></li>
-        <li><a class="tile" href="relatar.html?tipo=lixo">
-          <span class="badge" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M16 5h8v3h7v4H9V8h7zM11 14h18l-2 21H13z"/></svg></span>
-          <span class="tile-text"><span class="t-tab">Lixo e entulho</span><span>Descarte irregular ou coleta que não passou.</span></span>
+        <li><a class="cat-card" href="relatar.html?tipo=lixo">
+          <img class="cat-img" src="img/cat-lixo.svg" alt="">
+          <span class="cat-t">Entulho ou descarte irregular</span>
+          <span class="cat-d">Entulho, móveis velhos ou lixo jogado na rua.</span>
         </a></li>
-        <li><a class="tile" href="relatar.html?tipo=calcada">
-          <span class="badge" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M5 9h14v9H5zm16 0h14v9H21zM5 21h9v10H5zm11 3h19v7H16z"/></svg></span>
-          <span class="tile-text"><span class="t-tab">Calçada quebrada</span><span>Piso solto, degrau perigoso ou rampa bloqueada.</span></span>
+        <li><a class="cat-card" href="relatar.html?tipo=luz">
+          <img class="cat-img" src="img/cat-luz.svg" alt="">
+          <span class="cat-t">Poste apagado</span>
+          <span class="cat-d">Lâmpada queimada, piscando ou acesa de dia.</span>
         </a></li>
-        <li><a class="tile" href="relatar.html?tipo=arvore">
-          <span class="badge" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 4a11 11 0 0 1 3 21.6V36h-6V25.6A11 11 0 0 1 20 4z"/></svg></span>
-          <span class="tile-text"><span class="t-tab">Árvore e poda</span><span>Galho caído, risco de queda ou poda pedida.</span></span>
+        <li><a class="cat-card" href="relatar.html?tipo=bueiro">
+          <img class="cat-img" src="img/cat-bueiro.svg" alt="">
+          <span class="cat-t">Bueiro entupido ou alagamento</span>
+          <span class="cat-d">Boca de lobo entupida, água parada na rua.</span>
         </a></li>
-        <li><a class="tile" href="relatar.html?tipo=outro">
-          <span class="badge" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M9 9h6v6H9zm8 0h6v6h-6zm8 0h6v6h-6zM9 17h6v6H9zm8 0h6v6h-6zm8 0h6v6h-6zM9 25h6v6H9zm8 0h6v6h-6zm8 0h6v6h-6z"/></svg></span>
-          <span class="tile-text"><span class="t-tab">Outro problema</span><span>Sinalização, praça, ponto de ônibus e mais.</span></span>
+        <li><a class="cat-card" href="relatar.html?tipo=calcada">
+          <img class="cat-img" src="img/cat-calcada.svg" alt="">
+          <span class="cat-t">Calçada quebrada</span>
+          <span class="cat-d">Piso solto, degrau ou rampa bloqueada.</span>
+        </a></li>
+        <li><a class="cat-card" href="relatar.html?tipo=mato">
+          <img class="cat-img" src="img/cat-mato.svg" alt="">
+          <span class="cat-t">Mato alto ou terreno sujo</span>
+          <span class="cat-d">Praça, canteiro ou terreno sem limpeza.</span>
+        </a></li>
+        <li><a class="cat-card" href="relatar.html?tipo=sinal">
+          <img class="cat-img" src="img/cat-sinal.svg" alt="">
+          <span class="cat-t">Placa ou semáforo com defeito</span>
+          <span class="cat-d">Sinalização apagada, caída ou pichada.</span>
+        </a></li>
+        <li><a class="cat-card" href="relatar.html?tipo=outro">
+          <img class="cat-img" src="img/cat-outro.svg" alt="">
+          <span class="cat-t">Outro problema</span>
+          <span class="cat-d">Ponto de ônibus, praça, pichação e mais.</span>
         </a></li>
       </ul>
     </section>

@@ -169,6 +169,7 @@
     resultado.hidden = false;
     $("res-titulo").textContent = nomeLugar(p.de) + " → " + nomeLugar(p.para);
     $("res-perfil").textContent = "Rota para: " + perfil.nome.toLowerCase() + (p.noite ? " · à noite" : "");
+    $("trip-resumo").textContent = (R.lugares[p.de].curto || nomeLugar(p.de)) + " → " + (R.lugares[p.para].curto || nomeLugar(p.para)) + " · " + perfil.nome + (p.noite ? " · à noite" : "");
 
     var semRota = !res.rota;
     $("sem-rota").hidden = !semRota;
@@ -177,7 +178,7 @@
 
     if (semRota) {
       desenharMapa(null, res.curto, p);
-      if (anunciar) { ZELA.anunciar("Não encontramos uma rota sem barreiras para esse trajeto."); $("res-titulo").focus(); }
+      if (anunciar) { ZELA.anunciar("Não encontramos uma rota sem barreiras para esse trajeto."); $("sem-rota-t").focus(); }
       return;
     }
 
@@ -351,7 +352,29 @@
     }
     ZELA.store.set("rota", p);
     $("copiado").textContent = "";
+    fecharDialogo();
     render(calcular(p), true);
+  });
+
+  /* ---------- Pop-up do trajeto ---------- */
+  var dlg = $("dlg-rota"), salvoAntes = null;
+  function abrirDialogo() {
+    salvoAntes = lerPref();
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+    $("form-rota-t").focus();
+  }
+  function fecharDialogo(desfazer) {
+    if (desfazer && salvoAntes) aplicarPref(salvoAntes);
+    if (dlg.open) { if (dlg.close) dlg.close(); else dlg.removeAttribute("open"); }
+    $("btn-trajeto").focus();
+  }
+  $("btn-trajeto").addEventListener("click", abrirDialogo);
+  $("btn-fechar-dlg").addEventListener("click", function () { fecharDialogo(true); });
+  dlg.addEventListener("cancel", function (e) { e.preventDefault(); fecharDialogo(true); }); /* tecla Esc */
+  dlg.addEventListener("click", function (e) {
+    if (e.target !== dlg) return;
+    var r = dlg.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) fecharDialogo(true); /* clique fora */
   });
 
   /* Início: link compartilhado > preferência salva > padrão */
@@ -368,4 +391,5 @@
   aplicarPref(ini);
   var p0 = lerPref();
   if (p0.perfil && p0.de !== p0.para) render(calcular(p0), false);
+  else abrirDialogo();
 })();

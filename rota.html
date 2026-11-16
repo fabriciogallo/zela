@@ -56,9 +56,20 @@
         <p class="t-lead" style="max-width:680px">Diga de onde sai, para onde vai e como você se locomove. O Zela desvia de escadas, ladeiras fortes, calçadas quebradas e dos problemas que os vizinhos avisaram.</p>
       </div>
 
-      <div class="row" style="align-items:flex-start">
-        <form id="form-rota" class="col-side panel panel--cream stack route-form" style="gap:28px" novalidate aria-labelledby="form-rota-t">
-          <h2 id="form-rota-t" class="t-tab">Seu trajeto</h2>
+      <div class="panel trip-bar">
+        <div class="stack" style="gap:2px;min-width:0">
+          <p class="t-small muted">Seu trajeto</p>
+          <p id="trip-resumo" class="trip-resumo"></p>
+        </div>
+        <button type="button" id="btn-trajeto" class="btn btn--ghost" aria-haspopup="dialog" aria-controls="dlg-rota">Alterar trajeto</button>
+      </div>
+
+      <dialog id="dlg-rota" class="dialog" aria-labelledby="form-rota-t">
+        <form id="form-rota" class="stack" style="gap:24px" novalidate>
+          <div class="dialog-head">
+            <h2 id="form-rota-t" class="t-card" tabindex="-1">Seu trajeto</h2>
+            <button type="button" id="btn-fechar-dlg" class="btn btn--ghost btn--sm" aria-label="Fechar sem mudar a rota">×</button>
+          </div>
 
           <div class="stack" style="gap:12px">
             <div class="field">
@@ -93,17 +104,17 @@
             </div>
           </fieldset>
 
-          <button type="submit" class="btn btn--primary btn--lg">Traçar rota</button>
-        </form>
-
-        <section id="resultado" class="col-main stack" style="gap:16px" aria-labelledby="res-titulo" hidden>
-          <div class="panel panel--cream stack" style="gap:8px">
-            <p id="res-perfil" class="hint"></p>
-            <h2 id="res-titulo" class="t-card" tabindex="-1"></h2>
+          <div class="dialog-actions">
+            <p class="t-small muted">A rota é calculada para o seu jeito de andar.</p>
+            <button type="submit" class="btn btn--primary btn--lg">Ver rota</button>
           </div>
+        </form>
+      </dialog>
+
+        <section id="resultado" class="stack" style="gap:16px;margin-top:16px" aria-labelledby="res-titulo" hidden>
 
           <div id="sem-rota" class="panel panel--ink stack" style="gap:16px" hidden>
-            <p class="t-compact">Não há caminho sem barreiras aqui.</p>
+            <h2 id="sem-rota-t" class="t-compact" tabindex="-1">Não há caminho sem barreiras aqui.</h2>
             <p class="t-lead">Todos os caminhos entre esses lugares têm escada, ladeira acima de 8% ou esquina sem rampa. Algumas opções:</p>
             <ul class="route-list">
               <li>Peça o <strong>Atende+</strong>, transporte porta a porta da SPTrans para pessoas com deficiência, pelo telefone 156.</li>
@@ -113,14 +124,10 @@
           </div>
 
           <div id="com-rota" class="stack" style="gap:16px">
-            <dl class="route-stats">
-              <div class="route-stat"><dt>Distância</dt><dd id="st-dist" class="t-number"></dd></div>
-              <div class="route-stat"><dt>Tempo no seu ritmo</dt><dd id="st-tempo" class="t-number"></dd></div>
-              <div class="route-stat"><dt>Maior inclinação</dt><dd id="st-incl" class="t-number"></dd></div>
-              <div class="route-stat route-stat--orange"><dt>Barreiras evitadas</dt><dd id="st-evitados" class="t-number"></dd></div>
-            </dl>
 
-            <section class="panel panel--green stack" style="gap:16px" aria-labelledby="mapa-rota-t">
+
+            <div class="row" style="align-items:flex-start">
+            <section class="panel panel--green stack route-map-col" style="gap:16px" aria-labelledby="mapa-rota-t">
               <h3 id="mapa-rota-t" class="t-tab">Mapa da rota</h3>
               <div class="route-map">
                 <svg id="rota-mapa" viewBox="0 0 600 420" aria-hidden="true" focusable="false"></svg>
@@ -133,6 +140,19 @@
               </ul>
               <p class="t-small">Mapa ilustrativo. A lista de passos abaixo tem as mesmas informações.</p>
             </section>
+            <aside class="route-side stack" style="gap:12px" aria-label="Resumo da rota">
+              <div class="panel panel--cream stack" style="gap:8px;padding:24px">
+                <p id="res-perfil" class="hint"></p>
+                <h2 id="res-titulo" class="t-card" tabindex="-1"></h2>
+              </div>
+              <dl class="route-stats route-stats--2">
+                <div class="route-stat"><dt>Distância</dt><dd id="st-dist" class="t-number"></dd></div>
+                <div class="route-stat"><dt>Tempo no seu ritmo</dt><dd id="st-tempo" class="t-number"></dd></div>
+                <div class="route-stat"><dt>Maior inclinação</dt><dd id="st-incl" class="t-number"></dd></div>
+                <div class="route-stat route-stat--orange"><dt>Barreiras evitadas</dt><dd id="st-evitados" class="t-number"></dd></div>
+              </dl>
+            </aside>
+            </div>
 
             <section class="panel panel--cream stack" style="gap:20px" aria-labelledby="passos-t">
               <div class="row" style="gap:12px 24px;align-items:center;justify-content:space-between">
@@ -162,7 +182,6 @@
             </section>
           </div>
         </section>
-      </div>
     </div>
   </main>
 
