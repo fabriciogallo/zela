@@ -132,18 +132,6 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 └── img/favicon.svg
 ```
 
-## Rodar localmente
-
-Abra `index.html` no navegador. Para a localização funcionar, use um servidor local (o navegador só libera a localização em `https` ou `localhost`):
-
-```bash
-python -m http.server 8000
-```
-
-Depois acesse http://localhost:8000.
-
-## Deploy no GitHub Pages
-
 1. Crie um repositório **público** no GitHub e envie estes arquivos para a branch `main`.
 2. No repositório: **Settings → Pages → Build and deployment → Source: Deploy from a branch**.
 3. Escolha a branch `main` e a pasta `/ (root)` e salve.
