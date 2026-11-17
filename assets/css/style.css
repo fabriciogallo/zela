@@ -601,6 +601,22 @@ tr:last-child td { border-bottom: 0; }
 .route-map { position: relative; border-radius: var(--r-sheet); overflow: hidden; background: #8fc77a; box-shadow: var(--shadow-sheet); }
 .route-map svg { position: relative; z-index: 1; display: block; width: 100%; height: auto; font-family: var(--font-body); }
 .route-path { stroke: var(--sky-hover); }
+
+/* Resumo da simulação */
+.route-sim-stats {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin: 0;
+  background: var(--mint-soft); border: 1px solid var(--mint-soft); border-radius: var(--r-sheet); overflow: hidden;
+}
+.route-sim-stats > div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 2px; padding: 14px 18px; background: var(--paper); min-width: 0; }
+.route-sim-stats dt { font-size: .8125rem; color: var(--muted); }
+.route-sim-stats dd {
+  margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+  line-height: 1.1; color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.route-sim-stats > .is-accent { background: var(--sky-deep); }
+.route-sim-stats > .is-accent dt { color: rgba(255, 255, 255, .85); }
+.route-sim-stats > .is-accent dd { color: #fff; }
+@media (max-width: 760px) { .route-sim-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .route-legend { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: .875rem; }
 .route-legend li { display: flex; align-items: center; gap: 10px; }
 .lg { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
@@ -744,12 +760,6 @@ html[data-texto-grande] .cat-destaque { grid-column: auto; grid-row: auto; }
 .dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .dialog-head .btn { width: 44px; padding: 0; font-size: 1.25rem; }
 .dialog-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding-top: 16px; border-top: var(--line); }
-.route-map-col { flex: 999 1 560px; min-width: 0; }
-.route-side { flex: 1 1 320px; min-width: 0; }
-.route-stats--2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); }
-.route-stats--2 .route-stat { padding: 18px 20px; }
-.route-stats--2 dd { font-size: 1.75rem; }
-@media (min-width: 1101px) { .route-stats--2 dd { font-size: 2.25rem; } }
 
 .route-result-title { display: grid; gap: 4px; padding: 16px 20px; }
 

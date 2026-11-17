@@ -6,7 +6,6 @@
 
   var R = ZELA.rota;
   var $ = function (id) { return document.getElementById(id); };
-  var SVGNS = "http://www.w3.org/2000/svg";
 
   /* Quanto cada barreira pesa para cada perfil. Infinity = trecho proibido. */
   var PESOS = {
@@ -234,7 +233,6 @@
     }
     $("st-evitados").textContent = String(itens.length);
 
-    desenharMapa(rota, res.curto, p);
 
     /* Link para compartilhar */
     var link = new URL(location.href);
@@ -249,72 +247,6 @@
       ZELA.anunciar("Rota pronta: " + metros + " metros, cerca de " + $("st-tempo").textContent + ", em " + rota.length + " trechos.");
       $("res-titulo").focus();
     }
-  }
-
-  /* ---------- Mapa ---------- */
-  function pontoMeio(t) {
-    var a = R.lugares[t.de], b = R.lugares[t.para];
-    var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-    if (!t.curva) return { x: mx, y: my, d: "M" + a.x + " " + a.y + " L" + b.x + " " + b.y };
-    var dx = b.x - a.x, dy = b.y - a.y, len = Math.sqrt(dx * dx + dy * dy);
-    var cx = mx + (-dy / len) * t.curva * 2, cy = my + (dx / len) * t.curva * 2;
-    return { x: (a.x + 2 * cx + b.x) / 4, y: (a.y + 2 * cy + b.y) / 4, d: "M" + a.x + " " + a.y + " Q" + cx + " " + cy + " " + b.x + " " + b.y };
-  }
-
-  function el(nome, attrs, pai) {
-    var e = document.createElementNS(SVGNS, nome);
-    Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
-    if (pai) pai.appendChild(e);
-    return e;
-  }
-
-  function desenharMapa(rota, curto, p) {
-    var svg = $("rota-mapa");
-    var caixa = svg.parentNode;
-    if (!caixa.querySelector(".map-tiles")) ZELA.mapaReal(caixa, ZELA.centros.angela, 420 / 600);
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-    var ruas = el("g", { fill: "none", "stroke-linecap": "round" }, svg);
-
-    R.trechos.forEach(function (t) {
-      var g = pontoMeio(t);
-      el("path", { d: g.d, stroke: "rgba(31, 31, 41, 0.35)", "stroke-width": t.escada ? 4 : 6 }, ruas);
-      if (t.escada) el("path", { d: g.d, stroke: "#000", "stroke-width": 12, "stroke-dasharray": "2 6" }, ruas);
-    });
-
-    if (curto && rota && curto.map(function (x) { return x.t.id; }).join() !== rota.map(function (x) { return x.t.id; }).join()) {
-      curto.forEach(function (x) { el("path", { d: pontoMeio(x.t).d, stroke: "#000", "stroke-width": 3, "stroke-dasharray": "8 7" }, ruas); });
-    }
-    if (rota) rota.forEach(function (x) { el("path", { d: pontoMeio(x.t).d, "class": "route-path", "stroke-width": 9 }, ruas); });
-
-    /* Avisos abertos no caminho */
-    R.trechos.forEach(function (t) {
-      if (!avisoAberto(t.aviso)) return;
-      var m = pontoMeio(t);
-      el("circle", { cx: m.x, cy: m.y, r: 11, fill: "#f2f2f2", stroke: "#a3300b", "stroke-width": 3 }, svg);
-      var tx = el("text", { x: m.x, y: m.y + 5, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: "#a3300b" }, svg);
-      tx.textContent = "!";
-    });
-
-    /* Lugares */
-    Object.keys(R.lugares).forEach(function (k) {
-      var l = R.lugares[k], noCaminho = p && (k === p.de || k === p.para);
-      if (l.destino) {
-        el("rect", { x: l.x - 9, y: l.y - 9, width: 18, height: 18, rx: 5, fill: noCaminho ? "#1f1f29" : "#ffffff", stroke: "#000", "stroke-width": 2.5 }, svg);
-        var nome = el("text", { x: l.x, y: l.y + (l.y > 300 ? -18 : 30), "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: "#000",
-          stroke: "#f2f2f2", "stroke-width": 4, "paint-order": "stroke" }, svg);
-        nome.textContent = l.curto;
-      } else {
-        el("circle", { cx: l.x, cy: l.y, r: 5, fill: "#000" }, svg);
-      }
-    });
-
-    /* Números dos passos */
-    if (rota) rota.forEach(function (x, i) {
-      var m = pontoMeio(x.t);
-      el("circle", { cx: m.x, cy: m.y, r: 13, fill: "#f2f2f2", stroke: "#000", "stroke-width": 2.5 }, svg);
-      var tx = el("text", { x: m.x, y: m.y + 5, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: "#000" }, svg);
-      tx.textContent = String(i + 1);
-    });
   }
 
   /* ---------- Ouvir instruções (leitura em voz alta) ---------- */
