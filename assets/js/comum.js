@@ -65,10 +65,11 @@
     var u = ZELA.conta.atual();
     var a = document.createElement("a");
     a.className = "btn btn--ghost account-link";
-    a.href = u ? "meus-avisos.html" : "entrar.html";
+    var prefixo = location.pathname.includes("/pages/") ? "" : "pages/";
+    a.href = u ? prefixo + "meus-avisos.html" : prefixo + "entrar.html";
     a.textContent = u ? "Meus avisos" + (u.nome ? " · " + u.nome.split(" ")[0] : "") : "Entrar";
     var aqui = location.pathname.split("/").pop();
-    if (aqui === a.getAttribute("href")) a.setAttribute("aria-current", "page");
+    if (aqui === "meus-avisos.html" || aqui === "entrar.html") a.setAttribute("aria-current", "page");
     lado.insertBefore(a, lado.firstChild);
   }
 

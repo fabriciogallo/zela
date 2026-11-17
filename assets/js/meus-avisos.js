@@ -56,6 +56,6 @@
 
   $("btn-sair").addEventListener("click", function () {
     ZELA.conta.sair();
-    location.href = "index.html";
+    location.href = "../index.html";
   });
 })();
