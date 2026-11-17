@@ -18,12 +18,6 @@
 
 ---
 
-## Contexto — FIAP Global Solution · CitizenTech
-
-Projeto desenvolvido para a **Global Solution** da FIAP, dentro do eixo **CitizenTech**: soluções tecnológicas que ampliam o acesso dos cidadãos aos serviços públicos com foco em usabilidade, acessibilidade e participação.
-
----
-
 ## O problema
 
 Buracos, postes apagados, lixo e calçadas quebradas aparecem toda semana nos bairros periféricos. Os canais oficiais existem, mas o morador não sabe para qual órgão reclamar, os avisos se repetem sem resposta e ninguém consegue acompanhar o andamento. O resultado é descrença: o problema fica, e a pessoa para de avisar.
@@ -68,7 +62,6 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Entrar | `pages/entrar.html` | Login com celular e código por SMS (simulado), sem senha |
 | Meus avisos | `pages/meus-avisos.html` | Lista dos avisos feitos e apoiados, com a etapa de cada um |
 | Sobre | `pages/sobre.html` | Como o Zela funciona, integrantes e conexão com os ODS |
-| Documentação | `pages/projeto.html` | Persona, jornada, interações JS, ODS e acessibilidade (fora do menu) |
 
 ---
 
@@ -133,7 +126,6 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - Consulta de trajetos via [API Valhalla](https://valhalla.github.io/valhalla/api/route/api-reference/) (servidor FOSSGIS)
 - APIs públicas: [ViaCEP](https://viacep.com.br/) e [Nominatim](https://nominatim.org/)
 - `localStorage` para sessão, preferências, apoios e protocolos
-- Fontes: Montserrat (títulos) e Inter (texto) via Google Fonts
 - Pixel art em SVG gerado por código (`assets/js/comum.js`)
 
 ---

@@ -53,7 +53,7 @@
 
   <main id="conteudo" class="page-pad" tabindex="-1">
     <div class="wrap">
-      <div class="page-title">
+      <div class="page-title page-title--wide">
         <h1 class="t-page">Rota acessível</h1>
         <p class="t-lead">Consulte um trajeto entre pontos do bairro e veja as instruções de acordo com o seu perfil de mobilidade.</p>
       </div>
@@ -69,28 +69,81 @@
               <option value="tiradentes">Cidade Tiradentes</option>
             </select>
           </div>
+          <p class="hint">Escolha um ponto do bairro ou digite um CEP para sair ou chegar em qualquer endereço.</p>
           <div class="field">
             <label for="rota-real-de">Saindo de</label>
-            <select id="rota-real-de" class="input" required></select>
+            <select id="rota-real-de" class="input" aria-describedby="rota-real-de-erro rota-real-de-msg" required></select>
             <p class="hint route-selection" id="rota-real-de-texto" aria-hidden="true"></p>
+            <div class="route-cep" id="rota-real-de-cep" hidden>
+              <div class="route-cep-fields">
+                <div class="field">
+                  <label for="rota-real-de-cep-valor">CEP da saída</label>
+                  <input id="rota-real-de-cep-valor" class="input" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" aria-describedby="rota-real-de-erro rota-real-de-msg">
+                </div>
+                <div class="field route-cep-num">
+                  <label for="rota-real-de-numero">Número <span class="muted">(opcional)</span></label>
+                  <input id="rota-real-de-numero" class="input" type="text" inputmode="numeric" maxlength="6">
+                </div>
+              </div>
+              <button type="button" class="btn btn--ghost" id="rota-real-de-localizar">Localizar endereço</button>
+            </div>
+            <p class="error" id="rota-real-de-erro" role="alert"></p>
+            <p class="hint route-address" id="rota-real-de-msg" role="status"></p>
           </div>
+          <button type="button" class="btn btn--ghost btn--sm route-swap" id="rota-real-inverter">⇅ Inverter saída e destino</button>
           <div class="field">
             <label for="rota-real-para">Indo para</label>
-            <select id="rota-real-para" class="input" aria-describedby="rota-real-erro-destino" required></select>
+            <select id="rota-real-para" class="input" aria-describedby="rota-real-erro-destino rota-real-para-erro rota-real-para-msg" required></select>
             <p class="hint route-selection" id="rota-real-para-texto" aria-hidden="true"></p>
             <p class="error" id="rota-real-erro-destino" role="alert"></p>
+            <div class="route-cep" id="rota-real-para-cep" hidden>
+              <div class="route-cep-fields">
+                <div class="field">
+                  <label for="rota-real-para-cep-valor">CEP do destino</label>
+                  <input id="rota-real-para-cep-valor" class="input" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" aria-describedby="rota-real-para-erro rota-real-para-msg">
+                </div>
+                <div class="field route-cep-num">
+                  <label for="rota-real-para-numero">Número <span class="muted">(opcional)</span></label>
+                  <input id="rota-real-para-numero" class="input" type="text" inputmode="numeric" maxlength="6">
+                </div>
+              </div>
+              <button type="button" class="btn btn--ghost" id="rota-real-para-localizar">Localizar endereço</button>
+            </div>
+            <p class="error" id="rota-real-para-erro" role="alert"></p>
+            <p class="hint route-address" id="rota-real-para-msg" role="status"></p>
           </div>
-          <div class="field">
-            <label for="rota-real-perfil">Que tipo de trajeto você prefere?</label>
-            <select id="rota-real-perfil" class="input" aria-describedby="rota-real-preferencia">
-              <option value="cadeira">Cadeira de rodas</option>
-              <option value="andador">Bengala ou andador</option>
-              <option value="carrinho">Carrinho de bebê ou mala</option>
-              <option value="visual">Baixa visão ou cegueira</option>
-            </select>
-            <p class="hint route-selection" id="rota-real-perfil-texto" aria-hidden="true"></p>
-            <p id="rota-real-preferencia" class="hint"></p>
-          </div>
+          <fieldset class="route-options" aria-describedby="rota-real-preferencia">
+            <legend class="legend">Como você vai se deslocar?</legend>
+            <p class="hint">Escolha uma opção.</p>
+            <div class="chip-group" id="rota-real-perfis">
+              <label class="chip"><input type="radio" name="perfil-real" value="cadeira" checked> Cadeira de rodas</label>
+              <label class="chip"><input type="radio" name="perfil-real" value="andador"> Andador</label>
+              <label class="chip"><input type="radio" name="perfil-real" value="bengala"> Bengala</label>
+              <label class="chip"><input type="radio" name="perfil-real" value="carrinho"> Carrinho de bebê</label>
+              <label class="chip"><input type="radio" name="perfil-real" value="malas"> Malas ou objetos grandes</label>
+              <label class="chip"><input type="radio" name="perfil-real" value="baixa-visao"> Baixa visão</label>
+              <label class="chip"><input type="radio" name="perfil-real" value="cegueira"> Cegueira</label>
+            </div>
+            <p id="rota-real-preferencia" class="hint route-profile-hint"></p>
+          </fieldset>
+          <fieldset class="route-options">
+            <legend class="legend">No caminho, quero <span class="muted">(opcional)</span></legend>
+            <p class="hint">Marque quantas quiser.</p>
+            <div class="chip-group">
+              <label class="chip chip--check"><input type="checkbox" name="filtro-real" value="sombra"> Mais sombra</label>
+              <label class="chip chip--check"><input type="checkbox" name="filtro-real" value="bancos"> Bancos para sentar</label>
+              <label class="chip chip--check"><input type="checkbox" name="filtro-real" value="agua"> Pontos de água</label>
+            </div>
+          </fieldset>
+          <fieldset class="route-options">
+            <legend class="legend">Ordenar trajetos por</legend>
+            <div class="chip-group">
+              <label class="chip"><input type="radio" name="ordem-real" value="distancia" checked> Menor distância</label>
+              <label class="chip"><input type="radio" name="ordem-real" value="rampa"> Mais rampas</label>
+              <label class="chip"><input type="radio" name="ordem-real" value="plano"> Mais plano</label>
+              <label class="chip"><input type="radio" name="ordem-real" value="obstaculos"> Menos obstáculos</label>
+            </div>
+          </fieldset>
           <div class="stack route-form-action">
             <button type="submit" class="btn btn--primary btn--lg" id="rota-real-buscar">Buscar trajeto</button>
             <p id="rota-real-carregando" class="hint" role="status"></p>
@@ -116,6 +169,8 @@
       <section id="rota-real-resultado" class="panel panel--ink route-result stack" aria-labelledby="rota-real-resultado-titulo" hidden>
         <h2 id="rota-real-resultado-titulo" class="t-card" tabindex="-1"></h2>
         <p id="rota-real-resultado-perfil" class="hint"></p>
+        <ul id="rota-real-destaques" class="list-reset route-highlights" aria-label="Destaques deste trajeto"></ul>
+        <p id="rota-real-destaques-nota" class="hint" hidden></p>
         <div class="field" id="rota-real-alternativas" hidden>
           <label for="rota-real-alternativa">Compare os trajetos encontrados</label>
           <select id="rota-real-alternativa" class="input"></select>
@@ -123,13 +178,15 @@
         <dl class="route-totals">
           <div><dt>Distância</dt><dd id="rota-real-distancia"></dd></div>
           <div><dt>Tempo estimado</dt><dd id="rota-real-tempo"></dd></div>
+          <div><dt>Chegada se sair agora</dt><dd id="rota-real-chegada"></dd></div>
         </dl>
         <section class="rule-top stack route-instructions" aria-labelledby="rota-real-passos-titulo">
           <div class="row route-instructions-head">
             <h3 id="rota-real-passos-titulo" class="t-tab">Instruções</h3>
             <button type="button" id="rota-real-ouvir" class="btn btn--ink">Ouvir as instruções</button>
           </div>
-          <ol id="rota-real-passos" class="route-list"></ol>
+          <p id="rota-real-passos-resumo" class="hint"></p>
+          <ol id="rota-real-passos" class="list-reset route-timeline"></ol>
         </section>
         <div class="row rule-top">
           <a class="btn btn--ghost" href="#rota-real-mapa-titulo">Ver no mapa</a>
