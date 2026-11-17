@@ -203,9 +203,10 @@
       if (!f) return;
       if (!/^image\//.test(f.type)) {
         input.value = "";
-        ZELA.anunciar("Esse arquivo não é uma foto. Escolha uma imagem.");
+        erro("f-foto", "err-foto", "Escolha um arquivo de imagem para anexar a foto.");
         return;
       }
+      limparErro("f-foto", "err-foto");
       if (fotoUrl) URL.revokeObjectURL(fotoUrl);
       fotoUrl = URL.createObjectURL(f);
       $("foto-preview").src = fotoUrl;

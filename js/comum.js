@@ -141,18 +141,34 @@
     var menos = document.querySelector("[data-texto-menos]");
     var mais = document.querySelector("[data-texto-mais]");
     if (!menos || !mais) return;
-    var nivel = ZELA.store.get("texto", 0);
-    if (!Number.isInteger(nivel) || nivel < 0 || nivel > 3) nivel = 0;
+    var tamanhos = [100, 125, 150, 175, 200];
+    var salvo = ZELA.store.get("texto", 100);
+    var tamanhoAnterior = [100, 125, 150, 200][salvo];
+    var nivel = Math.max(0, tamanhos.indexOf(tamanhoAnterior || salvo));
+
+    var grupo = mais.closest(".text-size");
+    grupo.closest(".nav-collapsible").after(grupo);
+    var repor = document.createElement("button");
+    repor.type = "button";
+    repor.className = "text-size-value";
+    repor.title = "Voltar ao tamanho padrão (100%)";
+    grupo.querySelector(".v-rule").replaceWith(repor);
 
     function aplicar(anunciar) {
-      root.setAttribute("data-texto", String(nivel));
+      var tamanho = tamanhos[nivel];
+      root.setAttribute("data-texto", String(tamanho));
+      root.toggleAttribute("data-texto-grande", tamanho >= 150);
       menos.setAttribute("aria-disabled", String(nivel === 0));
-      mais.setAttribute("aria-disabled", String(nivel === 3));
-      ZELA.store.set("texto", nivel);
-      if (anunciar) ZELA.anunciar("Tamanho do texto: " + [100, 125, 150, 200][nivel] + "%.");
+      mais.setAttribute("aria-disabled", String(nivel === tamanhos.length - 1));
+      repor.setAttribute("aria-disabled", String(nivel === 0));
+      repor.setAttribute("aria-label", tamanho + "%, voltar ao tamanho padrão");
+      repor.textContent = tamanho + "%";
+      ZELA.store.set("texto", tamanho);
+      if (anunciar) ZELA.anunciar("Tamanho do texto: " + tamanho + "%.");
     }
     menos.addEventListener("click", function () { if (nivel > 0) { nivel--; aplicar(true); } });
-    mais.addEventListener("click", function () { if (nivel < 3) { nivel++; aplicar(true); } });
+    mais.addEventListener("click", function () { if (nivel < tamanhos.length - 1) { nivel++; aplicar(true); } });
+    repor.addEventListener("click", function () { if (nivel > 0) { nivel = 0; aplicar(true); } });
     aplicar(false);
   }
 
@@ -184,6 +200,23 @@
     var script = document.createElement("script");
     script.src = "https://vlibras.gov.br/app/vlibras-plugin.js";
     script.async = true;
+    script.addEventListener("load", function () {
+      // O widget cria seu botão depois do carregamento do script.
+      var observador = new MutationObserver(ajustarBotao);
+      var prazo = window.setTimeout(function () { observador.disconnect(); }, 5000);
+      function ajustarBotao() {
+        var acesso = window.VLibrasWidget?.initBtn?.parentElement;
+        if (!acesso || acesso.id !== "vlibras-access") return;
+        acesso.style.top = "var(--libras-top, calc(50vh - 20px))";
+        acesso.style.bottom = "var(--libras-bottom, auto)";
+        acesso.style.transition = "width var(--libras-duration, .5s) ease";
+        root.setAttribute("data-libras", "");
+        window.clearTimeout(prazo);
+        observador.disconnect();
+      }
+      observador.observe(document.body, { childList: true });
+      ajustarBotao();
+    }, { once: true });
     document.body.appendChild(script);
   }
 

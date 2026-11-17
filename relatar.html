@@ -140,7 +140,7 @@
                 <div class="field">
                   <span class="legend" id="foto-rotulo">Foto do local <span class="muted">(opcional)</span></span>
                   <div id="foto-vazia">
-                    <input id="f-foto" name="foto" type="file" accept="image/*" capture="environment" class="sr-only file-input" aria-labelledby="foto-btn-texto foto-rotulo">
+                    <input id="f-foto" name="foto" type="file" accept="image/*" capture="environment" class="sr-only file-input" aria-labelledby="foto-btn-texto foto-rotulo" aria-describedby="err-foto">
                     <label for="f-foto" class="btn btn--ghost btn--lg" id="foto-btn-texto">Tirar ou escolher foto</label>
                   </div>
                   <div id="foto-cheia" class="photo-chip" hidden>
@@ -148,6 +148,7 @@
                     <span id="foto-nome"></span>
                     <button type="button" id="btn-remover-foto" class="btn btn--ink btn--sm">Remover foto</button>
                   </div>
+                  <p id="err-foto" class="error" role="alert"></p>
                 </div>
                 <fieldset>
                   <legend class="legend">Isso coloca alguém em risco agora?</legend>

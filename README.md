@@ -59,7 +59,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 
 | Tela | Interação | Problema de experiência resolvido |
 | --- | --- | --- |
-| Todas | Botões A− / A+ (lembrados entre páginas) e VLibras | Amplia o texto até 200% e oferece tradução automática para Libras |
+| Todas | Botões A− / A+, indicador que volta a 100% e VLibras | Amplia o texto em passos de 25%, até 200%, e oferece tradução automática para Libras |
 | Todas | Menu recolhível no celular (fecha com Esc) | Libera a tela pequena para o conteúdo |
 | Início | Abas "Como funciona" com setas do teclado | Explica o serviço aos poucos, sem texto longo |
 | Início | Avisos por bairro + consulta rápida de protocolo | Mostra que vizinhos já usam e avisa na hora se o número está errado |
@@ -89,8 +89,9 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 - Contraste de texto com o fundo, incluindo os selos de situação e as ações sobre painéis azuis
 - Controles principais com área de toque de pelo menos 44 px e navegação pelo teclado. Use as setas nas abas e Esc para fechar o menu ou o diálogo da rota.
 - Ícones decorativos com `aria-hidden`; prévia da foto com texto alternativo
-- Preferência por movimento reduzido e tamanho do texto ajustável entre 100% e 200%
-- Tradução automática para Libras pelo botão flutuante do [VLibras](https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/vlibras/vlibras)
+- Preferência por movimento reduzido e tamanho do texto ajustável de 100% a 200%. Acione a porcentagem ao lado de A+ para voltar ao padrão.
+- A lista de avisos em Meu bairro tem um atalho antes do mapa. A tela de acompanhamento mostra a situação de cada etapa em texto.
+- Tradução automática pelo botão flutuante do [VLibras](https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/vlibras/vlibras), no canto inferior em telas estreitas
 - Linguagem simples e direta
 
 ## ODS

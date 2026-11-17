@@ -98,7 +98,8 @@
         <p class="count" id="contagem" role="status"></p>
       </form>
 
-      <div class="row" style="margin-top:16px;align-items:flex-start">
+      <p class="neighborhood-jump"><a class="link-action" href="#lista-t"><span>Ir para a lista de avisos</span></a></p>
+      <div class="row" style="align-items:flex-start">
         <section class="col-side panel panel--green inv stack map-col" style="gap:20px" aria-labelledby="mapa-t">
           <h2 id="mapa-t" class="t-tab">Mapa do bairro</h2>
           <div class="map" id="mapa">
@@ -107,8 +108,8 @@
           <p>Toque num número para ver o aviso na lista. O número em fundo escuro é o aviso selecionado. Mapa real do bairro (OpenStreetMap); os avisos são simulados.</p>
         </section>
 
-        <section class="col-main" aria-labelledby="lista-t">
-          <h2 id="lista-t" class="sr-only">Lista de avisos</h2>
+        <section class="col-main stack" style="gap:16px" aria-labelledby="lista-t">
+          <h2 id="lista-t" class="t-card" tabindex="-1">Lista de avisos</h2>
           <p id="vazio" class="panel panel--cream t-lead" hidden>Nenhum aviso com esses filtros. Tente “Todos” ou <a href="relatar.html">relate um problema novo</a>.</p>
           <ul class="list-reset stack" style="gap:16px" id="lista"></ul>
         </section>
