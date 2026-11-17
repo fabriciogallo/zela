@@ -37,6 +37,25 @@ ZELA.centros = {
   tiradentes: { lat: -23.5832, lon: -46.4079 }
 };
 
+/* Pontos públicos no OpenStreetMap para a consulta de trajetos reais. */
+ZELA.locaisRota = {
+  angela: [
+    { id: "terminal-angela", nome: "Terminal Jardim Ângela", lat: -23.6904976, lon: -46.7739314 },
+    { id: "ubs-rivieira", nome: "UBS Alto da Rivieira", lat: -23.6996155, lon: -46.7673824 },
+    { id: "ubs-aracati", nome: "UBS Jardim Aracati", lat: -23.7189156, lon: -46.7700766 }
+  ],
+  grajau: [
+    { id: "terminal-grajau", nome: "Terminal Grajaú", lat: -23.7372449, lon: -46.6973015 },
+    { id: "hospital-grajau", nome: "Hospital Geral do Grajaú", lat: -23.7290263, lon: -46.6908453 },
+    { id: "estacao-grajau", nome: "Estação Grajaú", lat: -23.7363802, lon: -46.6970774 }
+  ],
+  tiradentes: [
+    { id: "terminal-tiradentes", nome: "Terminal Cidade Tiradentes", lat: -23.5831606, lon: -46.4078699 },
+    { id: "casa-cultura", nome: "Casa de Cultura de Cidade Tiradentes", lat: -23.5827694, lon: -46.4072158 },
+    { id: "hospital-tiradentes", nome: "Hospital Municipal Cidade Tiradentes", lat: -23.5967140, lon: -46.4038679 }
+  ]
+};
+
 /* Avisos abertos por bairro (mapa e listas). x/y = posição no mapa em % */
 ZELA.avisos = [
   { id: 1,  bairro: "angela", cat: "luz",     titulo: "Poste apagado há 9 dias",          local: "Rua das Palmeiras, 140", status: "Encaminhado", apoios: 23, dias: 9,  risco: true,  x: 22, y: 28, protocolo: "ZL-2026-04790" },

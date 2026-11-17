@@ -18,11 +18,12 @@
       var feito = i < dados.atual || (resolvido && i === dados.atual);
       var agora = i === dados.atual && !resolvido;
       var classe = feito ? "is-done" : (agora ? "is-current" : "");
-      var sr = feito ? "Concluída: " : (agora ? "Etapa atual: " : "Próxima: ");
+      var situacao = feito ? "Concluída" : (agora ? "Etapa atual" : "Pendente");
       return '<li class="' + classe + '"' + (agora ? ' aria-current="step"' : "") + ">" +
         '<span class="t-mark" aria-hidden="true">' + (feito ? "✓" : i + 1) + "</span>" +
         '<span class="stack" style="gap:2px">' +
-          '<span class="t-title"><span class="sr-only">' + sr + "</span>" + e.nome + "</span>" +
+          '<span class="t-title">' + e.nome + "</span>" +
+          '<span class="pill pill--cream timeline-status"' + (agora ? ' aria-hidden="true"' : "") + ">" + situacao + "</span>" +
           "<span>" + e.desc + "</span>" +
           '<span class="hint t-small">' + ZELA.escapar(dados.datas[i] || "—") + "</span>" +
         "</span></li>";

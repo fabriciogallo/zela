@@ -4,9 +4,13 @@
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return ZELA.escapar(s); };
   var selecionado = null;
+  var tiposMobilidade = ["calcada", "buraco", "bueiro", "lixo"];
 
   function filtros() {
-    return { bairro: $("f-bairro").value, cat: $("f-cat").value, status: $("f-status").value, ord: $("f-ord").value };
+    return {
+      bairro: $("f-bairro").value, cat: $("f-cat").value, status: $("f-status").value,
+      ord: $("f-ord").value, mobilidade: $("f-mobilidade").checked
+    };
   }
 
   function avisosVisiveis() {
@@ -16,6 +20,7 @@
       .filter(function (a) {
         if (a.bairro !== f.bairro) return false;
         if (f.cat !== "todos" && a.cat !== f.cat) return false;
+        if (f.mobilidade && tiposMobilidade.indexOf(a.cat) === -1) return false;
         if (f.status === "abertos" && a.status === "Resolvido") return false;
         if (f.status === "Resolvido" && a.status !== "Resolvido") return false;
         return true;
@@ -31,6 +36,21 @@
       return y.prio.pontos - x.prio.pontos;
     });
     return lista;
+  }
+
+  function mostrarDestinoBairro() {
+    $("rota-bairro-destino-texto").textContent = $("rota-bairro-destino").selectedOptions[0].textContent;
+  }
+
+  function atualizarRotaBairro(bairro) {
+    var pontos = ZELA.locaisRota[bairro];
+    $("rota-bairro-nome").textContent = ZELA.bairros[bairro];
+    $("rota-bairro-valor").value = bairro;
+    $("rota-bairro-saida").textContent = "Saída sugerida: " + pontos[0].nome + ".";
+    $("rota-bairro-destino").replaceChildren(...pontos.slice(1).map(function (ponto) {
+      return new Option(ponto.nome, ponto.id);
+    }));
+    mostrarDestinoBairro();
   }
 
   function render() {
@@ -103,12 +123,21 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    var bairro = ZELA.store.get("bairro", "angela");
-    if (ZELA.bairros[bairro]) $("f-bairro").value = bairro;
+    var parametros = new URLSearchParams(location.search);
+    var bairro = parametros.get("bairro") || ZELA.store.get("bairro", "angela");
+    if (Object.hasOwn(ZELA.bairros, bairro)) $("f-bairro").value = bairro;
+    $("f-mobilidade").checked = parametros.get("mobilidade") === "1";
+    if ($("f-mobilidade").checked) $("f-status").value = "abertos";
+    atualizarRotaBairro($("f-bairro").value);
+    $("rota-bairro-destino").addEventListener("change", mostrarDestinoBairro);
 
-    ["f-bairro", "f-cat", "f-status", "f-ord"].forEach(function (id) {
+    ["f-bairro", "f-cat", "f-status", "f-ord", "f-mobilidade"].forEach(function (id) {
       $(id).addEventListener("change", function () {
-        if (id === "f-bairro") { ZELA.store.set("bairro", $(id).value); selecionado = null; }
+        if (id === "f-bairro") {
+          ZELA.store.set("bairro", $(id).value);
+          atualizarRotaBairro($(id).value);
+          selecionado = null;
+        }
         render();
       });
     });

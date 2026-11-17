@@ -65,21 +65,40 @@
     var u = ZELA.conta.atual();
     var a = document.createElement("a");
     a.className = "btn btn--ghost account-link";
-    a.href = u ? "meus-avisos.html" : "entrar.html";
+    var prefixo = location.pathname.includes("/pages/") ? "" : "pages/";
+    a.href = u ? prefixo + "meus-avisos.html" : prefixo + "entrar.html";
     a.textContent = u ? "Meus avisos" + (u.nome ? " · " + u.nome.split(" ")[0] : "") : "Entrar";
     var aqui = location.pathname.split("/").pop();
-    if (aqui === a.getAttribute("href")) a.setAttribute("aria-current", "page");
+    if (aqui === "meus-avisos.html" || aqui === "entrar.html") a.setAttribute("aria-current", "page");
     lado.insertBefore(a, lado.firstChild);
   }
 
 
-  /* ---------- Mapa real: blocos do OpenStreetMap (projeção Web Mercator) ----------
-     Desenha uma área de 3 blocos de largura em volta do centro, dentro do contêiner. */
-  ZELA.mapaReal = function (conteiner, centro, proporcao) {
+  /* ---------- Mapa real: blocos do OpenStreetMap (projeção Web Mercator) ---------- */
+  function coordenadasMapa(p) {
+    var latitude = p.lat * Math.PI / 180;
+    return {
+      x: (p.lon + 180) / 360,
+      y: (1 - Math.asinh(Math.tan(latitude)) / Math.PI) / 2
+    };
+  }
+
+  ZELA.mapaReal = function (conteiner, centro, proporcao, pontos) {
     var z = 16, larg = 768, alt = larg * (proporcao || 1);
-    var n = Math.pow(2, z) * 256, r = centro.lat * Math.PI / 180;
-    var cx = (centro.lon + 180) / 360 * n, cy = (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n;
-    var esq = cx - larg / 2, topo = cy - alt / 2;
+    var pos = coordenadasMapa(centro);
+    if (pontos && pontos.length > 1) {
+      var xMin = 1, xMax = 0, yMin = 1, yMax = 0;
+      pontos.forEach(function (p) {
+        var xy = coordenadasMapa(p);
+        xMin = Math.min(xMin, xy.x); xMax = Math.max(xMax, xy.x);
+        yMin = Math.min(yMin, xy.y); yMax = Math.max(yMax, xy.y);
+      });
+      var escala = Math.min((larg - 112) / (xMax - xMin), (alt - 112) / (yMax - yMin));
+      z = Math.max(0, Math.min(17, Math.floor(Math.log2(escala / 256))));
+      pos = { x: (xMin + xMax) / 2, y: (yMin + yMax) / 2 };
+    }
+    var n = Math.pow(2, z) * 256;
+    var esq = pos.x * n - larg / 2, topo = pos.y * n - alt / 2;
     var camada = conteiner.querySelector(".map-tiles");
     if (!camada) { camada = document.createElement("div"); camada.className = "map-tiles"; camada.setAttribute("aria-hidden", "true"); conteiner.insertBefore(camada, conteiner.firstChild); }
     camada.innerHTML = "";
@@ -95,6 +114,10 @@
         camada.appendChild(img);
       }
     }
+    return function (p) {
+      var xy = coordenadasMapa(p);
+      return { x: (xy.x * n - esq) / larg * 100, y: (xy.y * n - topo) / alt * 100 };
+    };
   };
 
   /* ---------- Anúncios para leitores de tela ---------- */
@@ -141,18 +164,34 @@
     var menos = document.querySelector("[data-texto-menos]");
     var mais = document.querySelector("[data-texto-mais]");
     if (!menos || !mais) return;
-    var nivel = ZELA.store.get("texto", 0);
-    if (!Number.isInteger(nivel) || nivel < 0 || nivel > 3) nivel = 0;
+    var tamanhos = [100, 125, 150, 175, 200];
+    var salvo = ZELA.store.get("texto", 100);
+    var tamanhoAnterior = [100, 125, 150, 200][salvo];
+    var nivel = Math.max(0, tamanhos.indexOf(tamanhoAnterior || salvo));
+
+    var grupo = mais.closest(".text-size");
+    grupo.closest(".nav-collapsible").after(grupo);
+    var repor = document.createElement("button");
+    repor.type = "button";
+    repor.className = "text-size-value";
+    repor.title = "Voltar ao tamanho padrão (100%)";
+    grupo.querySelector(".v-rule").replaceWith(repor);
 
     function aplicar(anunciar) {
-      root.setAttribute("data-texto", String(nivel));
+      var tamanho = tamanhos[nivel];
+      root.setAttribute("data-texto", String(tamanho));
+      root.toggleAttribute("data-texto-grande", tamanho >= 150);
       menos.setAttribute("aria-disabled", String(nivel === 0));
-      mais.setAttribute("aria-disabled", String(nivel === 3));
-      ZELA.store.set("texto", nivel);
-      if (anunciar) ZELA.anunciar("Tamanho do texto: " + [100, 125, 150, 200][nivel] + "%.");
+      mais.setAttribute("aria-disabled", String(nivel === tamanhos.length - 1));
+      repor.setAttribute("aria-disabled", String(nivel === 0));
+      repor.setAttribute("aria-label", tamanho + "%, voltar ao tamanho padrão");
+      repor.textContent = tamanho + "%";
+      ZELA.store.set("texto", tamanho);
+      if (anunciar) ZELA.anunciar("Tamanho do texto: " + tamanho + "%.");
     }
     menos.addEventListener("click", function () { if (nivel > 0) { nivel--; aplicar(true); } });
-    mais.addEventListener("click", function () { if (nivel < 3) { nivel++; aplicar(true); } });
+    mais.addEventListener("click", function () { if (nivel < tamanhos.length - 1) { nivel++; aplicar(true); } });
+    repor.addEventListener("click", function () { if (nivel > 0) { nivel = 0; aplicar(true); } });
     aplicar(false);
   }
 
@@ -184,6 +223,23 @@
     var script = document.createElement("script");
     script.src = "https://vlibras.gov.br/app/vlibras-plugin.js";
     script.async = true;
+    script.addEventListener("load", function () {
+      // O widget cria seu botão depois do carregamento do script.
+      var observador = new MutationObserver(ajustarBotao);
+      var prazo = window.setTimeout(function () { observador.disconnect(); }, 5000);
+      function ajustarBotao() {
+        var acesso = window.VLibrasWidget?.initBtn?.parentElement;
+        if (!acesso || acesso.id !== "vlibras-access") return;
+        acesso.style.top = "var(--libras-top, calc(50vh - 20px))";
+        acesso.style.bottom = "var(--libras-bottom, auto)";
+        acesso.style.transition = "width var(--libras-duration, .5s) ease";
+        root.setAttribute("data-libras", "");
+        window.clearTimeout(prazo);
+        observador.disconnect();
+      }
+      observador.observe(document.body, { childList: true });
+      ajustarBotao();
+    }, { once: true });
     document.body.appendChild(script);
   }
 

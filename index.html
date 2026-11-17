@@ -1,228 +1,475 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Zela — Sua rua avisa. A prefeitura responde.</title>
-  <meta name="description" content="Zela é uma plataforma de zeladoria colaborativa: relate problemas da sua rua, apoie avisos de vizinhos e acompanhe cada etapa até a solução.">
-  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
-  <link rel="stylesheet" href="css/style.css">
-  <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
-  <script src="js/dados.js" defer></script>
-  <script src="js/comum.js" defer></script>
-  <script src="js/inicio.js" defer></script>
-</head>
-<body>
-  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zela — Sua rua avisa. A prefeitura responde.</title>
+    <meta
+      name="description"
+      content="Zela é uma plataforma de zeladoria colaborativa: relate problemas da sua rua, apoie avisos de vizinhos e acompanhe cada etapa até a solução."
+    />
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@600;700&amp;display=swap"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script>
+      document.documentElement.classList.add("js");
+      try {
+        var t = JSON.parse(localStorage.getItem("zela:texto"));
+        if (t) document.documentElement.setAttribute("data-texto", t);
+      } catch (e) {}
+    </script>
+    <script src="assets/js/dados.js" defer></script>
+    <script src="assets/js/comum.js" defer></script>
+    <script src="assets/js/inicio.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
-  <header class="site-header site-header--sobre">
-    <div class="nav-bar" id="nav-bar">
-      <a class="brand" href="index.html" aria-label="Zela, página inicial">
-        <svg width="28" height="28" viewBox="0 0 14 14" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><rect width="14" height="14" rx="3" fill="#4f8a4a"/><path d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z" fill="#0081c0"/><path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a"/><path d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z" fill="#f1e4b8"/></svg>
-        <span class="brand-name">Zela</span>
-      </a>
-      <span class="v-rule brand-rule" aria-hidden="true"></span>
-      <button type="button" class="menu-toggle btn btn--ghost btn--sm" aria-expanded="false" aria-controls="nav-collapsible">Menu</button>
-      <div class="nav-collapsible" id="nav-collapsible">
-        <nav aria-label="Principal">
-          <ul class="list-reset nav-list">
-            <li><a href="index.html" aria-current="page">Início</a></li>
-            <li><a href="relatar.html">Relatar</a></li>
-            <li><a href="acompanhar.html">Acompanhar</a></li>
-            <li><a href="bairro.html">Meu bairro</a></li>
-            <li><a href="rota.html">Rota acessível</a></li>
-            <li><a href="sobre.html">Sobre</a></li>
-          </ul>
-        </nav>
-        <div class="nav-spacer"></div>
-        <div class="text-size" role="group" aria-label="Tamanho do texto">
-          <button type="button" data-texto-menos aria-label="A−, diminuir o tamanho do texto">A−</button>
-          <span class="v-rule" aria-hidden="true"></span>
-          <button type="button" data-texto-mais aria-label="A+, aumentar o tamanho do texto" style="font-size:1.1875rem">A+</button>
+    <header class="site-header site-header--sobre">
+      <div class="nav-bar" id="nav-bar">
+        <a class="brand" href="index.html" aria-label="Zela, página inicial">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 14 14"
+            aria-hidden="true"
+            focusable="false"
+            shape-rendering="crispEdges"
+          >
+            <rect width="14" height="14" rx="3" fill="#4f8a4a" />
+            <path
+              d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z"
+              fill="#0081c0"
+            />
+            <path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a" />
+            <path d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z" fill="#f1e4b8" />
+          </svg>
+          <span class="brand-name">Zela</span>
+        </a>
+        <span class="v-rule brand-rule" aria-hidden="true"></span>
+        <button
+          type="button"
+          class="menu-toggle btn btn--ghost btn--sm"
+          aria-expanded="false"
+          aria-controls="nav-collapsible"
+        >
+          Menu
+        </button>
+        <div class="nav-collapsible" id="nav-collapsible">
+          <nav aria-label="Principal">
+            <ul class="list-reset nav-list">
+              <li><a href="index.html" aria-current="page">Início</a></li>
+              <li><a href="pages/relatar.html">Relatar</a></li>
+              <li><a href="pages/acompanhar.html">Acompanhar</a></li>
+              <li><a href="pages/bairro.html">Meu bairro</a></li>
+              <li><a href="pages/rota.html">Rota acessível</a></li>
+              <li><a href="pages/sobre.html">Sobre</a></li>
+            </ul>
+          </nav>
+          <div class="nav-spacer"></div>
+          <div class="text-size" role="group" aria-label="Tamanho do texto">
+            <button
+              type="button"
+              data-texto-menos
+              aria-label="A−, diminuir o tamanho do texto"
+            >
+              A−
+            </button>
+            <span class="v-rule" aria-hidden="true"></span>
+            <button
+              type="button"
+              data-texto-mais
+              aria-label="A+, aumentar o tamanho do texto"
+              style="font-size: 1.1875rem"
+            >
+              A+
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="header-actions">
-      <a class="btn btn--primary" href="relatar.html">Relatar problema</a>
-    </div>
-  </header>
+      <div class="header-actions">
+        <a class="btn btn--primary" href="pages/relatar.html">Relatar problema</a>
+      </div>
+    </header>
 
-  <main id="conteudo" class="page-pad" tabindex="-1">
-    <!-- Abertura: paisagem em pixel art com promessa no vidro -->
-    <section class="landscape landscape--topo" aria-labelledby="hero-titulo">
-      <img class="pixel-scene" src="img/abertura-animada.svg" alt="">
-      <p class="identity">Zela<br>zeladoria colaborativa</p>
-      <div class="glass">
-        <h1 id="hero-titulo" class="t-promise">Sua rua avisa. A prefeitura responde.</h1>
-        <p>Relate buraco, poste apagado, lixo ou calçada quebrada em 3 minutos. O Zela leva o aviso ao órgão certo e mostra cada passo até a solução.</p>
+    <main id="conteudo" class="page-pad" tabindex="-1">
+      <!-- Abertura: paisagem em pixel art com promessa no vidro -->
+      <section class="landscape landscape--topo" aria-labelledby="hero-titulo">
+        <img class="pixel-scene" src="assets/img/abertura-animada.svg" alt="" />
+        <p class="identity">Zela<br />zeladoria colaborativa</p>
+        <div class="glass">
+          <h1 id="hero-titulo" class="t-promise">
+            Sua rua avisa. A prefeitura responde.
+          </h1>
+          <p>
+            Relate buraco, poste apagado, lixo ou calçada quebrada em 3 minutos.
+            O Zela leva o aviso ao órgão certo e mostra cada passo até a
+            solução.
+          </p>
+          <div class="row">
+            <a class="btn btn--glass btn--lg" href="pages/relatar.html"
+              >Relatar um problema</a
+            >
+            <a class="link-action" href="pages/acompanhar.html"
+              ><span>Acompanhar protocolo</span></a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Tipos de problema -->
+      <section class="wrap chapter" aria-labelledby="cat-titulo">
+        <div class="cat-head">
+          <div class="stack" style="gap: 12px; max-width: 640px">
+            <p class="t-small muted">Os pedidos mais comuns em São Paulo</p>
+            <h2 id="cat-titulo" class="t-section">
+              O que está atrapalhando a sua rua?
+            </h2>
+          </div>
+          <p class="t-lead muted" style="max-width: 380px">
+            Escolha o tipo de problema. O Zela já sabe para qual órgão mandar.
+          </p>
+        </div>
+        <ul class="list-reset cat-grid">
+          <li class="cat-destaque">
+            <a class="cat-card cat-card--big" href="pages/relatar.html?tipo=arvore">
+              <span class="cat-flag">O pedido mais comum</span>
+              <img class="cat-img" src="assets/img/cat-arvore.svg" alt="" />
+              <span class="cat-t">Árvore ou poda</span>
+              <span class="cat-d"
+                >Galho caído, árvore com risco de queda ou poda.</span
+              >
+              <span class="cat-foot"
+                ><span class="link-action"
+                  ><span>Relatar agora</span></span
+                ></span
+              >
+            </a>
+          </li>
+          <li>
+            <a class="cat-card" href="pages/relatar.html?tipo=buraco">
+              <img class="cat-img" src="assets/img/cat-buraco.svg" alt="" />
+              <span class="cat-t">Buraco na rua</span>
+              <span class="cat-d"
+                >Asfalto afundado ou cratera (tapa-buraco).</span
+              >
+            </a>
+          </li>
+          <li>
+            <a class="cat-card" href="pages/relatar.html?tipo=lixo">
+              <img class="cat-img" src="assets/img/cat-lixo.svg" alt="" />
+              <span class="cat-t">Entulho ou descarte irregular</span>
+              <span class="cat-d"
+                >Entulho, móveis velhos ou lixo jogado na rua.</span
+              >
+            </a>
+          </li>
+          <li>
+            <a class="cat-card" href="pages/relatar.html?tipo=luz">
+              <img class="cat-img" src="assets/img/cat-luz.svg" alt="" />
+              <span class="cat-t">Poste apagado</span>
+              <span class="cat-d"
+                >Lâmpada queimada, piscando ou acesa de dia.</span
+              >
+            </a>
+          </li>
+          <li>
+            <a class="cat-card" href="pages/relatar.html?tipo=bueiro">
+              <img class="cat-img" src="assets/img/cat-bueiro.svg" alt="" />
+              <span class="cat-t">Bueiro entupido ou alagamento</span>
+              <span class="cat-d"
+                >Boca de lobo entupida, água parada na rua.</span
+              >
+            </a>
+          </li>
+          <li>
+            <a class="cat-card" href="pages/relatar.html?tipo=calcada">
+              <img class="cat-img" src="assets/img/cat-calcada.svg" alt="" />
+              <span class="cat-t">Calçada quebrada</span>
+              <span class="cat-d">Piso solto, degrau ou rampa bloqueada.</span>
+            </a>
+          </li>
+          <li>
+            <a class="cat-card" href="pages/relatar.html?tipo=mato">
+              <img class="cat-img" src="assets/img/cat-mato.svg" alt="" />
+              <span class="cat-t">Mato alto ou terreno sujo</span>
+              <span class="cat-d">Praça, canteiro ou terreno sem limpeza.</span>
+            </a>
+          </li>
+          <li>
+            <a class="cat-card" href="pages/relatar.html?tipo=sinal">
+              <img class="cat-img" src="assets/img/cat-sinal.svg" alt="" />
+              <span class="cat-t">Placa ou semáforo com defeito</span>
+              <span class="cat-d">Sinalização apagada, caída ou pichada.</span>
+            </a>
+          </li>
+          <li>
+            <a class="cat-card" href="pages/relatar.html?tipo=outro">
+              <img class="cat-img" src="assets/img/cat-outro.svg" alt="" />
+              <span class="cat-t">Outro problema</span>
+              <span class="cat-d"
+                >Ponto de ônibus, praça, pichação e mais.</span
+              >
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Como funciona (abas) -->
+      <section class="wrap chapter" aria-labelledby="como-titulo">
+        <div class="section-head">
+          <h2 id="como-titulo" class="t-section">
+            Do aviso à solução, sem fila e sem telefone ocupado
+          </h2>
+        </div>
         <div class="row">
-          <a class="btn btn--glass btn--lg" href="relatar.html">Relatar um problema</a>
-          <a class="link-action" href="acompanhar.html"><span>Acompanhar protocolo</span></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tipos de problema -->
-    <section class="wrap chapter" aria-labelledby="cat-titulo">
-      <div class="cat-head">
-        <div class="stack" style="gap:12px;max-width:640px">
-          <p class="t-small muted">Os pedidos mais comuns em São Paulo</p>
-          <h2 id="cat-titulo" class="t-section">O que está atrapalhando a sua rua?</h2>
-        </div>
-        <p class="t-lead muted" style="max-width:380px">Escolha o tipo de problema. O Zela já sabe para qual órgão mandar.</p>
-      </div>
-      <ul class="list-reset cat-grid">
-        <li class="cat-destaque"><a class="cat-card cat-card--big" href="relatar.html?tipo=arvore">
-          <span class="cat-flag">O pedido mais comum</span>
-          <img class="cat-img" src="img/cat-arvore.svg" alt="">
-          <span class="cat-t">Árvore ou poda</span>
-          <span class="cat-d">Galho caído, árvore com risco de queda ou poda.</span>
-          <span class="cat-foot"><span class="link-action"><span>Relatar agora</span></span></span>
-        </a></li>
-        <li><a class="cat-card" href="relatar.html?tipo=buraco">
-          <img class="cat-img" src="img/cat-buraco.svg" alt="">
-          <span class="cat-t">Buraco na rua</span>
-          <span class="cat-d">Asfalto afundado ou cratera (tapa-buraco).</span>
-        </a></li>
-        <li><a class="cat-card" href="relatar.html?tipo=lixo">
-          <img class="cat-img" src="img/cat-lixo.svg" alt="">
-          <span class="cat-t">Entulho ou descarte irregular</span>
-          <span class="cat-d">Entulho, móveis velhos ou lixo jogado na rua.</span>
-        </a></li>
-        <li><a class="cat-card" href="relatar.html?tipo=luz">
-          <img class="cat-img" src="img/cat-luz.svg" alt="">
-          <span class="cat-t">Poste apagado</span>
-          <span class="cat-d">Lâmpada queimada, piscando ou acesa de dia.</span>
-        </a></li>
-        <li><a class="cat-card" href="relatar.html?tipo=bueiro">
-          <img class="cat-img" src="img/cat-bueiro.svg" alt="">
-          <span class="cat-t">Bueiro entupido ou alagamento</span>
-          <span class="cat-d">Boca de lobo entupida, água parada na rua.</span>
-        </a></li>
-        <li><a class="cat-card" href="relatar.html?tipo=calcada">
-          <img class="cat-img" src="img/cat-calcada.svg" alt="">
-          <span class="cat-t">Calçada quebrada</span>
-          <span class="cat-d">Piso solto, degrau ou rampa bloqueada.</span>
-        </a></li>
-        <li><a class="cat-card" href="relatar.html?tipo=mato">
-          <img class="cat-img" src="img/cat-mato.svg" alt="">
-          <span class="cat-t">Mato alto ou terreno sujo</span>
-          <span class="cat-d">Praça, canteiro ou terreno sem limpeza.</span>
-        </a></li>
-        <li><a class="cat-card" href="relatar.html?tipo=sinal">
-          <img class="cat-img" src="img/cat-sinal.svg" alt="">
-          <span class="cat-t">Placa ou semáforo com defeito</span>
-          <span class="cat-d">Sinalização apagada, caída ou pichada.</span>
-        </a></li>
-        <li><a class="cat-card" href="relatar.html?tipo=outro">
-          <img class="cat-img" src="img/cat-outro.svg" alt="">
-          <span class="cat-t">Outro problema</span>
-          <span class="cat-d">Ponto de ônibus, praça, pichação e mais.</span>
-        </a></li>
-      </ul>
-    </section>
-
-    <!-- Como funciona (abas) -->
-    <section class="wrap chapter" aria-labelledby="como-titulo">
-      <div class="section-head">
-        <h2 id="como-titulo" class="t-section">Do aviso à solução, sem fila e sem telefone ocupado</h2>
-      </div>
-      <div class="row">
-        <div class="tabs" role="tablist" aria-label="Etapas do Zela" aria-orientation="vertical">
-          <button type="button" class="tab" role="tab" id="tab-1" aria-selected="true" aria-controls="painel-como" data-titulo="Você conta o que viu" data-historia="Em 4 passos curtos: o tipo de problema, onde fica e, se quiser, uma foto." data-itens="O CEP ou a localização do celular preenchem o endereço|Se um vizinho já avisou, você só apoia o aviso|Funciona no celular e com internet fraca" data-cta="Relatar um problema" data-href="relatar.html">
-            <span class="badge" aria-hidden="true">01</span><span class="tab-n" aria-hidden="true">01</span>
-            <span>Relate</span>
-            <span class="tab-desc">Tipo, local e foto. Leva uns 3 minutos.</span>
-          </button>
-          <button type="button" class="tab" role="tab" id="tab-2" aria-selected="false" aria-controls="painel-como" tabindex="-1" data-titulo="O aviso chega a quem resolve" data-historia="O Zela manda o pedido para o órgão certo e organiza a fila do bairro." data-itens="Subprefeitura, iluminação pública ou serviço de limpeza|Mais apoios e mais risco deixam o aviso mais urgente|Avisos repetidos viram um só, com todos os apoios" data-cta="Ver avisos do meu bairro" data-href="bairro.html">
-            <span class="badge" aria-hidden="true">02</span><span class="tab-n" aria-hidden="true">02</span>
-            <span>Encaminhamos</span>
-            <span class="tab-desc">O aviso vai direto ao órgão responsável.</span>
-          </button>
-          <button type="button" class="tab" role="tab" id="tab-3" aria-selected="false" aria-controls="painel-como" tabindex="-1" data-titulo="Você acompanha até o fim" data-historia="Com o número do protocolo, você vê cada etapa e decide se ficou resolvido." data-itens="Recebido, encaminhado, em execução e resolvido|Aviso por SMS a cada mudança, se você quiser|Se não resolveu, você reabre o aviso" data-cta="Acompanhar um protocolo" data-href="acompanhar.html">
-            <span class="badge" aria-hidden="true">03</span><span class="tab-n" aria-hidden="true">03</span>
-            <span>Acompanhe</span>
-            <span class="tab-desc">Veja cada etapa pelo número do protocolo.</span>
-          </button>
-        </div>
-        <div class="tab-panel step-card" id="painel-como" role="tabpanel" aria-labelledby="tab-1" tabindex="0">
-          <div class="sheet step-sheet">
-            <div class="stack" style="gap:10px">
-              <p class="t-small muted" id="como-etapa">Etapa 1 de 3</p>
-              <div class="step-bar" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
-            </div>
-            <h3 class="t-card" id="como-titulo-etapa">Você conta o que viu</h3>
-            <p class="t-lead" id="como-historia">Em 4 passos curtos: o tipo de problema, onde fica e, se quiser, uma foto.</p>
-            <ul class="list-reset tick-list" id="como-itens"><li>O CEP ou a localização do celular preenchem o endereço</li><li>Se um vizinho já avisou, você só apoia o aviso</li><li>Funciona no celular e com internet fraca</li></ul>
-            <div class="step-actions">
-              <a class="btn btn--primary" id="como-cta" href="relatar.html">Relatar um problema</a>
-              <div class="row" style="gap:8px">
-                <button type="button" class="btn btn--ghost btn--sm" id="como-ant" disabled>Etapa anterior</button>
-                <button type="button" class="btn btn--ghost btn--sm" id="como-prox">Próxima etapa</button>
+          <div
+            class="tabs"
+            role="tablist"
+            aria-label="Etapas do Zela"
+            aria-orientation="vertical"
+          >
+            <button
+              type="button"
+              class="tab"
+              role="tab"
+              id="tab-1"
+              aria-selected="true"
+              aria-controls="painel-como"
+              data-titulo="Você conta o que viu"
+              data-historia="Em 4 passos curtos: o tipo de problema, onde fica e, se quiser, uma foto."
+              data-itens="O CEP ou a localização do celular preenchem o endereço|Se um vizinho já avisou, você só apoia o aviso|Funciona no celular e com internet fraca"
+              data-cta="Relatar um problema"
+              data-href="pages/relatar.html"
+            >
+              <span class="badge" aria-hidden="true">01</span
+              ><span class="tab-n" aria-hidden="true">01</span>
+              <span>Relate</span>
+              <span class="tab-desc"
+                >Tipo, local e foto. Leva uns 3 minutos.</span
+              >
+            </button>
+            <button
+              type="button"
+              class="tab"
+              role="tab"
+              id="tab-2"
+              aria-selected="false"
+              aria-controls="painel-como"
+              tabindex="-1"
+              data-titulo="O aviso chega a quem resolve"
+              data-historia="O Zela manda o pedido para o órgão certo e organiza a fila do bairro."
+              data-itens="Subprefeitura, iluminação pública ou serviço de limpeza|Mais apoios e mais risco deixam o aviso mais urgente|Avisos repetidos viram um só, com todos os apoios"
+              data-cta="Ver avisos do meu bairro"
+              data-href="pages/bairro.html"
+            >
+              <span class="badge" aria-hidden="true">02</span
+              ><span class="tab-n" aria-hidden="true">02</span>
+              <span>Encaminhamos</span>
+              <span class="tab-desc"
+                >O aviso vai direto ao órgão responsável.</span
+              >
+            </button>
+            <button
+              type="button"
+              class="tab"
+              role="tab"
+              id="tab-3"
+              aria-selected="false"
+              aria-controls="painel-como"
+              tabindex="-1"
+              data-titulo="Você acompanha até o fim"
+              data-historia="Com o número do protocolo, você vê cada etapa e decide se ficou resolvido."
+              data-itens="Recebido, encaminhado, em execução e resolvido|Aviso por SMS a cada mudança, se você quiser|Se não resolveu, você reabre o aviso"
+              data-cta="Acompanhar um protocolo"
+              data-href="pages/acompanhar.html"
+            >
+              <span class="badge" aria-hidden="true">03</span
+              ><span class="tab-n" aria-hidden="true">03</span>
+              <span>Acompanhe</span>
+              <span class="tab-desc"
+                >Veja cada etapa pelo número do protocolo.</span
+              >
+            </button>
+          </div>
+          <div
+            class="tab-panel step-card"
+            id="painel-como"
+            role="tabpanel"
+            aria-labelledby="tab-1"
+            tabindex="0"
+          >
+            <div class="sheet step-sheet">
+              <div class="stack" style="gap: 10px">
+                <p class="t-small muted" id="como-etapa">Etapa 1 de 3</p>
+                <div class="step-bar" aria-hidden="true">
+                  <span class="on"></span><span></span><span></span>
+                </div>
+              </div>
+              <h3 class="t-card" id="como-titulo-etapa">
+                Você conta o que viu
+              </h3>
+              <p class="t-lead" id="como-historia">
+                Em 4 passos curtos: o tipo de problema, onde fica e, se quiser,
+                uma foto.
+              </p>
+              <ul class="list-reset tick-list" id="como-itens">
+                <li>O CEP ou a localização do celular preenchem o endereço</li>
+                <li>Se um vizinho já avisou, você só apoia o aviso</li>
+                <li>Funciona no celular e com internet fraca</li>
+              </ul>
+              <div class="step-actions">
+                <a class="btn btn--primary" id="como-cta" href="pages/relatar.html"
+                  >Relatar um problema</a
+                >
+                <div class="row" style="gap: 8px">
+                  <button
+                    type="button"
+                    class="btn btn--ghost btn--sm"
+                    id="como-ant"
+                    disabled
+                  >
+                    Etapa anterior
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn--ghost btn--sm"
+                    id="como-prox"
+                  >
+                    Próxima etapa
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- No seu bairro -->
-    <section class="wrap-narrow chapter" aria-labelledby="bairro-titulo">
-      <h2 id="bairro-titulo" class="t-section center" style="max-width:900px;margin-bottom:32px">Acontecendo no seu bairro agora</h2>
-      <div class="row" style="justify-content:center;align-items:center;gap:12px;margin-bottom:clamp(40px,5.6vw,80px)">
-        <label for="sel-bairro" class="t-lead">Escolha o bairro</label>
-        <select id="sel-bairro" class="input neighborhood-select">
-          <option value="angela">Jardim Ângela</option>
-          <option value="grajau">Grajaú</option>
-          <option value="tiradentes">Cidade Tiradentes</option>
-        </select>
-      </div>
-      <ul class="list-reset grid-auto neighborhood-preview" id="lista-perto"></ul>
-      <div class="panel panel--cream row" style="margin-top:16px;padding:24px 32px;align-items:center;justify-content:space-between">
-        <p>Dados simulados para o protótipo. Apoiar um aviso existente aumenta a prioridade dele.</p>
-        <a class="btn btn--ghost" href="bairro.html">Ver o mapa do bairro</a>
-      </div>
-    </section>
-  </main>
+      <!-- No seu bairro -->
+      <section class="wrap-narrow chapter" aria-labelledby="bairro-titulo">
+        <h2
+          id="bairro-titulo"
+          class="t-section center"
+          style="max-width: 900px; margin-bottom: 32px"
+        >
+          Acontecendo no seu bairro agora
+        </h2>
+        <div
+          class="row"
+          style="
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: clamp(40px, 5.6vw, 80px);
+          "
+        >
+          <label for="sel-bairro" class="t-lead">Escolha o bairro</label>
+          <select id="sel-bairro" class="input neighborhood-select">
+            <option value="angela">Jardim Ângela</option>
+            <option value="grajau">Grajaú</option>
+            <option value="tiradentes">Cidade Tiradentes</option>
+          </select>
+        </div>
+        <ul
+          class="list-reset grid-auto neighborhood-preview"
+          id="lista-perto"
+        ></ul>
+        <div
+          class="panel panel--cream row"
+          style="
+            margin-top: 16px;
+            padding: 24px 32px;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
+          <p>
+            Dados simulados para o protótipo. Apoiar um aviso existente aumenta
+            a prioridade dele.
+          </p>
+          <a class="btn btn--ghost" href="pages/bairro.html">Ver o mapa do bairro</a>
+        </div>
+      </section>
+    </main>
 
-  <footer class="site-footer">
-    <div class="closing-band">
-      <div class="wrap closing-inner">
-        <span class="emblem" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 14 14" aria-hidden="true" focusable="false" shape-rendering="crispEdges"><rect width="14" height="14" rx="3" fill="#4f8a4a"/><path d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z" fill="#0081c0"/><path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a"/><path d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z" fill="#f1e4b8"/></svg></span>
-        <h2 id="proto-titulo" class="t-section closing-title">Já tem um protocolo? Veja onde seu aviso está.</h2>
-        <section aria-labelledby="proto-titulo" class="closing-form"><form id="form-proto" class="stack" style="gap:8px" novalidate>
-          <label for="proto-rapido">Número do protocolo</label>
-          <div class="inline-form">
-            <input id="proto-rapido" name="protocolo" class="input" type="text" autocomplete="off" autocapitalize="characters" placeholder="ZL-2026-04817" aria-describedby="proto-dica proto-erro">
-            <button class="btn btn--primary btn--lg" type="submit">Consultar</button>
+    <footer class="site-footer">
+      <div class="closing-band">
+        <div class="wrap closing-inner">
+          <span class="emblem" aria-hidden="true"
+            ><svg
+              width="40"
+              height="40"
+              viewBox="0 0 14 14"
+              aria-hidden="true"
+              focusable="false"
+              shape-rendering="crispEdges"
+            >
+              <rect width="14" height="14" rx="3" fill="#4f8a4a" />
+              <path
+                d="M3 0h8a3 3 0 0 1 3 3v5H0V3a3 3 0 0 1 3-3z"
+                fill="#0081c0"
+              />
+              <path d="M5 4h4v1H5zM4 5h6v1H4zM3 6h8v2H3z" fill="#f6c24a" />
+              <path
+                d="M6.5 8h1v2h-1zM6 10h2v2H6zM5 12h4v2H5z"
+                fill="#f1e4b8"
+              /></svg
+          ></span>
+          <h2 id="proto-titulo" class="t-section closing-title">
+            Já tem um protocolo? Veja onde seu aviso está.
+          </h2>
+          <section aria-labelledby="proto-titulo" class="closing-form">
+            <form id="form-proto" class="stack" style="gap: 8px" novalidate>
+              <label for="proto-rapido">Número do protocolo</label>
+              <div class="inline-form">
+                <input
+                  id="proto-rapido"
+                  name="protocolo"
+                  class="input"
+                  type="text"
+                  autocomplete="off"
+                  autocapitalize="characters"
+                  placeholder="ZL-2026-04817"
+                  aria-describedby="proto-dica proto-erro"
+                />
+                <button class="btn btn--primary btn--lg" type="submit">
+                  Consultar
+                </button>
+              </div>
+              <p id="proto-dica" class="t-small muted">
+                Formato: ZL-ano-número. Para testar, use ZL-2026-04817.
+              </p>
+              <p id="proto-erro" class="error" role="alert"></p>
+              <div id="proto-ok" role="status"></div>
+            </form>
+          </section>
+          <div class="utility-row">
+            <nav aria-label="Rodapé">
+              <ul class="list-reset">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="pages/relatar.html">Relatar</a></li>
+                <li><a href="pages/acompanhar.html">Acompanhar</a></li>
+                <li><a href="pages/bairro.html">Meu bairro</a></li>
+                <li><a href="pages/rota.html">Rota acessível</a></li>
+                <li><a href="pages/sobre.html">Sobre o projeto</a></li>
+              </ul>
+            </nav>
+            <p>Zela · protótipo acadêmico CitizenTech · dados simulados</p>
           </div>
-          <p id="proto-dica" class="t-small muted">Formato: ZL-ano-número. Para testar, use ZL-2026-04817.</p>
-          <p id="proto-erro" class="error" role="alert"></p>
-          <div id="proto-ok" role="status"></div>
-        </form></section>
-        <div class="utility-row">
-          <nav aria-label="Rodapé">
-            <ul class="list-reset">
-              <li><a href="index.html">Início</a></li>
-              <li><a href="relatar.html">Relatar</a></li>
-              <li><a href="acompanhar.html">Acompanhar</a></li>
-              <li><a href="bairro.html">Meu bairro</a></li>
-              <li><a href="rota.html">Rota acessível</a></li>
-              <li><a href="sobre.html">Sobre o projeto</a></li>
-            </ul>
-          </nav>
-          <p>Zela · protótipo acadêmico CitizenTech · dados simulados</p>
         </div>
       </div>
-    </div>
-    <div class="stripes stripes--mint" aria-hidden="true"><span></span><span></span><span></span></div>
-    <div class="horizon" aria-hidden="true">
-      <svg class="pixel-scene" data-cena="horizonte" focusable="false"></svg>
-    </div>
-  </footer>
-  <p id="anuncio" class="sr-only" role="status" aria-live="polite"></p>
-</body>
+      <div class="stripes stripes--mint" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="horizon" aria-hidden="true">
+        <svg class="pixel-scene" data-cena="horizonte" focusable="false"></svg>
+      </div>
+    </footer>
+    <p id="anuncio" class="sr-only" role="status" aria-live="polite"></p>
+  </body>
 </html>
