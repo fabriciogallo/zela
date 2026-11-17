@@ -73,13 +73,31 @@
   }
 
 
-  /* ---------- Mapa real: blocos do OpenStreetMap (projeção Web Mercator) ----------
-     Desenha uma área de 3 blocos de largura em volta do centro, dentro do contêiner. */
-  ZELA.mapaReal = function (conteiner, centro, proporcao) {
+  /* ---------- Mapa real: blocos do OpenStreetMap (projeção Web Mercator) ---------- */
+  function coordenadasMapa(p) {
+    var latitude = p.lat * Math.PI / 180;
+    return {
+      x: (p.lon + 180) / 360,
+      y: (1 - Math.asinh(Math.tan(latitude)) / Math.PI) / 2
+    };
+  }
+
+  ZELA.mapaReal = function (conteiner, centro, proporcao, pontos) {
     var z = 16, larg = 768, alt = larg * (proporcao || 1);
-    var n = Math.pow(2, z) * 256, r = centro.lat * Math.PI / 180;
-    var cx = (centro.lon + 180) / 360 * n, cy = (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n;
-    var esq = cx - larg / 2, topo = cy - alt / 2;
+    var pos = coordenadasMapa(centro);
+    if (pontos && pontos.length > 1) {
+      var xMin = 1, xMax = 0, yMin = 1, yMax = 0;
+      pontos.forEach(function (p) {
+        var xy = coordenadasMapa(p);
+        xMin = Math.min(xMin, xy.x); xMax = Math.max(xMax, xy.x);
+        yMin = Math.min(yMin, xy.y); yMax = Math.max(yMax, xy.y);
+      });
+      var escala = Math.min((larg - 112) / (xMax - xMin), (alt - 112) / (yMax - yMin));
+      z = Math.max(0, Math.min(17, Math.floor(Math.log2(escala / 256))));
+      pos = { x: (xMin + xMax) / 2, y: (yMin + yMax) / 2 };
+    }
+    var n = Math.pow(2, z) * 256;
+    var esq = pos.x * n - larg / 2, topo = pos.y * n - alt / 2;
     var camada = conteiner.querySelector(".map-tiles");
     if (!camada) { camada = document.createElement("div"); camada.className = "map-tiles"; camada.setAttribute("aria-hidden", "true"); conteiner.insertBefore(camada, conteiner.firstChild); }
     camada.innerHTML = "";
@@ -95,6 +113,10 @@
         camada.appendChild(img);
       }
     }
+    return function (p) {
+      var xy = coordenadasMapa(p);
+      return { x: (xy.x * n - esq) / larg * 100, y: (xy.y * n - topo) / alt * 100 };
+    };
   };
 
   /* ---------- Anúncios para leitores de tela ---------- */

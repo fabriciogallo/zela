@@ -95,10 +95,27 @@
             <option value="recentes">Mais recentes</option>
           </select>
         </div>
+        <label class="check"><input type="checkbox" id="f-mobilidade"> Só avisos que podem afetar a mobilidade</label>
         <p class="count" id="contagem" role="status"></p>
       </form>
 
       <p class="neighborhood-jump"><a class="link-action" href="#lista-t"><span>Ir para a lista de avisos</span></a></p>
+      <section class="panel panel--green row neighborhood-route" aria-labelledby="rota-bairro-titulo">
+        <div class="stack">
+          <h2 id="rota-bairro-titulo" class="t-card">Planeje uma rota em <span id="rota-bairro-nome">Jardim Ângela</span></h2>
+          <p>Escolha um destino para consultar um trajeto pelo seu perfil de mobilidade.</p>
+        </div>
+        <form class="stack" action="rota.html" method="get">
+          <input type="hidden" id="rota-bairro-valor" name="bairro" value="angela">
+          <div class="field">
+            <label for="rota-bairro-destino">Destino no bairro</label>
+            <select id="rota-bairro-destino" class="input" name="destino" aria-describedby="rota-bairro-saida" required></select>
+            <p class="hint route-selection" id="rota-bairro-destino-texto" aria-hidden="true"></p>
+            <p class="hint" id="rota-bairro-saida"></p>
+          </div>
+          <div><button type="submit" class="btn btn--primary">Continuar para a rota</button></div>
+        </form>
+      </section>
       <div class="row" style="align-items:flex-start">
         <section class="col-side panel panel--green inv stack map-col" style="gap:20px" aria-labelledby="mapa-t">
           <h2 id="mapa-t" class="t-tab">Mapa do bairro</h2>

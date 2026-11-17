@@ -318,35 +318,45 @@
   }
 
   /* ---------- Ouvir instruções (leitura em voz alta) ---------- */
-  var btnOuvir = $("btn-ouvir");
-  var temVoz = "speechSynthesis" in window;
-  var falaAtual = null;
-  if (!temVoz) { btnOuvir.hidden = true; }
-
-  function pararFala() {
-    if (falaAtual) {
-      falaAtual = null;
-      window.speechSynthesis.cancel();
+  var leituraAtual = null;
+  ZELA.ligarLeituraRota = function (botao, selecaoPassos) {
+    function finalizar(cancelar) {
+      if (!leituraAtual || leituraAtual.botao !== botao) return;
+      leituraAtual = null;
+      botao.textContent = "Ouvir as instruções";
+      if (cancelar) window.speechSynthesis.cancel();
     }
-    btnOuvir.textContent = "Ouvir as instruções";
-  }
+    if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+      botao.hidden = true;
+    } else {
+      botao.addEventListener("click", function () {
+        var mesmaLeitura = leituraAtual && leituraAtual.botao === botao;
+        if (leituraAtual) leituraAtual.finalizar(true);
+        if (mesmaLeitura) return;
 
-  btnOuvir.addEventListener("click", function () {
-    if (falaAtual) { pararFala(); return; }
-    var textos = Array.prototype.map.call(document.querySelectorAll("#passos .t-lead"), function (e) { return e.textContent; });
-    var fala = new SpeechSynthesisUtterance(textos.map(function (t, i) { return "Passo " + (i + 1) + ". " + t; }).join(" "));
-    fala.lang = "pt-BR"; fala.rate = 0.9;
-    fala.onend = function () { if (falaAtual === fala) pararFala(); };
-    fala.onerror = function () {
-      if (falaAtual !== fala) return;
-      pararFala();
-      ZELA.anunciar("A leitura em voz alta está indisponível. As instruções estão na lista de passos.");
-    };
-    falaAtual = fala;
-    btnOuvir.textContent = "Parar a leitura";
-    window.speechSynthesis.speak(fala);
-  });
-
+        var instrucoes = Array.from(document.querySelectorAll(selecaoPassos), function (el, i) {
+          return "Passo " + (i + 1) + ". " + el.textContent.trim();
+        });
+        if (!instrucoes.length) return;
+        var fala = new SpeechSynthesisUtterance(instrucoes.join(" "));
+        fala.lang = "pt-BR";
+        fala.rate = 0.9;
+        fala.onend = function () {
+          if (leituraAtual && leituraAtual.fala === fala) finalizar(false);
+        };
+        fala.onerror = function () {
+          if (!leituraAtual || leituraAtual.fala !== fala) return;
+          finalizar(false);
+          ZELA.anunciar("A leitura em voz alta está indisponível. As instruções estão na lista de passos.");
+        };
+        leituraAtual = { botao: botao, fala: fala, finalizar: finalizar };
+        botao.textContent = "Parar a leitura";
+        window.speechSynthesis.speak(fala);
+      });
+    }
+    return function () { finalizar(true); };
+  };
+  var pararFala = ZELA.ligarLeituraRota($("btn-ouvir"), "#passos .t-lead");
   /* ---------- Copiar link ---------- */
   $("btn-copiar-rota").addEventListener("click", function () {
     var campo = $("link-rota");
@@ -414,5 +424,13 @@
   };
   if (ini.de === ini.para) { ini.de = "casa"; ini.para = "ubs"; }
   aplicarPref(ini);
-  render(calcular(ini), false);
+  var simulacao = $("simulacao");
+  if (compartilhada || location.hash === "#simulacao") {
+    simulacao.open = true;
+    render(calcular(ini), false);
+  }
+  simulacao.addEventListener("toggle", function () {
+    if (simulacao.open && resultado.hidden) render(calcular(lerPref()), false);
+    if (!simulacao.open) pararFala();
+  });
 })();

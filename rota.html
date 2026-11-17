@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rota acessível — Zela</title>
-  <meta name="description" content="Simule uma rota no Jardim Ângela de acordo com seu perfil de mobilidade.">
+  <meta name="description" content="Consulte trajetos entre pontos do bairro de acordo com seu perfil de mobilidade.">
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,7 @@
   <script src="js/dados.js" defer></script>
   <script src="js/comum.js" defer></script>
   <script src="js/rota.js" defer></script>
+  <script src="js/rotas-reais.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -53,11 +54,92 @@
   <main id="conteudo" class="page-pad" tabindex="-1">
     <div class="wrap">
       <div class="page-title">
-        <p class="chip chip--lemon">Jardim Ângela · dados simulados</p>
         <h1 class="t-page">Rota acessível</h1>
-        <p class="t-lead" style="max-width:680px">Escolha a saída, o destino e o perfil de mobilidade. O Zela usa barreiras e avisos fictícios do Jardim Ângela para simular um caminho com menos obstáculos.</p>
+        <p class="t-lead">Consulte um trajeto entre pontos do bairro e veja as instruções de acordo com o seu perfil de mobilidade.</p>
       </div>
 
+      <div class="route-planner">
+        <form id="rota-real-form" class="panel panel--ink route-form stack" aria-labelledby="rota-real-titulo" novalidate>
+          <h2 id="rota-real-titulo" class="t-card">Planeje seu trajeto</h2>
+          <div class="field">
+            <label for="rota-real-bairro">Bairro</label>
+            <select id="rota-real-bairro" class="input">
+              <option value="angela">Jardim Ângela</option>
+              <option value="grajau">Grajaú</option>
+              <option value="tiradentes">Cidade Tiradentes</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rota-real-de">Saindo de</label>
+            <select id="rota-real-de" class="input" required></select>
+            <p class="hint route-selection" id="rota-real-de-texto" aria-hidden="true"></p>
+          </div>
+          <div class="field">
+            <label for="rota-real-para">Indo para</label>
+            <select id="rota-real-para" class="input" aria-describedby="rota-real-erro-destino" required></select>
+            <p class="hint route-selection" id="rota-real-para-texto" aria-hidden="true"></p>
+            <p class="error" id="rota-real-erro-destino" role="alert"></p>
+          </div>
+          <div class="field">
+            <label for="rota-real-perfil">Que tipo de trajeto você prefere?</label>
+            <select id="rota-real-perfil" class="input" aria-describedby="rota-real-preferencia">
+              <option value="cadeira">Cadeira de rodas</option>
+              <option value="andador">Bengala ou andador</option>
+              <option value="carrinho">Carrinho de bebê ou mala</option>
+              <option value="visual">Baixa visão ou cegueira</option>
+            </select>
+            <p class="hint route-selection" id="rota-real-perfil-texto" aria-hidden="true"></p>
+            <p id="rota-real-preferencia" class="hint"></p>
+          </div>
+          <div class="stack route-form-action">
+            <button type="submit" class="btn btn--primary btn--lg" id="rota-real-buscar">Buscar trajeto</button>
+            <p id="rota-real-carregando" class="hint" role="status"></p>
+            <p id="rota-real-erro" class="error" role="alert"></p>
+            <p id="rota-real-contingencia" class="hint" hidden><a href="#simulacao">Experimentar a simulação</a></p>
+          </div>
+        </form>
+
+        <section class="panel panel--green route-map-panel stack" aria-labelledby="rota-real-mapa-titulo">
+          <h2 id="rota-real-mapa-titulo" class="t-card" tabindex="-1">Mapa do trajeto</h2>
+          <dl class="route-endpoints">
+            <div><dt><span class="route-marker-label" aria-hidden="true">A</span> Saída</dt><dd id="rota-real-mapa-de"></dd></div>
+            <div><dt><span class="route-marker-label" aria-hidden="true">B</span> Destino</dt><dd id="rota-real-mapa-para"></dd></div>
+          </dl>
+          <div class="route-map route-map-real">
+            <svg id="rota-real-mapa" viewBox="0 0 768 576" aria-hidden="true" focusable="false"></svg>
+          </div>
+          <p class="hint">O mapa pode ter informações incompletas sobre rampas, calçadas e travessias. Confira as condições antes de sair.</p>
+          <p class="t-small"><a href="https://valhalla.github.io/valhalla/">Rotas Valhalla</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a></p>
+        </section>
+      </div>
+
+      <section id="rota-real-resultado" class="panel panel--ink route-result stack" aria-labelledby="rota-real-resultado-titulo" hidden>
+        <h2 id="rota-real-resultado-titulo" class="t-card" tabindex="-1"></h2>
+        <p id="rota-real-resultado-perfil" class="hint"></p>
+        <div class="field" id="rota-real-alternativas" hidden>
+          <label for="rota-real-alternativa">Compare os trajetos encontrados</label>
+          <select id="rota-real-alternativa" class="input"></select>
+        </div>
+        <dl class="route-totals">
+          <div><dt>Distância</dt><dd id="rota-real-distancia"></dd></div>
+          <div><dt>Tempo estimado</dt><dd id="rota-real-tempo"></dd></div>
+        </dl>
+        <section class="rule-top stack route-instructions" aria-labelledby="rota-real-passos-titulo">
+          <div class="row route-instructions-head">
+            <h3 id="rota-real-passos-titulo" class="t-tab">Instruções</h3>
+            <button type="button" id="rota-real-ouvir" class="btn btn--ink">Ouvir as instruções</button>
+          </div>
+          <ol id="rota-real-passos" class="route-list"></ol>
+        </section>
+        <div class="row rule-top">
+          <a class="btn btn--ghost" href="#rota-real-mapa-titulo">Ver no mapa</a>
+          <a class="btn btn--ghost" id="rota-real-avisos" href="bairro.html?mobilidade=1#lista-t">Consultar avisos do bairro</a>
+        </div>
+      </section>
+
+      <details id="simulacao" class="panel panel--cream route-demo">
+        <summary class="t-tab">Experimentar a simulação do Jardim Ângela</summary>
+        <p class="hint">Compare rotas com escadas, pisos e rampas fictícios para ver como cada barreira pode mudar o caminho.</p>
       <div class="panel trip-bar">
         <div class="stack" style="gap:2px;min-width:0">
           <p class="t-small muted">Seu trajeto</p>
@@ -178,6 +260,7 @@
           </section>
         </div>
       </div>
+      </details>
     </div>
   </main>
 

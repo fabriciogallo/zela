@@ -49,7 +49,7 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 | Relatar | `relatar.html` | Fazer um aviso em 4 passos e receber o protocolo |
 | Acompanhar | `acompanhar.html` | Ver as etapas do aviso, ligar avisos por SMS, confirmar a solução |
 | Meu bairro | `bairro.html` | Filtrar avisos, ver no mapa e apoiar os mais urgentes |
-| Rota acessível | `rota.html` | Simular caminhos por perfil de mobilidade |
+| Rota acessível | `rota.html` | Consultar trajetos entre pontos públicos do bairro por perfil de mobilidade e testar uma simulação de barreiras |
 | Entrar | `entrar.html` | Entrar com o celular e um código por SMS (simulado), sem senha |
 | Meus avisos | `meus-avisos.html` | Lista dos avisos que a pessoa fez e apoiou, com a etapa de cada um |
 | Sobre | `sobre.html` | Como o Zela funciona, quem ganha com ele e integrantes |
@@ -70,14 +70,16 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 | Relatar | Foto com prévia, revisão com "Alterar", copiar protocolo | Dá segurança antes de enviar e impede que o número se perca |
 | Acompanhar | Linha do tempo + avisos por SMS + "Ficou resolvido mesmo?" | Mostra o que acontece depois do envio e devolve a palavra ao morador |
 | Meu bairro | Filtros, mapa ligado à lista, "Eu também vi" | Prioriza o mais urgente e ajuda a achar avisos perto de casa |
+| Meu bairro | Atalho para a lista, filtro de mobilidade e seleção de destino | Facilita a consulta dos avisos em texto e leva o destino para o planejador de rotas |
 | Entrar / Meus avisos | Login sem senha (celular + código por SMS simulado), avisos e apoios guardados por pessoa, avisos feitos antes de entrar passam para a conta | Ninguém precisa guardar número de protocolo: tudo fica em um só lugar |
 | Rota acessível | Simulação por perfil com algoritmo de Dijkstra, mapa com passos, leitura em voz alta e link para compartilhar | Mostra como escadas, inclinação, rampas e avisos fictícios mudam o caminho para quem usa cadeira de rodas, andador, carrinho ou tem baixa visão |
+| Rota acessível | Consulta ao Valhalla com dados do OpenStreetMap | Mostra distância, tempo estimado, instruções em português e uma alternativa quando o serviço encontra outra opção |
 
 **Como testar:**
 - Protocolos de exemplo: `ZL-2026-04817`, `ZL-2026-03991` (resolvido), `ZL-2026-05102`.
 - Busca de CEP: em Relatar, passo 2, digite **01310-100** (preenche Avenida Paulista) ou **99999-999** (mostra o erro).
 - Aviso repetido: em Relatar, escolha **Poste apagado** e digite **Rua das Palmeiras**.
-- Rota acessível. Na simulação, escolha **Escola** e **UBS** com **Cadeira de rodas**. Compare o caminho tracejado com o desvio das barreiras.
+- Rota acessível. Selecione **Cidade Tiradentes**, **Terminal Cidade Tiradentes** e **Casa de Cultura de Cidade Tiradentes** com **Cadeira de rodas**. Use **Buscar trajeto** para consultar os dados do mapa. Depois, abra **Experimentar a simulação do Jardim Ângela** e compare **Escola** e **UBS**.
 - Login: em Entrar, use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece na tela como um SMS simulado. Depois, os avisos feitos e apoiados aparecem em Meus avisos.
 - Um aviso novo gera um protocolo que fica salvo no navegador e pode ser consultado em Acompanhar.
 
@@ -105,10 +107,17 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 - HTML, CSS e JavaScript puro (sem frameworks, sem build)
 - Dados simulados em `js/dados.js`
 - Mapas reais com blocos do [OpenStreetMap](https://www.openstreetmap.org/copyright) em Meu bairro e Rota acessível
+- Consulta de trajetos pela [API do Valhalla](https://valhalla.github.io/valhalla/api/route/api-reference/) usando o [servidor de demonstração do FOSSGIS](https://github.com/valhalla/valhalla#demo-server)
 - APIs públicas: [ViaCEP](https://viacep.com.br/) para buscar o endereço pelo CEP e [Nominatim / OpenStreetMap](https://nominatim.org/) para transformar a localização em endereço
 - `localStorage` para lembrar tamanho do texto, bairro, conta (sessão), apoios e protocolos criados — em produção, a conta e os avisos ficariam em um servidor
 - Fontes: Montserrat (títulos) e Inter (texto), via Google Fonts
 - Paisagens em pixel art geradas em SVG por código (`js/comum.js`); a abertura usa uma versão animada (`img/abertura-animada.svg`, para de se mexer com "reduzir movimento") e há um GIF da cena em `img/abertura.gif`
+
+### Dados da rota
+
+Na prévia, o serviço recebe apenas as coordenadas de dois pontos públicos escolhidos na página e as preferências do perfil. A consulta acontece ao acionar **Buscar trajeto**. Os trajetos dependem dos dados mapeados e da disponibilidade do serviço. A página orienta a conferir rampas, condições do piso e travessias antes de sair.
+
+Os avisos de Meu bairro e os obstáculos da simulação são fictícios. A consulta de trajetos reais usa os dados do OpenStreetMap. Para publicar a consulta para usuários finais, siga as [orientações da instância de demonstração do FOSSGIS](https://github.com/valhalla/valhalla#demo-server) ou configure uma instância própria do Valhalla.
 
 ## Estrutura
 
@@ -131,7 +140,8 @@ O Zela é uma plataforma web de zeladoria colaborativa. O morador:
 ├── js/bairro.js
 ├── js/entrar.js       # login com celular + código
 ├── js/meus-avisos.js  # avisos e apoios da conta
-├── js/rota.js         # rota acessível (Dijkstra por perfil)
+├── js/rota.js         # simulação de barreiras (Dijkstra por perfil)
+├── js/rotas-reais.js  # consulta ao Valhalla e exibição dos trajetos
 └── img/favicon.svg
 ```
 
