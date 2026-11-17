@@ -1,5 +1,5 @@
 /* Zela — comportamentos compartilhados por todas as páginas:
-   tamanho do texto, menu no celular, retícula decorativa e utilidades. */
+   tamanho do texto, menu no celular, VLibras, retícula decorativa e utilidades. */
 (function () {
   "use strict";
   window.ZELA = window.ZELA || {};
@@ -142,13 +142,14 @@
     var mais = document.querySelector("[data-texto-mais]");
     if (!menos || !mais) return;
     var nivel = ZELA.store.get("texto", 0);
+    if (!Number.isInteger(nivel) || nivel < 0 || nivel > 3) nivel = 0;
 
     function aplicar(anunciar) {
       root.setAttribute("data-texto", String(nivel));
-      menos.disabled = nivel <= 0;
-      mais.disabled = nivel >= 3;
+      menos.setAttribute("aria-disabled", String(nivel === 0));
+      mais.setAttribute("aria-disabled", String(nivel === 3));
       ZELA.store.set("texto", nivel);
-      if (anunciar) ZELA.anunciar("Tamanho do texto: " + ["normal", "grande", "maior", "máximo"][nivel] + ".");
+      if (anunciar) ZELA.anunciar("Tamanho do texto: " + [100, 125, 150, 200][nivel] + "%.");
     }
     menos.addEventListener("click", function () { if (nivel > 0) { nivel--; aplicar(true); } });
     mais.addEventListener("click", function () { if (nivel < 3) { nivel++; aplicar(true); } });
@@ -160,19 +161,30 @@
     var botao = document.querySelector(".menu-toggle");
     var barra = document.getElementById("nav-bar");
     if (!botao || !barra) return;
-    botao.addEventListener("click", function () {
-      var aberto = barra.classList.toggle("is-open");
-      botao.setAttribute("aria-expanded", aberto ? "true" : "false");
+    function definirAberto(aberto) {
+      barra.classList.toggle("is-open", aberto);
+      botao.setAttribute("aria-expanded", String(aberto));
       botao.textContent = aberto ? "Fechar" : "Menu";
+    }
+    botao.addEventListener("click", function () {
+      definirAberto(!barra.classList.contains("is-open"));
     });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && barra.classList.contains("is-open")) {
-        barra.classList.remove("is-open");
-        botao.setAttribute("aria-expanded", "false");
-        botao.textContent = "Menu";
-        botao.focus();
-      }
+    barra.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape" || !barra.classList.contains("is-open") || !botao.getClientRects().length) return;
+      e.preventDefault();
+      botao.focus();
+      definirAberto(false);
     });
+    barra.addEventListener("focusout", function (e) {
+      if (e.relatedTarget && !barra.contains(e.relatedTarget)) definirAberto(false);
+    });
+  }
+
+  function iniciarLibras() {
+    var script = document.createElement("script");
+    script.src = "https://vlibras.gov.br/app/vlibras-plugin.js";
+    script.async = true;
+    document.body.appendChild(script);
   }
 
   /* ---------- Paisagens em pixel art (decorativas, geradas em SVG) ----------
@@ -366,5 +378,6 @@
     iniciarMenu();
     iniciarLinkConta();
     desenharCenas();
+    iniciarLibras();
   });
 })();

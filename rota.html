@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rota acessível — Zela</title>
-  <meta name="description" content="Encontre o caminho com menos barreiras para quem usa cadeira de rodas, andador, carrinho de bebê ou tem baixa visão.">
+  <meta name="description" content="Simule uma rota no Jardim Ângela de acordo com seu perfil de mobilidade.">
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,9 +39,9 @@
         </nav>
         <div class="nav-spacer"></div>
         <div class="text-size" role="group" aria-label="Tamanho do texto">
-          <button type="button" data-texto-menos aria-label="Diminuir o texto">A−</button>
+          <button type="button" data-texto-menos aria-label="A−, diminuir o tamanho do texto">A−</button>
           <span class="v-rule" aria-hidden="true"></span>
-          <button type="button" data-texto-mais aria-label="Aumentar o texto" style="font-size:1.1875rem">A+</button>
+          <button type="button" data-texto-mais aria-label="A+, aumentar o tamanho do texto" style="font-size:1.1875rem">A+</button>
         </div>
       </div>
     </div>
@@ -54,8 +54,8 @@
     <div class="wrap">
       <div class="page-title">
         <p class="chip chip--lemon">Jardim Ângela · dados simulados</p>
-        <h1 class="t-page">Rota sem obstáculos</h1>
-        <p class="t-lead" style="max-width:680px">Diga de onde sai, para onde vai e como você se locomove. O Zela desvia de escadas, ladeiras fortes, calçadas quebradas e dos problemas que os vizinhos avisaram.</p>
+        <h1 class="t-page">Rota acessível</h1>
+        <p class="t-lead" style="max-width:680px">Escolha a saída, o destino e o perfil de mobilidade. O Zela usa barreiras e avisos fictícios do Jardim Ângela para simular um caminho com menos obstáculos.</p>
       </div>
 
       <div class="panel trip-bar">
@@ -63,25 +63,25 @@
           <p class="t-small muted">Seu trajeto</p>
           <p id="trip-resumo" class="trip-resumo"></p>
         </div>
-        <button type="button" id="btn-trajeto" class="btn btn--ghost" aria-haspopup="dialog" aria-controls="dlg-rota">Alterar trajeto</button>
+        <button type="button" id="btn-trajeto" class="btn btn--ghost" aria-haspopup="dialog" aria-controls="dlg-rota">Alterar trajeto simulado</button>
       </div>
 
       <dialog id="dlg-rota" class="dialog" aria-labelledby="form-rota-t">
         <form id="form-rota" class="stack" style="gap:24px" novalidate>
           <div class="dialog-head">
-            <h2 id="form-rota-t" class="t-card" tabindex="-1">Seu trajeto</h2>
+            <h2 id="form-rota-t" class="t-card" tabindex="-1">Seu trajeto simulado</h2>
             <button type="button" id="btn-fechar-dlg" class="btn btn--ghost btn--sm" aria-label="Fechar sem mudar a rota">×</button>
           </div>
 
           <div class="stack" style="gap:12px">
             <div class="field">
               <label for="r-de">Saindo de</label>
-              <select id="r-de" class="input"></select>
+              <select id="r-de" class="input" required></select>
             </div>
             <button type="button" id="btn-inverter" class="btn btn--ghost btn--sm" style="align-self:flex-start">⇅ Inverter saída e destino</button>
             <div class="field">
               <label for="r-para">Indo para</label>
-              <select id="r-para" class="input" aria-describedby="err-destino"></select>
+              <select id="r-para" class="input" required aria-describedby="err-destino"></select>
               <p id="err-destino" class="error" role="alert"></p>
             </div>
           </div>
@@ -107,30 +107,28 @@
           </fieldset>
 
           <div class="dialog-actions">
-            <p class="t-small muted">A rota é calculada para o seu jeito de andar.</p>
-            <button type="submit" class="btn btn--primary btn--lg">Ver rota</button>
+            <button type="submit" class="btn btn--primary btn--lg">Ver rota simulada</button>
           </div>
         </form>
       </dialog>
 
-        <section id="resultado" class="stack" style="gap:16px;margin-top:16px" aria-labelledby="res-titulo" hidden>
+      <div id="resultado" class="stack" style="gap:16px;margin-top:16px" hidden>
 
-          <div id="sem-rota" class="panel panel--ink stack" style="gap:16px" hidden>
-            <h2 id="sem-rota-t" class="t-compact" tabindex="-1">Não há caminho sem barreiras aqui.</h2>
-            <p class="t-lead">Todos os caminhos entre esses lugares têm escada, ladeira acima de 8% ou esquina sem rampa. Algumas opções:</p>
-            <ul class="route-list">
-              <li>Peça o <strong>Atende+</strong>, transporte porta a porta da SPTrans para pessoas com deficiência, pelo telefone 156.</li>
-              <li>Tire a opção “Desviar dos problemas avisados” se os avisos do caminho já foram resolvidos.</li>
-              <li><a href="relatar.html?tipo=calcada">Relate a barreira</a> para a prefeitura colocar uma rampa.</li>
-            </ul>
+        <section id="sem-rota" class="panel panel--ink stack" style="gap:16px" aria-labelledby="sem-rota-t" hidden>
+          <h2 id="sem-rota-t" class="t-card" tabindex="-1">Nenhum trajeto encontrado na simulação</h2>
+          <p class="t-lead">Os caminhos entre esses locais têm barreiras para o perfil escolhido. Experimente outro ponto de saída ou destino.</p>
+          <p>Encontrou uma barreira na rua? <a href="relatar.html?tipo=calcada">Relate uma calçada ou rampa com problema</a>.</p>
+        </section>
+
+        <div id="com-rota" class="stack" style="gap:16px">
+          <div class="panel panel--cream route-result-title">
+            <h2 id="res-titulo" class="t-card" tabindex="-1"></h2>
+            <p id="res-perfil" class="hint"></p>
           </div>
 
-          <div id="com-rota" class="stack" style="gap:16px">
-
-
-            <div class="row" style="align-items:flex-start">
+          <div class="row" style="align-items:flex-start">
             <section class="panel panel--green stack route-map-col" style="gap:16px" aria-labelledby="mapa-rota-t">
-              <h3 id="mapa-rota-t" class="t-tab">Mapa da rota</h3>
+              <h3 id="mapa-rota-t" class="t-tab">Mapa da simulação</h3>
               <div class="route-map">
                 <svg id="rota-mapa" viewBox="0 0 600 420" aria-hidden="true" focusable="false"></svg>
               </div>
@@ -140,13 +138,9 @@
                 <li><span class="lg lg--escada" aria-hidden="true"></span> Escadaria</li>
                 <li><span class="lg lg--aviso" aria-hidden="true">!</span> Problema avisado no Zela</li>
               </ul>
-              <p class="t-small">Mapa real do Jardim Ângela (OpenStreetMap); as calçadas e o trajeto desenhados por cima são ilustrativos. A lista de passos abaixo tem as mesmas informações. © <a href="https://www.openstreetmap.org/copyright">colaboradores do OpenStreetMap</a></p>
+              <p class="t-small">O mapa de fundo é do OpenStreetMap. O trajeto e as barreiras são simulados. Veja os detalhes de cada trecho na lista de passos. © <a href="https://www.openstreetmap.org/copyright">colaboradores do OpenStreetMap</a></p>
             </section>
-            <aside class="route-side stack" style="gap:12px" aria-label="Resumo da rota">
-              <div class="panel panel--cream stack" style="gap:8px;padding:24px">
-                <p id="res-perfil" class="hint"></p>
-                <h2 id="res-titulo" class="t-card" tabindex="-1"></h2>
-              </div>
+            <aside class="route-side" aria-label="Resumo da rota simulada">
               <dl class="route-stats route-stats--2">
                 <div class="route-stat"><dt>Distância</dt><dd id="st-dist" class="t-number"></dd></div>
                 <div class="route-stat"><dt>Tempo no seu ritmo</dt><dd id="st-tempo" class="t-number"></dd></div>
@@ -154,36 +148,36 @@
                 <div class="route-stat route-stat--orange"><dt>Barreiras evitadas</dt><dd id="st-evitados" class="t-number"></dd></div>
               </dl>
             </aside>
-            </div>
-
-            <section class="panel panel--cream stack" style="gap:20px" aria-labelledby="passos-t">
-              <div class="row" style="gap:12px 24px;align-items:center;justify-content:space-between">
-                <h3 id="passos-t" class="t-tab">Passo a passo</h3>
-                <button type="button" id="btn-ouvir" class="btn btn--ink" aria-pressed="false">Ouvir as instruções</button>
-              </div>
-              <ol id="passos" class="list-reset route-steps"></ol>
-            </section>
-
-            <section class="panel panel--ink stack" style="gap:16px" aria-labelledby="porque-t">
-              <h3 id="porque-t" class="t-tab">Por que este caminho?</h3>
-              <p id="porque-intro" class="t-lead"></p>
-              <ul id="porque-lista" class="route-list"></ul>
-            </section>
-
-            <section class="panel panel--cream stack" style="gap:16px" aria-labelledby="levar-t">
-              <h3 id="levar-t" class="t-tab">Levar a rota com você</h3>
-              <div class="field">
-                <label for="link-rota">Link desta rota</label>
-                <div class="inline-form">
-                  <input id="link-rota" class="input" type="text" readonly>
-                  <button type="button" id="btn-copiar-rota" class="btn btn--ink">Copiar link</button>
-                </div>
-                <p id="copiado" class="hint" role="status"></p>
-              </div>
-              <p>Encontrou uma barreira que o mapa não mostra? <a id="btn-relatar" href="relatar.html?tipo=calcada">Relate a calçada ou rampa com problema</a>.</p>
-            </section>
           </div>
-        </section>
+
+          <section class="panel panel--cream stack" style="gap:20px" aria-labelledby="passos-t">
+            <div class="row" style="gap:12px 24px;align-items:center;justify-content:space-between">
+              <h3 id="passos-t" class="t-tab">Passo a passo</h3>
+              <button type="button" id="btn-ouvir" class="btn btn--ink">Ouvir as instruções</button>
+            </div>
+            <ol id="passos" class="list-reset route-steps"></ol>
+          </section>
+
+          <section class="panel panel--ink stack" style="gap:16px" aria-labelledby="porque-t">
+            <h3 id="porque-t" class="t-tab">Por que este caminho?</h3>
+            <p id="porque-intro" class="t-lead"></p>
+            <ul id="porque-lista" class="route-list"></ul>
+          </section>
+
+          <section class="panel panel--cream stack" style="gap:16px" aria-labelledby="levar-t">
+            <h3 id="levar-t" class="t-tab">Compartilhar a simulação</h3>
+            <div class="field">
+              <label for="link-rota">Link desta rota</label>
+              <div class="inline-form">
+                <input id="link-rota" class="input" type="text" readonly>
+                <button type="button" id="btn-copiar-rota" class="btn btn--ink">Copiar link</button>
+              </div>
+              <p id="copiado" class="hint" role="status"></p>
+            </div>
+            <p>Encontrou uma barreira que o mapa não mostra? <a id="btn-relatar" href="relatar.html?tipo=calcada">Relate a calçada ou rampa com problema</a>.</p>
+          </section>
+        </div>
+      </div>
     </div>
   </main>
 

@@ -78,7 +78,7 @@
     render();
     var item = $("aviso-" + id);
     if (!item) return;
-    if (origemMapa) item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    if (origemMapa) item.scrollIntoView({ block: "nearest" });
     item.querySelector(".report-n").focus({ preventScroll: true });
     var a = ZELA.avisos.filter(function (x) { return x.id === id; })[0];
     ZELA.anunciar("Selecionado: " + a.titulo + ", " + a.local + ".");

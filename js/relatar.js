@@ -53,8 +53,8 @@
     if (n === 4) montarRevisao();
     if (focar) {
       var t = $("t-passo-" + n);
-      t.focus();
-      t.scrollIntoView({ block: "center", behavior: "smooth" });
+      t.focus({ preventScroll: true });
+      t.scrollIntoView({ block: "center" });
     }
   }
 
@@ -222,7 +222,7 @@
       fotoUrl = null;
       $("foto-cheia").hidden = true;
       $("foto-vazia").hidden = false;
-      $("foto-btn-texto").focus();
+      input.focus();
       ZELA.anunciar("Foto removida.");
     });
   }

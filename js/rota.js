@@ -37,7 +37,7 @@
     function add(v, txt) { if (v) { soma += v; if (v > 0 && txt) motivos.push(txt); } }
 
     if (t.escada) add(p.escada, "escadaria com " + t.escada + " degraus");
-    if (t.incl > p.inclMax) add(Infinity, nivelIncl(t.incl) + ", acima do limite de 8% para cadeira de rodas");
+    if (t.incl > p.inclMax) add(Infinity, nivelIncl(t.incl) + ", acima do limite testado de " + p.inclMax + "%");
     else if (t.incl > 8) add(p.inclForte, nivelIncl(t.incl));
     else if (t.incl >= 5) add(p.inclMedia, nivelIncl(t.incl));
     if (t.piso === "ruim") add(p.ruim, "calçada em mau estado");
@@ -86,7 +86,7 @@
 
   /* ---------- Formulário ---------- */
   var form = $("form-rota"), selDe = $("r-de"), selPara = $("r-para");
-  var resultado = $("resultado"), ultimo = null;
+  var resultado = $("resultado");
 
   Object.keys(R.lugares).forEach(function (k) {
     var l = R.lugares[k];
@@ -99,33 +99,42 @@
   });
 
   function lerPref() {
-    var perfil = (form.querySelector('input[name="perfil"]:checked') || {}).value;
     return {
-      de: selDe.value, para: selPara.value, perfil: perfil,
+      de: selDe.value, para: selPara.value, perfil: form.elements.perfil.value,
       noite: $("p-noite").checked, avisos: $("p-avisos").checked, descanso: $("p-descanso").checked
     };
   }
 
   function aplicarPref(p) {
-    if (p.de && R.lugares[p.de]) selDe.value = p.de;
-    if (p.para && R.lugares[p.para]) selPara.value = p.para;
-    if (p.perfil && PESOS[p.perfil]) form.querySelector('input[name="perfil"][value="' + p.perfil + '"]').checked = true;
-    if (typeof p.noite === "boolean") $("p-noite").checked = p.noite;
-    if (typeof p.avisos === "boolean") $("p-avisos").checked = p.avisos;
-    if (typeof p.descanso === "boolean") $("p-descanso").checked = p.descanso;
+    selDe.value = p.de;
+    selPara.value = p.para;
+    form.elements.perfil.value = p.perfil;
+    $("p-noite").checked = p.noite;
+    $("p-avisos").checked = p.avisos;
+    $("p-descanso").checked = p.descanso;
+    limparErros();
   }
 
-  function validar(p) {
-    var ok = true;
+  function limparErros() {
     $("err-perfil").textContent = "";
     $("err-destino").textContent = "";
     selPara.removeAttribute("aria-invalid");
-    if (!p.perfil) { $("err-perfil").textContent = "Escolha como você se locomove para a rota respeitar suas necessidades."; ok = false; }
+  }
+
+  function validar(p) {
+    limparErros();
     if (p.de === p.para) {
       $("err-destino").textContent = "O destino é igual ao ponto de partida. Escolha outro lugar em “Indo para”.";
-      selPara.setAttribute("aria-invalid", "true"); ok = false;
+      selPara.setAttribute("aria-invalid", "true");
+      selPara.focus();
+      return false;
     }
-    return ok;
+    if (!p.perfil) {
+      $("err-perfil").textContent = "Escolha como você se locomove.";
+      form.elements.perfil[0].focus();
+      return false;
+    }
+    return true;
   }
 
   /* ---------- Resultado ---------- */
@@ -140,7 +149,7 @@
 
   function soma(rota, campo) { return rota.reduce(function (s, x) { return s + x.t[campo]; }, 0); }
 
-  function etiquetas(t, p) {
+  function etiquetas(t) {
     var tags = [nivelIncl(t.incl)];
     if (t.escada) tags.push("escadaria: " + t.escada + " degraus com corrimão");
     tags.push(t.piso === "bom" ? "calçada boa" : (t.piso === "ruim" ? "calçada em mau estado" : "calçada irregular"));
@@ -164,11 +173,10 @@
   }
 
   function render(res, anunciar) {
-    ultimo = res;
     var p = res.p, perfil = R.perfis[p.perfil];
     resultado.hidden = false;
-    $("res-titulo").textContent = nomeLugar(p.de) + " → " + nomeLugar(p.para);
-    $("res-perfil").textContent = "Rota para: " + perfil.nome.toLowerCase() + (p.noite ? " · à noite" : "");
+    $("res-titulo").textContent = "De " + nomeLugar(p.de) + " até " + nomeLugar(p.para);
+    $("res-perfil").textContent = perfil.nome + (p.noite ? " · à noite" : "");
     $("trip-resumo").textContent = (R.lugares[p.de].curto || nomeLugar(p.de)) + " → " + (R.lugares[p.para].curto || nomeLugar(p.para)) + " · " + perfil.nome + (p.noite ? " · à noite" : "");
 
     var semRota = !res.rota;
@@ -177,8 +185,7 @@
     pararFala();
 
     if (semRota) {
-      desenharMapa(null, res.curto, p);
-      if (anunciar) { ZELA.anunciar("Não encontramos uma rota sem barreiras para esse trajeto."); $("sem-rota-t").focus(); }
+      if (anunciar) $("sem-rota-t").focus();
       return;
     }
 
@@ -198,7 +205,7 @@
         '<span class="route-n" aria-hidden="true">' + (i + 1) + "</span>" +
         '<div class="stack" style="gap:8px;min-width:0">' +
           "<p class=\"t-lead\">" + ZELA.escapar(textoPasso(x, i, rota.length)) + "</p>" +
-          '<ul class="list-reset route-tags">' + etiquetas(x.t, p).map(function (e) { return "<li>" + ZELA.escapar(e) + "</li>"; }).join("") + "</ul>" +
+          '<ul class="list-reset route-tags">' + etiquetas(x.t).map(function (e) { return "<li>" + ZELA.escapar(e) + "</li>"; }).join("") + "</ul>" +
         "</div>";
       ol.appendChild(li);
     });
@@ -223,16 +230,20 @@
       $("porque-intro").textContent = "O caminho mais curto tem " + metrosCurto + " m, mas passa por:";
       porque.innerHTML = itens.join("");
     } else {
-      $("porque-intro").textContent = "O caminho mais curto já é o mais tranquilo para você. Nada a desviar.";
+      $("porque-intro").textContent = "O caminho mais curto atende às preferências selecionadas nesta simulação.";
     }
     $("st-evitados").textContent = String(itens.length);
 
     desenharMapa(rota, res.curto, p);
 
     /* Link para compartilhar */
-    var q = "?de=" + p.de + "&para=" + p.para + "&perfil=" + p.perfil + (p.noite ? "&noite=1" : "");
-    $("btn-relatar").href = "relatar.html?tipo=calcada";
-    $("link-rota").value = location.href.split("?")[0] + q;
+    var link = new URL(location.href);
+    link.hash = "";
+    link.search = new URLSearchParams({
+      de: p.de, para: p.para, perfil: p.perfil, noite: p.noite ? "1" : "0",
+      avisos: p.avisos ? "1" : "0", descanso: p.descanso ? "1" : "0"
+    });
+    $("link-rota").value = link.href;
 
     if (anunciar) {
       ZELA.anunciar("Rota pronta: " + metros + " metros, cerca de " + $("st-tempo").textContent + ", em " + rota.length + " trechos.");
@@ -273,7 +284,7 @@
     if (curto && rota && curto.map(function (x) { return x.t.id; }).join() !== rota.map(function (x) { return x.t.id; }).join()) {
       curto.forEach(function (x) { el("path", { d: pontoMeio(x.t).d, stroke: "#000", "stroke-width": 3, "stroke-dasharray": "8 7" }, ruas); });
     }
-    if (rota) rota.forEach(function (x) { el("path", { d: pontoMeio(x.t).d, stroke: "#0081c0", "stroke-width": 9 }, ruas); });
+    if (rota) rota.forEach(function (x) { el("path", { d: pontoMeio(x.t).d, "class": "route-path", "stroke-width": 9 }, ruas); });
 
     /* Avisos abertos no caminho */
     R.trechos.forEach(function (t) {
@@ -309,49 +320,58 @@
   /* ---------- Ouvir instruções (leitura em voz alta) ---------- */
   var btnOuvir = $("btn-ouvir");
   var temVoz = "speechSynthesis" in window;
+  var falaAtual = null;
   if (!temVoz) { btnOuvir.hidden = true; }
 
   function pararFala() {
-    if (temVoz) window.speechSynthesis.cancel();
-    btnOuvir.setAttribute("aria-pressed", "false");
+    if (falaAtual) {
+      falaAtual = null;
+      window.speechSynthesis.cancel();
+    }
     btnOuvir.textContent = "Ouvir as instruções";
   }
 
   btnOuvir.addEventListener("click", function () {
-    if (btnOuvir.getAttribute("aria-pressed") === "true") { pararFala(); return; }
+    if (falaAtual) { pararFala(); return; }
     var textos = Array.prototype.map.call(document.querySelectorAll("#passos .t-lead"), function (e) { return e.textContent; });
     var fala = new SpeechSynthesisUtterance(textos.map(function (t, i) { return "Passo " + (i + 1) + ". " + t; }).join(" "));
     fala.lang = "pt-BR"; fala.rate = 0.9;
-    fala.onend = pararFala;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(fala);
-    btnOuvir.setAttribute("aria-pressed", "true");
+    fala.onend = function () { if (falaAtual === fala) pararFala(); };
+    fala.onerror = function () {
+      if (falaAtual !== fala) return;
+      pararFala();
+      ZELA.anunciar("A leitura em voz alta está indisponível. As instruções estão na lista de passos.");
+    };
+    falaAtual = fala;
     btnOuvir.textContent = "Parar a leitura";
+    window.speechSynthesis.speak(fala);
   });
 
   /* ---------- Copiar link ---------- */
   $("btn-copiar-rota").addEventListener("click", function () {
     var campo = $("link-rota");
     var feito = function () { $("copiado").textContent = "Link copiado. Mande para quem vai com você."; };
-    if (navigator.clipboard) navigator.clipboard.writeText(campo.value).then(feito, function () { campo.select(); feito(); });
-    else { campo.select(); document.execCommand("copy"); feito(); }
+    var selecionar = function () {
+      campo.focus();
+      campo.select();
+      $("copiado").textContent = "Link selecionado para copiar.";
+    };
+    if (navigator.clipboard) navigator.clipboard.writeText(campo.value).then(feito, selecionar);
+    else selecionar();
   });
 
   /* ---------- Eventos ---------- */
   $("btn-inverter").addEventListener("click", function () {
     var a = selDe.value; selDe.value = selPara.value; selPara.value = a;
+    limparErros();
     ZELA.anunciar("Invertido. Saindo de " + nomeLugar(selDe.value) + ", indo para " + nomeLugar(selPara.value) + ".");
   });
+  form.addEventListener("change", limparErros);
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var p = lerPref();
-    if (!validar(p)) {
-      var erro = form.querySelector(".error:not(:empty)");
-      var alvo = erro && erro.id === "err-perfil" ? form.querySelector('input[name="perfil"]') : selPara;
-      alvo.focus();
-      return;
-    }
+    if (!validar(p)) return;
     ZELA.store.set("rota", p);
     $("copiado").textContent = "";
     fecharDialogo();
@@ -381,17 +401,18 @@
 
   /* Início: link compartilhado > preferência salva > padrão */
   var qs = new URLSearchParams(location.search);
-  var salvo = ZELA.store.get("rota", null) || {};
+  var compartilhada = ["de", "para", "perfil"].some(function (k) { return qs.has(k); });
+  var salvo = compartilhada ? {
+    de: qs.get("de"), para: qs.get("para"), perfil: qs.get("perfil"),
+    noite: qs.get("noite") === "1", avisos: qs.get("avisos") !== "0", descanso: qs.get("descanso") === "1"
+  } : ZELA.store.get("rota", null) || {};
   var ini = {
-    de: qs.get("de") || salvo.de || "casa",
-    para: qs.get("para") || salvo.para || "ubs",
-    perfil: qs.get("perfil") || salvo.perfil || "cadeira",
-    noite: qs.has("noite") ? true : !!salvo.noite,
-    avisos: salvo.avisos !== false,
-    descanso: !!salvo.descanso
+    de: R.lugares[salvo.de] && R.lugares[salvo.de].destino ? salvo.de : "casa",
+    para: R.lugares[salvo.para] && R.lugares[salvo.para].destino ? salvo.para : "ubs",
+    perfil: Object.hasOwn(R.perfis, salvo.perfil) ? salvo.perfil : "cadeira",
+    noite: salvo.noite === true, avisos: salvo.avisos !== false, descanso: salvo.descanso === true
   };
+  if (ini.de === ini.para) { ini.de = "casa"; ini.para = "ubs"; }
   aplicarPref(ini);
-  var p0 = lerPref();
-  if (p0.perfil && p0.de !== p0.para) render(calcular(p0), false);
-  else abrirDialogo();
+  render(calcular(ini), false);
 })();

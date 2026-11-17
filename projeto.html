@@ -39,9 +39,9 @@
         </nav>
         <div class="nav-spacer"></div>
         <div class="text-size" role="group" aria-label="Tamanho do texto">
-          <button type="button" data-texto-menos aria-label="Diminuir o texto">A−</button>
+          <button type="button" data-texto-menos aria-label="A−, diminuir o tamanho do texto">A−</button>
           <span class="v-rule" aria-hidden="true"></span>
-          <button type="button" data-texto-mais aria-label="Aumentar o texto" style="font-size:1.1875rem">A+</button>
+          <button type="button" data-texto-mais aria-label="A+, aumentar o tamanho do texto" style="font-size:1.1875rem">A+</button>
         </div>
       </div>
     </div>
@@ -114,12 +114,12 @@
 
       <section class="chapter" aria-labelledby="inter-t">
         <div class="section-head"><h2 id="inter-t" class="t-section">Cada interação resolve uma dificuldade</h2></div>
-        <div class="panel panel--cream table-box" tabindex="0" role="region" aria-labelledby="inter-t">
+        <div class="panel panel--cream table-box" tabindex="0" role="region" aria-label="Tabela de interações do Zela">
           <table>
             <caption>Interações em JavaScript e o problema de experiência que cada uma resolve</caption>
             <thead><tr><th scope="col">Tela</th><th scope="col">Interação</th><th scope="col">Problema que resolve</th></tr></thead>
             <tbody>
-              <tr><td>Todas</td><td>Botões A− / A+ (lembrados entre páginas)</td><td>Quem enxerga pouco lê sem precisar mexer no celular.</td></tr>
+              <tr><td>Todas</td><td>Botões A− / A+ e tradução automática com VLibras</td><td>Permite ampliar o texto até 200% e consultar o conteúdo em Libras.</td></tr>
               <tr><td>Todas</td><td>Menu que abre e fecha no celular (fecha com Esc)</td><td>Libera a tela pequena para o conteúdo.</td></tr>
               <tr><td>Início</td><td>Abas “Como funciona” com setas do teclado</td><td>Explica o serviço aos poucos, sem um texto longo.</td></tr>
               <tr><td>Início</td><td>Avisos por bairro e consulta rápida de protocolo</td><td>Mostra que vizinhos já usam e diz na hora se o número está errado.</td></tr>
@@ -129,7 +129,7 @@
               <tr><td>Acompanhar</td><td>Linha do tempo, avisos por SMS e confirmação da solução</td><td>Mostra o que aconteceu depois do envio e devolve a palavra ao morador.</td></tr>
               <tr><td>Entrar / Meus avisos</td><td>Login com celular e código por SMS (simulado) e lista dos avisos feitos e apoiados</td><td>Ninguém precisa guardar o número do protocolo: os avisos ficam salvos por pessoa.</td></tr>
               <tr><td>Meu bairro</td><td>Filtros, mapa ligado à lista e “Eu também vi”</td><td>Ajuda a priorizar o mais urgente e a achar avisos perto de casa.</td></tr>
-              <tr><td>Rota acessível</td><td>Cálculo da rota por perfil de mobilidade (Dijkstra), mapa com passos numerados, “Ouvir as instruções” e link para compartilhar</td><td>Evita escadas, ladeiras e calçadas quebradas — inclusive as avisadas pelos vizinhos — e explica por que o caminho mais curto não serve.</td></tr>
+              <tr><td>Rota acessível</td><td>Simulação por perfil de mobilidade (Dijkstra) com mapa, instruções em texto e voz e link para compartilhar</td><td>Mostra como as barreiras fictícias mudam o caminho no protótipo.</td></tr>
             </tbody>
           </table>
         </div>
@@ -152,8 +152,8 @@
             <li>Link “Pular para o conteúdo” e foco visível em tudo</li>
             <li>Rótulos em todos os campos e erros em linguagem simples</li>
             <li>Mensagens de status lidas por leitores de tela</li>
-            <li>Contraste mínimo de 4,5:1 (texto preto sobre o laranja)</li>
-            <li>Alvos de toque com pelo menos 44 px</li>
+            <li>Contraste de texto com o fundo em cartões, botões e mensagens de situação</li>
+            <li>Controles principais com área de toque de pelo menos 44 px</li>
             <li>Layout que se reorganiza em celular, tablet e computador</li>
             <li>Respeita “reduzir movimento” do sistema</li>
           </ul>

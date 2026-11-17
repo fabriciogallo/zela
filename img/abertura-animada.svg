@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 112" preserveAspectRatio="xMidYMid slice" shape-rendering="crispEdges">
 <style>
-.nuvens{animation:vento 96s steps(192) infinite}
-@keyframes vento{from{transform:translateX(0)}to{transform:translateX(192px)}}
-.q{opacity:0;animation:quadro 4.8s steps(1,end) infinite}
+.nuvens{animation:vento 4.8s steps(10) forwards}
+@keyframes vento{from{transform:translateX(0)}to{transform:translateX(10px)}}
+.q{opacity:0;animation:quadro 4.8s steps(1,end)}
 @keyframes quadro{0%{opacity:1}2.083%{opacity:0}100%{opacity:0}}
 .q:first-of-type{opacity:1}
 @media (prefers-reduced-motion: reduce){.nuvens,.q{animation:none}.q{opacity:0}.q:first-of-type{opacity:1}}
