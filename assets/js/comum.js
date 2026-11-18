@@ -206,7 +206,8 @@
     if (!botao || !barra) return;
     var cabecalho = barra.closest(".site-header");
     var atalho = document.querySelector(".report-action");
-    var abertura = document.querySelector(".landscape--topo");
+    // No Início, o atalho também espera a chamada da rota passar.
+    var fimDaAbertura = document.getElementById("rota-destaque") || document.querySelector(".landscape--topo");
 
     function definirAberto(aberto) {
       barra.classList.toggle("is-open", aberto);
@@ -238,7 +239,7 @@
     }
     function atualizarAtalho(posicao) {
       if (!atalho) return;
-      var passouDoInicio = abertura ? abertura.getBoundingClientRect().bottom <= cabecalho.offsetHeight : posicao >= 160;
+      var passouDoInicio = fimDaAbertura ? fimDaAbertura.getBoundingClientRect().bottom <= cabecalho.offsetHeight : posicao >= 160;
       var ocultar = !passouDoInicio && document.activeElement !== atalho;
       if (atalho.hidden === ocultar) return;
       atalho.hidden = ocultar;

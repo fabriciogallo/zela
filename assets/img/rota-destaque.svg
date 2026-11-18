@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="248" viewBox="0 0 560 248">
+  <rect width="560" height="248" fill="#e9eee4"/>
+  <g shape-rendering="crispEdges">
+    <path fill="#d8e6cc" d="M0 111h111v107H0zm348-111h212v76H348zm28 118h110v84H376z"/>
+    <path fill="#cce3ee" d="M476 13h53v8h12v22h-12v9h-62v-9h-9V24h18z"/>
+    <g fill="#dcd1b9">
+      <path d="M15 18h35v19H15zm48-4h39v23H63zm91 9h33v20h-33zm54-9h40v22h-40zm57 7h34v22h-34z"/>
+      <path d="M154 82h41v23h-41zm61 5h30v18h-30zm-47 49h37v20h-37zm101 38h37v21h-37zM508 100h34v29h-34zm0 64h34v20h-34z"/>
+      <path d="M19 228h28v20H19zm110-2h41v22h-41zm66 0h53v22h-53zm121 0h38v22h-38zm172-15h44v37h-44z"/>
+    </g>
+    <g fill="#a2bb8c">
+      <path d="M22 135h15v14H22zm22 55h20v15H44zm17-48h20v20H61zm324-111h20v17h-20zm29-6h16v19h-16z"/>
+      <path d="M391 163h17v18h-17zm65-21h14v20h-14zm-13 35h22v15h-22z"/>
+    </g>
+  </g>
+  <g fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M-10 57H570M-10 118H261M-10 174H206M76 57V211H416L490 57M128-10V257M366-10V257M490 57V257M206 174L324 57M366 118H570M416 211H570" stroke="#fffdf8" stroke-width="15"/>
+    <!-- As linhas têm padrões diferentes e uma borda clara para se destacar do fundo. -->
+    <path d="M76 174H206L324 57H490" stroke="#fff" stroke-width="11"/>
+    <path d="M76 174H206L324 57H490" stroke="#465b65" stroke-width="6" stroke-dasharray="9 9"/>
+    <path d="M76 174V211H416L490 57" stroke="#fff" stroke-width="13"/>
+    <path d="M76 174V211H416L490 57" stroke="#005a85" stroke-width="7"/>
+  </g>
+  <g transform="translate(270 110)">
+    <rect x="-15" y="-15" width="30" height="30" rx="7" fill="#fff9ed" stroke="#a3300b" stroke-width="2"/>
+    <path d="M-9 7h6V2h6v-6h6" fill="none" stroke="#a3300b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <circle cx="76" cy="174" r="17" fill="#005a85" stroke="#fff" stroke-width="3"/>
+  <circle cx="490" cy="57" r="17" fill="#005a85" stroke="#fff" stroke-width="3"/>
+  <g fill="#fff" font-family="system-ui, sans-serif" font-size="17" font-weight="700" text-anchor="middle">
+    <text x="76" y="180">A</text>
+    <text x="490" y="63">B</text>
+  </g>
+</svg>
