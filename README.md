@@ -58,7 +58,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Relatar | `pages/relatar.html` | Fazer um aviso em 4 passos guiados e receber o número do protocolo |
 | Acompanhar | `pages/acompanhar.html` | Ver as etapas do aviso, ativar avisos por SMS, confirmar a solução |
 | Meu bairro | `pages/bairro.html` | Filtrar avisos no mapa, ver os mais urgentes e apoiar vizinhos |
-| Rota acessível | `pages/rota.html` | Buscar bairros por CEP e planejar trajetos por perfil de mobilidade com Valhalla e OpenStreetMap |
+| Rota acessível | `pages/rota.html` | Buscar ruas e CEPs, ver bairros próximos e planejar trajetos por perfil de mobilidade |
 | Entrar | `pages/entrar.html` | Login com celular e código por SMS (simulado), sem senha |
 | Meus avisos | `pages/meus-avisos.html` | Lista dos avisos feitos e apoiados, com a etapa de cada um |
 | Sobre | `pages/sobre.html` | Como o Zela funciona, integrantes e conexão com os ODS |
@@ -81,7 +81,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Acompanhar | Linha do tempo + avisos por SMS + "Ficou resolvido mesmo?" | Mostra o que acontece após o envio e devolve a palavra ao morador |
 | Meu bairro | Filtros, mapa ligado à lista e "Eu também vi" | Prioriza o mais urgente e facilita encontrar avisos perto de casa |
 | Entrar / Meus avisos | Login sem senha (celular + código SMS simulado) | Avisos e apoios ficam salvos por pessoa; ninguém precisa guardar protocolo |
-| Rota acessível | Busca de bairro pelo CEP e escolha de saída e destino | Carrega pontos cadastrados ou permite usar endereços por CEP e a localização do aparelho |
+| Rota acessível | Sugestões por rua ou CEP e bairros próximos com localização autorizada | Distingue ruas de mesmo nome pelo bairro e pela cidade e ajuda a escolher a saída |
 | Rota acessível | Consulta real ao Valhalla / OpenStreetMap | Mostra distância, tempo estimado, detalhes mapeados e instruções em português, com leitura em voz alta |
 
 ### Como testar
@@ -91,7 +91,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **Aviso repetido:** em Relatar, escolha **Poste apagado** e escreva **Rua das Palmeiras**.
 - **Login:** em Entrar, use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
 - **Rota acessível:** selecione Cidade Tiradentes, Terminal e Casa de Cultura, perfil Cadeira de rodas.
-- **Bairro pelo CEP:** na Rota acessível, escolha **Pelo CEP** no campo **Bairro** e digite **01310-100** para ver o bairro identificado e a sugestão de saída.
+- **Busca de locais:** na Rota acessível, digite **Rua das Flores** ou **01310-100** no campo **Bairro, rua ou CEP** e selecione uma sugestão. Para ver bairros da região, clique em **Usar minha localização** e permita o acesso no navegador.
 
 ---
 
@@ -125,7 +125,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - Dados simulados em `assets/js/dados.js`
 - Mapas com tiles do [OpenStreetMap](https://www.openstreetmap.org/copyright)
 - Consulta de trajetos via [API Valhalla](https://valhalla.github.io/valhalla/api/route/api-reference/) (servidor FOSSGIS)
-- APIs públicas: [ViaCEP](https://viacep.com.br/) e [Nominatim](https://nominatim.org/)
+- APIs públicas: [ViaCEP](https://viacep.com.br/), [Nominatim](https://nominatim.org/) e [Photon](https://github.com/komoot/photon#demo-server). A busca usa o servidor de demonstração do Photon, com pausa entre digitação e consulta. A posição enviada para buscar bairros próximos é arredondada e não é salva pelo Zela.
 - `localStorage` para sessão, preferências, apoios e protocolos
 - Pixel art em SVG gerado por código (`assets/js/comum.js`)
 
@@ -159,6 +159,7 @@ zela/
 │   │   ├── bairro.js           # Mapa do bairro, filtros e "Eu também vi"
 │   │   ├── entrar.js           # Login com celular + SMS simulado
 │   │   ├── meus-avisos.js      # Avisos e apoios da conta
+│   │   ├── busca-rota.js       # Sugestões de rua e CEP e bairros próximos
 │   │   └── rotas-reais.js      # Consulta ao Valhalla e exibição dos trajetos
 │   └── img/
 │       ├── favicon.svg

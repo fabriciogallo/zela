@@ -1,20 +1,10 @@
 /* Zela — consulta de trajetos reais (Valhalla + OpenStreetMap).
-   O bairro pode ser buscado pelo CEP. Saída e destino podem ser pontos
-   públicos, endereços pelo CEP ou a localização atual do aparelho. */
+   Saída e destino podem ser pontos cadastrados, endereços ou a localização do aparelho. */
 (function () {
   "use strict";
 
   const $ = function (id) { return document.getElementById(id); };
   const form = $("rota-real-form");
-  const bairro = $("rota-real-bairro");
-  const camposRota = $("rota-real-campos");
-  const cepBairro = {
-    caixa: $("rota-real-bairro-cep"),
-    campo: $("rota-real-bairro-cep-valor"),
-    botao: $("rota-real-bairro-localizar"),
-    erro: $("rota-real-bairro-cep-erro"),
-    mensagem: $("rota-real-bairro-msg")
-  };
   const origem = $("rota-real-de");
   const destino = $("rota-real-para");
   const marcado = function (nome) {
@@ -87,12 +77,12 @@
   }
   const CEP = "__cep";
   const GPS = "__gps";
+  const RUA = "__rua";
   const DISTANCIA_MAXIMA_KM = 15;
   const km = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
   const cache = new Map();
   const ceps = new Map();
-  let bairroLocalizado = null;
-  let consultaBairro = null;
+  let lugarEscolhido = null;
   let consulta = null;
   let ocupado = false;
   let versaoCampos = 0;
@@ -159,12 +149,14 @@
     return function () { parar(true); };
   }
 
-  function idBairro() { return bairro.value === CEP ? bairroLocalizado?.id : bairro.value; }
-  function aguardandoBairro() { return bairro.value === CEP && !bairroLocalizado; }
-  function locais() { return ZELA.locaisRota[idBairro()] || []; }
+  function idBairro() { return lugarEscolhido?.bairroId; }
+  function locais() {
+    const cadastrados = ZELA.locaisRota[idBairro()] || [];
+    if (lugarEscolhido?.tipo !== "rua") return cadastrados;
+    return [Object.assign({ id: RUA }, lugarEscolhido), ...cadastrados];
+  }
 
   function localSelecionado(campo) {
-    if (aguardandoBairro()) return null;
     if (especial(campo.value)) {
       const p = ponta(campo);
       return p.local && p.local.tipo === campo.value && (campo.value === GPS || p.local.chave === chaveCep(p)) ? p.local : null;
@@ -209,77 +201,6 @@
     if (endereco.erro) throw falha("Não encontramos o CEP " + formatarCep(digitos) + ". Confira os números.");
     ceps.set(digitos, endereco);
     return endereco;
-  }
-
-  function normalizarNome(nome) {
-    return nome.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  }
-
-  function limparBuscaBairro() {
-    if (consultaBairro) consultaBairro.abort();
-    consultaBairro = null;
-    bairroLocalizado = null;
-    cepBairro.botao.removeAttribute("aria-disabled");
-    cepBairro.campo.removeAttribute("aria-invalid");
-    cepBairro.erro.textContent = "";
-    cepBairro.mensagem.textContent = "";
-  }
-
-  async function buscarBairro() {
-    if (consultaBairro || !aguardandoBairro()) return;
-    const digitos = cepBairro.campo.value.replace(/\D/g, "");
-    cepBairro.erro.textContent = "";
-    cepBairro.campo.removeAttribute("aria-invalid");
-    if (digitos.length !== 8) {
-      cepBairro.erro.textContent = "Digite os 8 números do CEP, como em 04913-000.";
-      cepBairro.campo.setAttribute("aria-invalid", "true");
-      cepBairro.campo.focus();
-      return;
-    }
-
-    const controlador = new AbortController();
-    consultaBairro = controlador;
-    cepBairro.botao.setAttribute("aria-disabled", "true");
-    cepBairro.mensagem.textContent = "Buscando o bairro…";
-    const prazo = window.setTimeout(function () { controlador.abort(); }, 10000);
-    try {
-      const endereco = await consultarCep(digitos, controlador.signal);
-      if (consultaBairro !== controlador) return;
-      const nome = endereco.bairro?.trim();
-      if (!nome) throw falha("Esse CEP não informa um bairro. Tente o CEP de uma rua do bairro.");
-
-      const saoPaulo = endereco.uf === "SP" && normalizarNome(endereco.localidade || "") === "sao paulo";
-      const id = saoPaulo && Object.keys(ZELA.bairros).find(function (chave) {
-        return normalizarNome(ZELA.bairros[chave]) === normalizarNome(nome);
-      });
-      bairroLocalizado = { id: id || null };
-      preencherLocais();
-      const lugar = nome + ", " + endereco.localidade + "/" + endereco.uf;
-      if (id) {
-        ZELA.store.set("bairro", id);
-        cepBairro.mensagem.textContent = "Bairro encontrado: " + lugar + ". Escolha a saída e o destino.";
-      } else {
-        const saida = pontas[0];
-        saida.cep.value = formatarCep(digitos);
-        saida.numero.value = "";
-        saida.erro.textContent = "";
-        saida.cep.removeAttribute("aria-invalid");
-        cepBairro.mensagem.textContent = "Bairro encontrado: " + lugar +
-          ". Sugerimos esse CEP na saída. Informe o destino para continuar.";
-      }
-      redefinir();
-    } catch (e) {
-      if (consultaBairro !== controlador) return;
-      cepBairro.mensagem.textContent = "";
-      cepBairro.erro.textContent = e.amigavel ? e.message : "Não conseguimos buscar o bairro agora. Tente novamente em instantes.";
-      if (e.amigavel) cepBairro.campo.setAttribute("aria-invalid", "true");
-    } finally {
-      window.clearTimeout(prazo);
-      if (consultaBairro === controlador) {
-        consultaBairro = null;
-        cepBairro.botao.removeAttribute("aria-disabled");
-      }
-    }
   }
 
   function chaveCep(p) {
@@ -416,7 +337,7 @@
     const local = localSelecionado(p.campo);
     if (!especial(tipo)) {
       p.erro.textContent = "";
-      p.msg.textContent = "";
+      p.msg.textContent = local?.tipo === "rua" ? "Posição aproximada da rua. " + local.detalhe : "";
     } else if (local) {
       p.msg.textContent = local.descricao;
     } else if (!p.pendente) {
@@ -443,7 +364,7 @@
     const marcadores = [{ local: saida, letra: "A" }, { local: chegada, letra: "B" }].filter(function (m) { return m.local; });
     const largura = mapa.viewBox.baseVal.width;
     const altura = mapa.viewBox.baseVal.height;
-    const centro = saida || chegada || ZELA.centros[idBairro()];
+    const centro = saida || chegada || ZELA.centros[idBairro()] || lugarEscolhido?.centro;
     mapa.replaceChildren();
     mapa.parentElement.hidden = !centro;
     $("rota-real-mapa-vazio").hidden = Boolean(centro);
@@ -858,8 +779,6 @@
     estadoBusca(false);
     erro.textContent = "";
     erroDestino.textContent = "";
-    cepBairro.caixa.hidden = bairro.value !== CEP;
-    camposRota.hidden = aguardandoBairro();
     destino.removeAttribute("aria-invalid");
     resultado.hidden = true;
     pararLeitura();
@@ -871,20 +790,21 @@
     mostrarMapa([]);
   }
 
-  /* ---------- Eventos ---------- */
-  cepBairro.botao.addEventListener("click", buscarBairro);
-  cepBairro.campo.addEventListener("input", function () {
-    cepBairro.campo.value = formatarCep(cepBairro.campo.value.replace(/\D/g, "").slice(0, 8));
-    const estavaLocalizado = Boolean(bairroLocalizado);
-    limparBuscaBairro();
-    if (estavaLocalizado) redefinir();
-  });
-  cepBairro.campo.addEventListener("keydown", function (event) {
-    if (event.key !== "Enter" || event.isComposing) return;
-    event.preventDefault();
-    buscarBairro();
-  });
+  function escolherLugar(lugar) {
+    lugarEscolhido = lugar;
+    if (lugar.bairroId) ZELA.store.set("bairro", lugar.bairroId);
+    preencherLocais(lugar.tipo === "cep" ? CEP : undefined);
+    if (lugar.tipo === "cep") {
+      const saida = pontas[0];
+      saida.cep.value = formatarCep(lugar.cep);
+      saida.numero.value = "";
+      saida.erro.textContent = "";
+      saida.cep.removeAttribute("aria-invalid");
+    }
+    redefinir();
+  }
 
+  /* ---------- Eventos ---------- */
   pontas.forEach(function (p) {
     p.cep.addEventListener("input", function () {
       const digitos = p.cep.value.replace(/\D/g, "").slice(0, 8);
@@ -921,14 +841,7 @@
   });
 
   form.addEventListener("change", function (event) {
-    if (event.target === cepBairro.campo) return;
-    if (event.target === bairro) {
-      limparBuscaBairro();
-      if (bairro.value !== CEP) {
-        preencherLocais(origem.value, destino.value);
-        ZELA.store.set("bairro", bairro.value);
-      }
-    }
+    if (event.target.id === "rota-local-busca") return;
     redefinir();
   });
   alternativa.addEventListener("change", function () {
@@ -940,10 +853,7 @@
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
     if (consulta || ocupado) return;
-    if (aguardandoBairro()) {
-      buscarBairro();
-      return;
-    }
+    if (!buscaLocal.confirmada()) return;
     erro.textContent = "";
     erroDestino.textContent = "";
     destino.removeAttribute("aria-invalid");
@@ -1057,8 +967,9 @@
 
   /* Início: aceita ?bairro=, ?origem=, ?destino= e ?cep_de= / ?cep_para= (com ?num_de= / ?num_para=). */
   const parametros = new URLSearchParams(location.search);
-  const bairroInicial = parametros.get("bairro") || ZELA.store.get("bairro", "angela");
-  bairro.value = Object.hasOwn(ZELA.locaisRota, bairroInicial) ? bairroInicial : "angela";
+  const bairroSalvo = parametros.get("bairro") || ZELA.store.get("bairro", "angela");
+  const bairroInicial = Object.hasOwn(ZELA.locaisRota, bairroSalvo) ? bairroSalvo : "angela";
+  lugarEscolhido = { tipo: "bairro", bairroId: bairroInicial };
   const cepInicial = { de: parametros.get("cep_de"), para: parametros.get("cep_para") };
   preencherLocais(cepInicial.de ? CEP : parametros.get("origem"), cepInicial.para ? CEP : parametros.get("destino"));
   [["de", pontas[0]], ["para", pontas[1]]].forEach(function (par) {
@@ -1069,6 +980,13 @@
     par[1].numero.value = (parametros.get("num_" + par[0]) || "").replace(/\D/g, "").slice(0, 6);
   });
   redefinir();
+  const buscaLocal = ZELA.iniciarBuscaRota({
+    bairroInicial: bairroInicial,
+    consultarCep: consultarCep,
+    formatarCep: formatarCep,
+    distanciaKm: distanciaKm,
+    escolher: escolherLugar
+  });
   pontas.forEach(function (p) {
     if (p.campo.value === CEP && p.cep.value.replace(/\D/g, "").length === 8) resolverPonta(p);
   });

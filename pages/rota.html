@@ -13,6 +13,7 @@
   <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
   <script src="../assets/js/dados.js" defer></script>
   <script src="../assets/js/comum.js" defer></script>
+  <script src="../assets/js/busca-rota.js" defer></script>
   <script src="../assets/js/rotas-reais.js" defer></script>
 </head>
 <body>
@@ -53,33 +54,31 @@
     <div class="wrap">
       <div class="page-title page-title--wide">
         <h1 class="t-page">Rota acessível</h1>
-        <p class="t-lead">Encontre um trajeto para o seu perfil de mobilidade. Escolha pontos do bairro ou informe endereços pelo CEP.</p>
+        <p class="t-lead">Encontre um trajeto para o seu perfil de mobilidade. Comece por uma rua, um CEP ou um bairro.</p>
       </div>
 
       <div class="route-planner">
         <form id="rota-real-form" class="panel panel--ink route-form stack" aria-labelledby="rota-real-titulo" novalidate>
           <h2 id="rota-real-titulo" class="t-card">Planeje seu trajeto</h2>
-          <div class="field">
-            <label for="rota-real-bairro">Bairro</label>
-            <select id="rota-real-bairro" class="input">
-              <option value="angela">Jardim Ângela</option>
-              <option value="grajau">Grajaú</option>
-              <option value="tiradentes">Cidade Tiradentes</option>
-              <option value="__cep">Pelo CEP</option>
-            </select>
-            <div class="route-cep" id="rota-real-bairro-cep" hidden>
-              <div class="field">
-                <label for="rota-real-bairro-cep-valor">CEP do bairro</label>
-                <input id="rota-real-bairro-cep-valor" class="input" type="text" inputmode="numeric" autocomplete="postal-code" enterkeyhint="search" maxlength="9" aria-describedby="rota-real-bairro-cep-dica rota-real-bairro-cep-erro">
-                <p id="rota-real-bairro-cep-dica" class="hint">Digite os 8 números do CEP de uma rua do bairro.</p>
-                <p id="rota-real-bairro-cep-erro" class="error" role="alert"></p>
-              </div>
-              <button type="button" id="rota-real-bairro-localizar" class="btn btn--ghost">Buscar bairro</button>
-              <p id="rota-real-bairro-msg" class="hint route-address" role="status"></p>
-            </div>
+          <div class="field route-place">
+            <label for="rota-local-busca">Bairro, rua ou CEP</label>
+            <input id="rota-local-busca" class="input" type="text" role="combobox" autocomplete="off" spellcheck="false"
+              enterkeyhint="search" maxlength="120" placeholder="Ex.: Avenida Paulista ou 01310-100"
+              aria-autocomplete="list" aria-controls="rota-local-lista" aria-expanded="false" aria-describedby="rota-local-dica rota-local-erro">
+            <ul id="rota-local-lista" class="list-reset place-results" role="listbox" aria-label="Sugestões de local" hidden></ul>
+            <p id="rota-local-dica" class="hint">Digite o nome da rua ou os 8 números do CEP e escolha uma sugestão.</p>
+            <p id="rota-local-busca-status" class="hint" role="status"></p>
+            <p id="rota-local-erro" class="error" role="alert"></p>
           </div>
+          <section class="stack nearby-places" aria-labelledby="rota-local-perto-titulo">
+            <h3 id="rota-local-perto-titulo" class="legend">Bairros próximos</h3>
+            <button id="rota-local-usar-gps" type="button" class="btn btn--ghost btn--sm">Usar minha localização</button>
+            <p id="rota-local-perto-status" class="hint" role="status"></p>
+            <ul id="rota-local-perto-lista" class="list-reset nearby-list" hidden></ul>
+          </section>
+          <p id="rota-local-escolhido" class="hint route-address" role="status"></p>
           <div class="stack route-fields" id="rota-real-campos">
-            <p class="hint">Escolha um ponto cadastrado, use o CEP do endereço ou permita acesso à sua localização.</p>
+            <p class="hint">Confira a saída e escolha o destino antes de buscar o trajeto.</p>
             <div class="field">
               <label for="rota-real-de">Saindo de</label>
               <select id="rota-real-de" class="input" aria-describedby="rota-real-de-erro rota-real-de-msg" required></select>
@@ -173,7 +172,7 @@
             <svg id="rota-real-mapa" viewBox="0 0 768 576" aria-hidden="true" focusable="false"></svg>
           </div>
           <p class="hint">O mapa pode ter informações incompletas sobre rampas, calçadas e travessias. Confira as condições antes de sair.</p>
-          <p class="t-small"><a href="https://valhalla.github.io/valhalla/">Rotas Valhalla</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a></p>
+          <p class="t-small"><a href="https://valhalla.github.io/valhalla/">Rotas Valhalla</a> · <a href="https://github.com/komoot/photon">Busca Photon</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a></p>
         </section>
       </div>
 

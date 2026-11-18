@@ -767,6 +767,26 @@ html[data-texto-grande] .cat-destaque { grid-column: auto; grid-row: auto; }
   gap: 20px; align-items: start;
 }
 .route-form, .route-fields, .route-map-panel, .route-result, .route-instructions { gap: 16px; }
+.route-place { min-inline-size: 0; }
+.route-place :is([role="status"], [role="alert"]):empty, .nearby-places [role="status"]:empty { position: absolute; }
+.place-results, .nearby-list {
+  background: var(--paper); border: 1px solid var(--field-edge); border-radius: var(--r-ctl);
+}
+.place-results { max-block-size: min(18rem, 40vh); overflow: auto; overscroll-behavior: contain; }
+.place-results > li, .nearby-list > li + li { border-block-start: var(--line); }
+.place-results > li:first-child { border-block-start: 0; }
+.place-results > li, .nearby-list button {
+  display: grid; gap: 2px; padding: 10px 12px; min-block-size: 48px;
+  text-align: start; line-height: 1.4; cursor: pointer;
+}
+.nearby-list button { inline-size: 100%; border: 0; border-radius: var(--r-ctl); background: transparent; }
+.place-results [aria-selected="true"], .place-results > li:hover, .nearby-list button:hover {
+  background: var(--mint-wash);
+}
+.place-results [aria-selected="true"] { box-shadow: inset 3px 0 var(--sky-hover); }
+.place-detail { color: var(--muted); font-size: .875rem; }
+.nearby-places { gap: 8px; padding: 12px; background: var(--panel); border: var(--line); border-radius: var(--r-sheet); }
+.nearby-places > .btn { align-self: flex-start; }
 .route-form-action :is(.hint, .error):not(:empty) { margin-block-start: 8px; }
 .route-form-action .btn { align-self: flex-start; }
 .route-form-action .btn[aria-disabled="true"] { cursor: wait; }
@@ -894,6 +914,7 @@ html[data-texto-grande] .route-planner { grid-template-columns: minmax(0, 1fr); 
 }
 
 @media (forced-colors: active) {
+  .place-results [aria-selected="true"] { outline: 2px solid Highlight; outline-offset: -2px; }
   .nav-list a[aria-current="page"], .tab[aria-selected="true"], .pin[aria-pressed="true"],
   .report.is-selected, .report.is-selected .report-n, .choice:has(input:checked) {
     border-color: Highlight;
