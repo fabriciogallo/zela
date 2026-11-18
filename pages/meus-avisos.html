@@ -13,6 +13,8 @@
   <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
   <script src="../assets/js/dados.js" defer></script>
   <script src="../assets/js/comum.js" defer></script>
+  <script src="../assets/js/busca-locais.js" defer></script>
+  <script src="../assets/js/preferencia-bairro.js" defer></script>
   <script src="../assets/js/meus-avisos.js" defer></script>
 </head>
 <body>
@@ -91,7 +93,21 @@
             <dl class="review">
               <div><dt>Nome</dt><dd id="d-nome" class="val"></dd></div>
               <div><dt>Celular</dt><dd id="d-tel" class="val"></dd></div>
+              <div><dt>Bairro no perfil</dt><dd id="d-bairro" class="val"></dd></div>
             </dl>
+            <div class="field route-place bairro-picker" id="perfil-bairro" tabindex="-1">
+              <label for="f-editar-bairro">Alterar bairro</label>
+              <input id="f-editar-bairro" class="input" type="text" role="combobox" autocomplete="off" spellcheck="false"
+                enterkeyhint="search" maxlength="120" placeholder="Digite o bairro, uma rua ou o CEP" aria-autocomplete="list"
+                aria-controls="f-editar-bairro-lista" aria-expanded="false" aria-describedby="f-editar-bairro-dica f-editar-bairro-erro">
+              <ul id="f-editar-bairro-lista" class="list-reset place-results" role="listbox" tabindex="-1" aria-label="Sugestões de bairro" hidden></ul>
+              <p id="f-editar-bairro-status" class="hint" role="status"></p>
+              <p id="f-editar-bairro-erro" class="error" role="alert"></p>
+              <p class="hint" id="f-editar-bairro-dica">A escolha é salva no perfil e usada no Início e em Meu bairro.</p>
+              <button type="button" class="btn btn--ghost btn--sm bairro-gps" id="f-editar-bairro-gps" aria-describedby="f-editar-bairro-dica">Usar minha localização</button>
+              <p class="hint bairro-gps-status" id="f-editar-bairro-gps-status" role="status"></p>
+            </div>
+            <div><button type="button" class="btn btn--ghost btn--sm" id="remover-bairro" hidden>Remover bairro</button></div>
             <p class="t-small muted">Os dados deste protótipo ficam só neste aparelho.</p>
             <div><button type="button" id="btn-sair" class="btn btn--ghost">Sair da conta</button></div>
           </aside>

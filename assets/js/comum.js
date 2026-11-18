@@ -25,11 +25,12 @@
       var contas = ZELA.store.get("contas", {});
       return tel && contas[tel] ? Object.assign({ tel: tel }, contas[tel]) : null;
     },
-    entrar: function (tel, nome) {
+    entrar: function (tel, nome, bairro) {
       var contas = ZELA.store.get("contas", {});
       var nova = !contas[tel];
       contas[tel] = contas[tel] || { nome: "", desde: new Date().toISOString(), apoios: {} };
       if (nome) contas[tel].nome = nome;
+      if (bairro) contas[tel].bairro = bairro;
       ZELA.store.set("contas", contas);
       ZELA.store.set("sessao", tel);
       /* avisos feitos neste aparelho antes de entrar passam a ser desta conta */
@@ -39,6 +40,13 @@
       return { nova: nova, guardados: guardados };
     },
     sair: function () { ZELA.store.set("sessao", null); },
+    salvarBairro: function (bairro) {
+      var u = ZELA.conta.atual(); if (!u) return;
+      var contas = ZELA.store.get("contas", {});
+      if (bairro) contas[u.tel].bairro = bairro;
+      else delete contas[u.tel].bairro;
+      ZELA.store.set("contas", contas);
+    },
     avisos: function () {
       var u = ZELA.conta.atual(); if (!u) return [];
       var protos = ZELA.store.get("protocolos", {});

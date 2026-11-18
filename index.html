@@ -25,6 +25,8 @@
     </script>
     <script src="assets/js/dados.js" defer></script>
     <script src="assets/js/comum.js" defer></script>
+    <script src="assets/js/busca-locais.js" defer></script>
+    <script src="assets/js/preferencia-bairro.js" defer></script>
     <script src="assets/js/inicio.js" defer></script>
   </head>
   <body class="home-page">
@@ -355,22 +357,20 @@
         >
           Acontecendo no seu bairro agora
         </h2>
-        <div
-          class="row"
-          style="
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: clamp(40px, 5.6vw, 80px);
-          "
-        >
-          <label for="sel-bairro" class="t-lead">Escolha o bairro</label>
-          <select id="sel-bairro" class="input neighborhood-select">
-            <option value="angela">Jardim Ângela</option>
-            <option value="grajau">Grajaú</option>
-            <option value="tiradentes">Cidade Tiradentes</option>
-          </select>
+        <div class="field route-place bairro-picker bairro-picker--inicio">
+          <label for="sel-bairro">Bairro, rua ou CEP</label>
+          <input id="sel-bairro" class="input" type="text" role="combobox" autocomplete="off" spellcheck="false"
+            enterkeyhint="search" maxlength="120" placeholder="Ex.: Bela Vista ou 01310-100" aria-autocomplete="list"
+            aria-controls="sel-bairro-lista" aria-expanded="false" aria-describedby="sel-bairro-dica sel-bairro-erro">
+          <ul id="sel-bairro-lista" class="list-reset place-results" role="listbox" tabindex="-1" aria-label="Sugestões de bairro" hidden></ul>
+          <p id="sel-bairro-status" class="hint" role="status"></p>
+          <p id="sel-bairro-erro" class="error" role="alert"></p>
+          <p class="hint" id="sel-bairro-dica">Escolha uma sugestão para ver os avisos do bairro, ou use sua localização.</p>
+          <button type="button" class="btn btn--ghost btn--sm bairro-gps" id="sel-bairro-gps" aria-describedby="sel-bairro-dica">Usar minha localização</button>
+          <p class="hint bairro-gps-status" id="sel-bairro-gps-status" role="status"></p>
+          <a class="bairro-perfil-link" id="sel-bairro-perfil" href="pages/entrar.html#perfil-bairro" hidden>Definir bairro no perfil</a>
         </div>
+        <p class="panel panel--cream t-lead" id="lista-perto-vazio" hidden></p>
         <ul
           class="list-reset grid-auto neighborhood-preview"
           id="lista-perto"
@@ -388,7 +388,7 @@
             Dados simulados para o protótipo. Apoiar um aviso existente aumenta
             a prioridade dele.
           </p>
-          <a class="btn btn--ghost" href="pages/bairro.html">Ver o mapa do bairro</a>
+          <a class="btn btn--ghost" id="link-meu-bairro" href="pages/bairro.html">Ver o mapa do bairro</a>
         </div>
       </section>
     </main>

@@ -12,6 +12,29 @@
   $("d-nome").textContent = u.nome || "Não informado";
   $("d-tel").textContent = ZELA.conta.formatarTel(u.tel);
 
+  function mostrarBairro(bairro) {
+    $("d-bairro").textContent = bairro ? ZELA.bairroPreferido.rotulo(bairro) : "Não informado";
+    $("remover-bairro").hidden = !bairro;
+  }
+
+  var campoBairro = ZELA.iniciarCampoBairro("f-editar-bairro", {
+    inicial: u.bairro,
+    escolher: function (bairro) {
+      ZELA.bairroPreferido.salvar(bairro);
+      mostrarBairro(bairro);
+      ZELA.anunciar("Bairro salvo no perfil: " + ZELA.bairroPreferido.rotulo(bairro) + ".");
+    }
+  });
+  mostrarBairro(u.bairro);
+  $("remover-bairro").addEventListener("click", function () {
+    campoBairro.cancelarBusca();
+    campoBairro.definir(null);
+    ZELA.conta.salvarBairro(null);
+    mostrarBairro(null);
+    $("f-editar-bairro").focus();
+    ZELA.anunciar("Bairro removido do perfil.");
+  });
+
   var guardados = ZELA.store.get("aviso-login", 0);
   if (guardados) {
     $("msg-guardados").textContent = guardados === 1

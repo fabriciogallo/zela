@@ -1,10 +1,11 @@
-/* Zela — sugestões de rua, consulta de CEP e bairros próximos no planejador. */
+/* Zela — campo de busca compartilhado, CEP e sugestões do OpenStreetMap. */
 (function () {
   "use strict";
 
   const PHOTON = "https://photon.komoot.io/";
   const RAIO_BAIRROS_KM = 5;
-  const cacheRuas = new Map();
+  const cacheLocais = new Map();
+  const cacheCeps = new Map();
   function normalizar(texto) {
     return (texto || "").trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   }
@@ -37,12 +38,66 @@
     });
   }
 
+  function formatarCep(digitos) {
+    return digitos.slice(0, 5) + "-" + digitos.slice(5);
+  }
+
+  async function consultarCep(digitos, signal) {
+    if (cacheCeps.has(digitos)) return cacheCeps.get(digitos);
+    const resposta = await fetch("https://viacep.com.br/ws/" + digitos + "/json/", { signal: signal });
+    if (!resposta.ok) throw new Error("ViaCEP indisponível");
+    const endereco = await resposta.json();
+    if (endereco.erro) {
+      const erro = new Error("Não encontramos o CEP " + formatarCep(digitos) + ". Confira os números.");
+      erro.amigavel = true;
+      throw erro;
+    }
+    if (cacheCeps.size >= 32) cacheCeps.delete(cacheCeps.keys().next().value);
+    cacheCeps.set(digitos, endereco);
+    return endereco;
+  }
+
   async function consultarPhoton(caminho, parametros, signal) {
     const resposta = await fetch(PHOTON + caminho + "?" + new URLSearchParams(parametros), { signal: signal });
     if (!resposta.ok) throw new Error("Busca Photon indisponível");
     const dados = await resposta.json();
     return dados.features;
   }
+
+  function eBairroNoMapa(p) {
+    return p.type === "district" || ["suburb", "neighbourhood", "quarter"].includes(p.osm_value);
+  }
+
+  function sugestaoBairro(nome, cidade, estado, referencia) {
+    if (!nome || !cidade || normalizar(nome) === normalizar(cidade)) return null;
+    const bairroId = bairroCadastrado(cidade, [nome]);
+    return {
+      tipo: "bairro", bairroId: bairroId, nome: bairroId ? ZELA.bairros[bairroId] : nome,
+      cidade: cidade, estado: estado, detalhe: partes([cidade, estado, referencia])
+    };
+  }
+
+  function bairroDoMapa(feature, aceitarRua) {
+    const p = feature.properties || {};
+    if (p.countrycode !== "BR") return null;
+    if (eBairroNoMapa(p)) return sugestaoBairro(p.name, p.city || p.county, p.state);
+    if (aceitarRua && p.type === "street") {
+      return sugestaoBairro(p.district || p.locality, p.city || p.county, p.state, p.name);
+    }
+    return null;
+  }
+
+  async function bairroPelaPosicao(coords, signal) {
+    // Envia ao buscador uma área aproximada, sem guardar a posição do aparelho.
+    const dados = await consultarPhoton("reverse", [
+      ["lat", coords.latitude.toFixed(3)], ["lon", coords.longitude.toFixed(3)],
+      ["radius", 2], ["limit", 8], ["layer", "district"], ["layer", "locality"],
+      ["osm_tag", "place:suburb"], ["osm_tag", "place:neighbourhood"], ["osm_tag", "place:quarter"]
+    ], signal);
+    return dados.map(function (item) { return bairroDoMapa(item, false); }).find(Boolean) || null;
+  }
+
+  ZELA.buscaLocais = { consultarCep: consultarCep, formatarCep: formatarCep, bairroPelaPosicao: bairroPelaPosicao };
 
   function lugarDoMapa(feature, tipo) {
     const p = feature.properties || {};
@@ -79,11 +134,12 @@
     elemento.append(detalhe);
   }
 
-  ZELA.iniciarCampoRota = function (config) {
+  ZELA.iniciarCampoLocal = function (config) {
     const campo = document.getElementById(config.campo);
     const lista = document.getElementById(campo.getAttribute("aria-controls"));
     const status = document.getElementById(config.status);
     const erro = document.getElementById(config.erro);
+    const soBairro = config.tipo === "bairro";
     let opcoes = [], ativo = -1, termoEscolhido = "", timer = 0, consulta = null;
 
     function destacar(indice) {
@@ -133,7 +189,7 @@
       erro.textContent = "";
       campo.removeAttribute("aria-invalid");
       termoEscolhido = !lugar ? "" : lugar.tipo === "cep"
-        ? config.formatarCep(lugar.cep) + (lugar.numero ? ", " + lugar.numero : "") : lugar.nome;
+        ? formatarCep(lugar.cep) + (lugar.numero ? ", " + lugar.numero : "") : lugar.nome;
       campo.value = termoEscolhido;
     }
 
@@ -146,37 +202,42 @@
         let encontrados;
         if (postal) {
           const digitos = postal[1].replace(/\D/g, ""), numero = postal[2] || "";
-          const e = await config.consultarCep(digitos, controlador.signal);
+          const e = await consultarCep(digitos, controlador.signal);
           const nome = e.logradouro?.trim() || e.bairro?.trim();
-          encontrados = nome ? [{
+          const bairro = soBairro && sugestaoBairro(e.bairro?.trim(), e.localidade, e.uf,
+            partes([e.logradouro, formatarCep(digitos)]));
+          encontrados = soBairro ? (bairro ? [bairro] : []) : nome ? [{
             tipo: "cep", cep: digitos, numero: numero, nome: nome + (numero ? ", " + numero : ""),
-            detalhe: partes([e.bairro, [e.localidade, e.uf].filter(Boolean).join("/"), config.formatarCep(digitos)]),
+            detalhe: partes([e.bairro, [e.localidade, e.uf].filter(Boolean).join("/"), formatarCep(digitos)]),
             bairroId: bairroCadastrado(e.localidade, [e.bairro])
           }] : [];
         } else {
-          const chave = normalizar(texto);
-          encontrados = cacheRuas.get(chave);
+          const chave = (soBairro ? "bairro:" : "rua:") + normalizar(texto);
+          encontrados = cacheLocais.get(chave);
           if (!encontrados) {
             // O Photon suporta busca durante a digitação; o Nominatim público não.
-            const filtros = new URLSearchParams({
-              q: texto, layer: "street", countrycode: "BR", lat: "-23.5505", lon: "-46.6333", limit: "10"
-            });
-            if (/[ ,]\d{1,6}$/.test(texto)) filtros.append("layer", "house");
+            const filtros = new URLSearchParams({ q: texto, layer: "street", countrycode: "BR", lat: "-23.5505", lon: "-46.6333", limit: "10" });
+            if (soBairro) {
+              filtros.append("layer", "district");
+              filtros.append("layer", "locality");
+            } else if (/[ ,]\d{1,6}$/.test(texto)) filtros.append("layer", "house");
             const dados = await consultarPhoton("api/", filtros, controlador.signal);
-            encontrados = semRepeticoes(dados.map(function (f) { return lugarDoMapa(f, "rua"); }), function (lugar) {
-              return normalizar(lugar.nome + "|" + lugar.detalhe);
-            });
-            if (cacheRuas.size >= 32) cacheRuas.delete(cacheRuas.keys().next().value);
-            cacheRuas.set(chave, encontrados);
+            encontrados = dados.map(function (f) { return soBairro ? bairroDoMapa(f, true) : lugarDoMapa(f, "rua"); });
+            if (cacheLocais.size >= 32) cacheLocais.delete(cacheLocais.keys().next().value);
+            cacheLocais.set(chave, encontrados);
           }
         }
         if (consulta !== controlador) return;
-        const sugestoes = locais.concat(encontrados).slice(0, 8);
+        const sugestoes = semRepeticoes(locais.concat(encontrados), function (lugar) {
+          return normalizar(soBairro
+            ? lugar.bairroId || [lugar.nome, lugar.cidade, lugar.estado].join("|")
+            : lugar.nome + "|" + lugar.detalhe);
+        }).slice(0, 8);
         mostrarOpcoes(sugestoes);
         status.textContent = sugestoes.length
           ? (sugestoes.length === 1 ? "1 sugestão disponível." : sugestoes.length + " sugestões disponíveis.")
-          : (postal ? "Esse CEP não identifica uma rua ou um bairro. Tente outro CEP." :
-            "Nenhuma rua encontrada. Tente incluir a cidade ou digitar um CEP.");
+          : (postal ? "Esse CEP não identifica " + (soBairro ? "um bairro" : "uma rua ou um bairro") + ". Tente outro CEP." :
+            (soBairro ? "Nenhum bairro encontrado com esse termo." : "Nenhuma rua encontrada.") + " Tente incluir a cidade ou digitar um CEP.");
       } catch (e) {
         if (consulta !== controlador) return;
         status.textContent = "";
@@ -199,12 +260,13 @@
         mostrarOpcoes(cadastrados);
         return;
       }
-      const postal = texto.match(/^(\d{5}-?\d{3})(?:\s*,\s*(\d{1,6}))?$/);
+      const postal = texto.match(soBairro ? /^(\d{5}-?\d{3})$/ : /^(\d{5}-?\d{3})(?:\s*,\s*(\d{1,6}))?$/);
       const filtro = normalizar(texto);
       const locais = cadastrados.filter(function (l) { return normalizar(l.nome).includes(filtro); });
       mostrarOpcoes(locais);
       if (!postal && /^[\d.,\s-]+$/.test(texto)) {
-        if (agora || texto.replace(/\D/g, "").length > 8) status.textContent = "Digite os 8 números do CEP. Se quiser incluir o número, separe com vírgula.";
+        if (agora || texto.replace(/\D/g, "").length > 8) status.textContent =
+          "Digite os 8 números do CEP." + (soBairro ? "" : " Se quiser incluir o número, separe com vírgula.");
         return;
       }
       if (!postal && (texto.replace(/^(rua|avenida|av\.?|travessa)\s*/i, "").length < 3 ||
@@ -266,7 +328,9 @@
         if (termoEscolhido && semRascunho()) return true;
         campo.focus();
         campo.setAttribute("aria-invalid", "true");
-        erro.textContent = campo.value.trim() ? "Escolha uma sugestão da lista." : "Digite uma rua, um CEP ou escolha um local da lista.";
+        erro.textContent = campo.value.trim()
+          ? "Escolha uma sugestão da lista."
+          : (soBairro ? "Digite um bairro, uma rua ou um CEP." : "Digite uma rua, um CEP ou escolha um local da lista.");
         return false;
       }
     };
@@ -279,15 +343,17 @@
       return { tipo: "bairro", nome: par[1], bairroId: par[0], cidade: "São Paulo",
         detalhe: "São Paulo · Pontos cadastrados", centro: ZELA.centros[par[0]] };
     });
-    const seletor = ZELA.iniciarCampoRota({
+    const seletor = ZELA.iniciarCampoLocal({
       campo: "rota-local-busca", status: "rota-local-busca-status", erro: "rota-local-erro",
-      consultarCep: config.consultarCep, formatarCep: config.formatarCep,
       sugestoes: function () { return cadastrados; },
       escolher: escolher
     });
     let consultaPerto = null, gpsConsultado = false;
 
-    escolhido.textContent = "Pontos cadastrados de " + ZELA.bairros[config.bairroInicial] + ".";
+    const inicial = config.regiaoInicial;
+    seletor.definir(inicial);
+    escolhido.textContent = inicial.bairroId ? "Pontos cadastrados de " + inicial.nome + "." :
+      "Bairro de referência: " + partes([inicial.nome, inicial.cidade]) + ". Informe a saída e o destino para buscar um trajeto.";
     function escolher(lugar) {
       seletor.definir(lugar);
       config.escolher(lugar);

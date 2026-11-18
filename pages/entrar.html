@@ -13,6 +13,8 @@
   <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
   <script src="../assets/js/dados.js" defer></script>
   <script src="../assets/js/comum.js" defer></script>
+  <script src="../assets/js/busca-locais.js" defer></script>
+  <script src="../assets/js/preferencia-bairro.js" defer></script>
   <script src="../assets/js/entrar.js" defer></script>
 </head>
 <body>
@@ -72,6 +74,18 @@
               <label for="f-nome">Como quer ser chamado? <span class="muted">(opcional)</span></label>
               <input id="f-nome" class="input" type="text" autocomplete="given-name" maxlength="40" style="max-width:320px">
             </div>
+            <div class="field route-place bairro-picker" id="perfil-bairro" tabindex="-1">
+              <label for="f-perfil-bairro">Seu bairro <span class="muted">(opcional)</span></label>
+              <input id="f-perfil-bairro" class="input" type="text" role="combobox" autocomplete="off" spellcheck="false"
+                enterkeyhint="search" maxlength="120" placeholder="Digite o bairro, uma rua ou o CEP" aria-autocomplete="list"
+                aria-controls="f-perfil-bairro-lista" aria-expanded="false" aria-describedby="f-perfil-bairro-dica f-perfil-bairro-erro">
+              <ul id="f-perfil-bairro-lista" class="list-reset place-results" role="listbox" tabindex="-1" aria-label="Sugestões de bairro" hidden></ul>
+              <p id="f-perfil-bairro-status" class="hint" role="status"></p>
+              <p id="f-perfil-bairro-erro" class="error" role="alert"></p>
+              <p class="hint" id="f-perfil-bairro-dica">Usamos sua escolha para mostrar os avisos do bairro. Só o bairro e a cidade ficam no perfil neste aparelho.</p>
+              <button type="button" class="btn btn--ghost btn--sm bairro-gps" id="f-perfil-bairro-gps" aria-describedby="f-perfil-bairro-dica">Usar minha localização</button>
+              <p class="hint bairro-gps-status" id="f-perfil-bairro-gps-status" role="status"></p>
+            </div>
             <div><button type="submit" class="btn btn--primary btn--lg">Receber código por SMS</button></div>
           </form>
 
@@ -103,6 +117,7 @@
             <li>Todos os seus avisos em uma lista, sem precisar guardar números</li>
             <li>Veja em que etapa cada um está</li>
             <li>Os avisos que você apoiou ficam salvos também</li>
+            <li>Seu bairro fica salvo para mostrar os avisos da sua região</li>
           </ul>
           <p class="t-small muted rule-top">Neste protótipo os dados ficam só neste aparelho e nenhum SMS é enviado de verdade.</p>
         </aside>

@@ -13,7 +13,8 @@
   <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
   <script src="../assets/js/dados.js" defer></script>
   <script src="../assets/js/comum.js" defer></script>
-  <script src="../assets/js/busca-rota.js" defer></script>
+  <script src="../assets/js/busca-locais.js" defer></script>
+  <script src="../assets/js/preferencia-bairro.js" defer></script>
   <script src="../assets/js/rotas-reais.js" defer></script>
 </head>
 <body>
@@ -54,7 +55,7 @@
     <div class="wrap">
       <div class="page-title page-title--wide">
         <h1 class="t-page">Rota acessível</h1>
-        <p class="t-lead">Escolha a saída e o destino. Compare trajetos de acordo com seu perfil de mobilidade.</p>
+        <p class="t-lead">Escolha a saída e o destino. Compare trajetos de acordo com seu <strong class="mobility-emphasis">perfil de mobilidade</strong>.</p>
       </div>
 
       <div class="route-planner">
@@ -89,8 +90,8 @@
               </div>
               <button type="button" class="btn btn--ghost btn--sm route-swap" id="rota-real-inverter">⇅ Inverter saída e destino</button>
               <fieldset class="route-options" aria-describedby="rota-real-preferencia">
-                <legend class="legend">Como você vai se deslocar?</legend>
-                <p class="hint">Escolha uma opção.</p>
+                <legend class="legend">Perfil de mobilidade</legend>
+                <p class="hint">Como você vai se deslocar? Escolha uma opção.</p>
                 <div class="chip-group" id="rota-real-perfis">
                   <label class="chip"><input type="radio" name="perfil-real" value="cadeira" checked> Cadeira de rodas</label>
                   <label class="chip"><input type="radio" name="perfil-real" value="andador"> Andador</label>

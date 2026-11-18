@@ -59,8 +59,8 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Acompanhar | `pages/acompanhar.html` | Ver as etapas do aviso, ativar avisos por SMS, confirmar a solução |
 | Meu bairro | `pages/bairro.html` | Filtrar avisos no mapa, ver os mais urgentes e apoiar vizinhos |
 | Rota acessível | `pages/rota.html` | Buscar ruas e CEPs, ver bairros próximos e planejar trajetos por perfil de mobilidade |
-| Entrar | `pages/entrar.html` | Login com celular e código por SMS (simulado), sem senha |
-| Meus avisos | `pages/meus-avisos.html` | Lista dos avisos feitos e apoiados, com a etapa de cada um |
+| Entrar | `pages/entrar.html` | Login com celular e código por SMS (simulado), com bairro opcional |
+| Meus avisos | `pages/meus-avisos.html` | Avisos feitos e apoiados; consulta e alteração do bairro do perfil |
 | Sobre | `pages/sobre.html` | Como o Zela funciona, integrantes e conexão com os ODS |
 
 ---
@@ -73,6 +73,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Todas | Menu recolhível (fecha com Esc), que volta ao rolar para cima | Dá acesso à navegação e à conta sem voltar até o topo |
 | Início | Abas "Como funciona" com setas do teclado | Explica o serviço em partes, sem muro de texto |
 | Início | Avisos por bairro + consulta rápida de protocolo | Mostra que vizinhos já usam; avisa na hora se o número está errado |
+| Início / Meu bairro / Perfil | Busca por bairro, rua, CEP ou geolocalização | Mostra os avisos do bairro escolhido e permite salvar a região no perfil sem depender do GPS |
 | Relatar | 4 passos com progresso, validação e foco no título | Divide a tarefa, evita erro no fim e orienta leitores de tela |
 | Relatar | Busca por CEP via API ViaCEP | Preenche rua, bairro e cidade automaticamente |
 | Relatar | "Usar minha localização" (OpenStreetMap/Nominatim) | Poupa digitação do endereço |
@@ -90,6 +91,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **CEP:** em Relatar → passo 2, digite **01310-100** (Avenida Paulista) ou **99999-999** (erro).
 - **Aviso repetido:** em Relatar, escolha **Poste apagado** e escreva **Rua das Palmeiras**.
 - **Login:** em Entrar, use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
+- **Meu bairro:** busque **Grajaú** para ver avisos simulados ou **01310-100** para escolher Bela Vista e experimentar o estado sem avisos. Você também pode salvar ou remover o bairro em **Meus avisos → Seus dados**.
 - **Rota acessível:** em **Escolher pela região**, selecione Cidade Tiradentes. Escolha o Terminal e a Casa de Cultura como saída e destino, mantenha o perfil **Cadeira de rodas** e clique em **Buscar trajeto**.
 - **Busca de locais:** nos campos **Saindo de** e **Indo para**, digite **Rua das Flores** ou **01310-100, 1000** e escolha uma sugestão. Os dois campos também aceitam **Minha localização atual**. Para ver os bairros da região, use **Bairros próximos** e permita o acesso à localização no navegador.
 
@@ -125,7 +127,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - Dados simulados em `assets/js/dados.js`
 - Mapas com tiles do [OpenStreetMap](https://www.openstreetmap.org/copyright)
 - Consulta de trajetos via [API Valhalla](https://valhalla.github.io/valhalla/api/route/api-reference/) (servidor FOSSGIS)
-- APIs públicas: [ViaCEP](https://viacep.com.br/), [Nominatim](https://nominatim.org/) e [Photon](https://github.com/komoot/photon#demo-server). A busca usa o servidor de demonstração do Photon, com pausa entre digitação e consulta. A posição enviada para buscar bairros próximos é arredondada e não é salva pelo Zela.
+- APIs públicas: [ViaCEP](https://viacep.com.br/), [Nominatim](https://nominatim.org/) e [Photon](https://github.com/komoot/photon#demo-server). A busca usa o servidor de demonstração do Photon, com pausa entre digitação e consulta. A posição enviada para identificar o bairro é arredondada; a preferência salva no navegador guarda só a identificação do bairro e da cidade.
 - `localStorage` para sessão, preferências, apoios e protocolos
 - Pixel art em SVG gerado por código (`assets/js/comum.js`)
 
@@ -159,7 +161,8 @@ zela/
 │   │   ├── bairro.js           # Mapa do bairro, filtros e "Eu também vi"
 │   │   ├── entrar.js           # Login com celular + SMS simulado
 │   │   ├── meus-avisos.js      # Avisos e apoios da conta
-│   │   ├── busca-rota.js       # Sugestões de rua e CEP e bairros próximos
+│   │   ├── busca-locais.js     # Sugestões de bairros, ruas, CEPs e bairros próximos
+│   │   ├── preferencia-bairro.js # Seleção por GPS ou busca e preferência do aparelho ou perfil
 │   │   └── rotas-reais.js      # Consulta ao Valhalla e exibição dos trajetos
 │   └── img/
 │       ├── favicon.svg

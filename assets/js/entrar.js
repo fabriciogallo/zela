@@ -3,6 +3,8 @@
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
   var codigo = "", tel = "", espera = null;
+  var campoBairro = ZELA.iniciarCampoBairro("f-perfil-bairro", {});
+  var bairroEscolhido = null;
 
   function soNumeros(v) { return v.replace(/\D/g, ""); }
 
@@ -55,6 +57,9 @@
     if (d.length !== 11 || d[2] !== "9") {
       return erro("f-tel", "err-tel", "Confira o número: são 2 números do DDD e 9 do celular, começando com 9. Ex.: (11) 91234-5678.");
     }
+    if (!campoBairro.confirmarOpcional()) return;
+    bairroEscolhido = campoBairro.escolhido();
+    campoBairro.cancelarBusca();
     tel = d;
     $("codigo-para").textContent = "Mandamos um código de 4 números para " + ZELA.conta.formatarTel(tel) + ".";
     enviarCodigo();
@@ -67,7 +72,7 @@
     var v = $("f-codigo").value;
     if (v.length !== 4) return erro("f-codigo", "err-codigo", "O código tem 4 números. Ele está na mensagem que enviamos.");
     if (v !== codigo) return erro("f-codigo", "err-codigo", "Código errado. Confira a mensagem ou peça outro código.");
-    var r = ZELA.conta.entrar(tel, $("f-nome").value.trim());
+    var r = ZELA.conta.entrar(tel, $("f-nome").value.trim(), bairroEscolhido);
     ZELA.store.set("aviso-login", r.guardados);
     location.href = destino();
   });

@@ -13,6 +13,8 @@
   <script>document.documentElement.classList.add("js");try{var t=JSON.parse(localStorage.getItem("zela:texto"));if(t)document.documentElement.setAttribute("data-texto",t)}catch(e){}</script>
   <script src="../assets/js/dados.js" defer></script>
   <script src="../assets/js/comum.js" defer></script>
+  <script src="../assets/js/busca-locais.js" defer></script>
+  <script src="../assets/js/preferencia-bairro.js" defer></script>
   <script src="../assets/js/bairro.js" defer></script>
 </head>
 <body>
@@ -52,59 +54,70 @@
   <main id="conteudo" class="page-pad" tabindex="-1">
     <div class="wrap">
       <div class="page-title">
-        <p class="chip chip--lemon"><span id="chip-bairro">Jardim Ângela</span>&nbsp;· dados simulados</p>
+        <p class="chip chip--lemon"><span id="chip-bairro">Jardim Ângela</span><span id="chip-bairro-demo">· dados simulados</span></p>
         <h1 class="t-page">O que os vizinhos viram</h1>
         <p class="t-lead" style="max-width:640px">Se você também passa por um desses problemas, toque em “Eu também vi”. Cada apoio sobe o aviso na fila de prioridade.</p>
       </div>
 
       <form class="panel panel--cream filters" aria-label="Filtros" onsubmit="return false">
-        <div class="field">
-          <label for="f-bairro">Bairro</label>
-          <select id="f-bairro" class="input">
-            <option value="angela">Jardim Ângela</option>
-            <option value="grajau">Grajaú</option>
-            <option value="tiradentes">Cidade Tiradentes</option>
-          </select>
+        <div class="bairro-filter">
+          <div class="field route-place bairro-picker">
+            <label for="f-bairro">Bairro, rua ou CEP</label>
+            <input id="f-bairro" class="input" type="text" role="combobox" autocomplete="off" spellcheck="false"
+              enterkeyhint="search" maxlength="120" placeholder="Ex.: Bela Vista ou 01310-100" aria-autocomplete="list"
+              aria-controls="f-bairro-lista" aria-expanded="false" aria-describedby="f-bairro-dica f-bairro-erro">
+            <ul id="f-bairro-lista" class="list-reset place-results" role="listbox" tabindex="-1" aria-label="Sugestões de bairro" hidden></ul>
+            <p id="f-bairro-status" class="hint" role="status"></p>
+            <p id="f-bairro-erro" class="error" role="alert"></p>
+            <p class="hint" id="f-bairro-dica">Veja os avisos do bairro escolhido.</p>
+            <button type="button" class="btn btn--ghost btn--sm bairro-gps" id="f-bairro-gps" aria-describedby="f-bairro-dica">Usar minha localização</button>
+            <p class="hint bairro-gps-status" id="f-bairro-gps-status" role="status"></p>
+            <a class="bairro-perfil-link" id="f-bairro-perfil" href="entrar.html#perfil-bairro" hidden>Definir bairro no perfil</a>
+          </div>
         </div>
-        <div class="field">
-          <label for="f-cat">Tipo de problema</label>
-          <select id="f-cat" class="input">
-            <option value="todos">Todos</option>
-            <option value="buraco">Buraco na rua</option>
-            <option value="luz">Poste apagado</option>
-            <option value="lixo">Lixo ou entulho</option>
-            <option value="calcada">Calçada quebrada</option>
-            <option value="arvore">Árvore ou poda</option>
-            <option value="outro">Outro</option>
-          </select>
+        <div class="stack bairro-filter-options">
+          <div class="bairro-filter-selects">
+            <div class="field">
+              <label for="f-cat">Tipo de problema</label>
+              <select id="f-cat" class="input">
+                <option value="todos">Todos</option>
+                <option value="buraco">Buraco na rua</option>
+                <option value="luz">Poste apagado</option>
+                <option value="lixo">Lixo ou entulho</option>
+                <option value="calcada">Calçada quebrada</option>
+                <option value="arvore">Árvore ou poda</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-status">Situação</label>
+              <select id="f-status" class="input">
+                <option value="abertos">Em aberto</option>
+                <option value="todos">Todos</option>
+                <option value="Resolvido">Resolvidos</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-ord">Ordenar por</label>
+              <select id="f-ord" class="input">
+                <option value="prioridade">Mais urgente primeiro</option>
+                <option value="apoios">Mais apoiados</option>
+                <option value="recentes">Mais recentes</option>
+              </select>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="f-mobilidade"> Só avisos que podem afetar a mobilidade</label>
+          <p class="muted" id="contagem" role="status"></p>
         </div>
-        <div class="field">
-          <label for="f-status">Situação</label>
-          <select id="f-status" class="input">
-            <option value="abertos">Em aberto</option>
-            <option value="todos">Todos</option>
-            <option value="Resolvido">Resolvidos</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="f-ord">Ordenar por</label>
-          <select id="f-ord" class="input">
-            <option value="prioridade">Mais urgente primeiro</option>
-            <option value="apoios">Mais apoiados</option>
-            <option value="recentes">Mais recentes</option>
-          </select>
-        </div>
-        <label class="check"><input type="checkbox" id="f-mobilidade"> Só avisos que podem afetar a mobilidade</label>
-        <p class="count" id="contagem" role="status"></p>
       </form>
 
       <p class="neighborhood-jump"><a class="link-action" href="#lista-t"><span>Ir para a lista de avisos</span></a></p>
       <section class="panel panel--green row neighborhood-route" aria-labelledby="rota-bairro-titulo">
         <div class="stack">
           <h2 id="rota-bairro-titulo" class="t-card">Planeje uma rota em <span id="rota-bairro-nome">Jardim Ângela</span></h2>
-          <p>Escolha um destino para consultar um trajeto pelo seu perfil de mobilidade.</p>
+          <p>Compare trajetos de acordo com seu <strong class="mobility-emphasis">perfil de mobilidade</strong>: cadeira de rodas, andador, baixa visão e outras opções.</p>
         </div>
-        <form class="stack" action="rota.html" method="get">
+        <form id="rota-bairro-exemplo" class="stack" action="rota.html" method="get" hidden>
           <input type="hidden" id="rota-bairro-valor" name="bairro" value="angela">
           <div class="field">
             <label for="rota-bairro-destino">Destino no bairro</label>
@@ -114,9 +127,13 @@
           </div>
           <div><button type="submit" class="btn btn--primary">Continuar para a rota</button></div>
         </form>
+        <div class="stack" id="rota-bairro-livre" hidden>
+          <p class="hint">Informe sua saída e seu destino no planejador.</p>
+          <div><a class="btn btn--primary" href="rota.html">Escolher saída e destino</a></div>
+        </div>
       </section>
       <div class="row" style="align-items:flex-start">
-        <section class="col-side panel panel--green inv stack map-col" style="gap:20px" aria-labelledby="mapa-t">
+        <section class="col-side panel panel--green inv stack map-col" id="mapa-bairro" style="gap:20px" aria-labelledby="mapa-t">
           <h2 id="mapa-t" class="t-tab">Mapa do bairro</h2>
           <div class="map" id="mapa">
             <p class="map-credit">© <a href="https://www.openstreetmap.org/copyright">colaboradores do OpenStreetMap</a></p>
@@ -127,6 +144,7 @@
         <section class="col-main stack" style="gap:16px" aria-labelledby="lista-t">
           <h2 id="lista-t" class="t-card" tabindex="-1">Lista de avisos</h2>
           <p id="vazio" class="panel panel--cream t-lead" hidden>Nenhum aviso com esses filtros. Tente “Todos” ou <a href="relatar.html">relate um problema novo</a>.</p>
+          <p id="vazio-bairro" class="panel panel--cream t-lead" hidden>O protótipo ainda não tem avisos para este bairro. Você pode <a href="relatar.html">relatar um problema</a> ou buscar um trajeto acessível.</p>
           <ul class="list-reset stack" style="gap:16px" id="lista"></ul>
         </section>
       </div>

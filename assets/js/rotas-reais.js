@@ -79,7 +79,7 @@
   const DISTANCIA_MAXIMA_KM = 15;
   const km = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
   const cache = new Map();
-  const ceps = new Map();
+  const { consultarCep, formatarCep } = ZELA.buscaLocais;
   let lugarEscolhido = null;
   let consulta = null;
   let preparando = null;
@@ -175,21 +175,6 @@
     const dLat = (b.lat - a.lat) * rad, dLon = (b.lon - a.lon) * rad;
     const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) ** 2;
     return 12742 * Math.asin(Math.sqrt(h));
-  }
-
-  function formatarCep(digitos) {
-    return digitos.length > 5 ? digitos.slice(0, 5) + "-" + digitos.slice(5) : digitos;
-  }
-
-  async function consultarCep(digitos, signal) {
-    if (digitos.length !== 8) throw falha("Digite os 8 números do CEP, como em 04913-000.");
-    if (ceps.has(digitos)) return ceps.get(digitos);
-    const resposta = await fetch("https://viacep.com.br/ws/" + digitos + "/json/", { signal: signal });
-    if (!resposta.ok) throw new Error("ViaCEP indisponível");
-    const endereco = await resposta.json();
-    if (endereco.erro) throw falha("Não encontramos o CEP " + formatarCep(digitos) + ". Confira os números.");
-    ceps.set(digitos, endereco);
-    return endereco;
   }
 
   // O Nominatim pede no máximo uma consulta por segundo.
@@ -767,7 +752,6 @@
 
   function escolherLugar(lugar) {
     lugarEscolhido = lugar;
-    if (lugar.bairroId) ZELA.store.set("bairro", lugar.bairroId);
     const [a, b] = pontas, pontos = pontosDoBairro();
     if (lugar.tipo !== "bairro") definirPonta(a, lugar, true);
     else if (!a.editado && a.seletor.semRascunho()) definirPonta(a, pontos[0]);
@@ -910,14 +894,13 @@
 
   /* Início: aceita ?bairro=, ?origem=, ?destino= e ?cep_de= / ?cep_para= (com ?num_de= / ?num_para=). */
   const parametros = new URLSearchParams(location.search);
-  const bairroSalvo = parametros.get("bairro") || ZELA.store.get("bairro", "angela");
-  const bairroInicial = Object.hasOwn(ZELA.locaisRota, bairroSalvo) ? bairroSalvo : "angela";
-  lugarEscolhido = { tipo: "bairro", bairroId: bairroInicial };
+  const regiaoInicial = ZELA.bairroPreferido.exemplo(parametros.get("bairro")) || ZELA.bairroPreferido.atual();
+  lugarEscolhido = regiaoInicial;
   const pontosIniciais = pontosDoBairro();
   pontas.forEach(function (p, i) {
-    p.seletor = ZELA.iniciarCampoRota({
+    p.seletor = ZELA.iniciarCampoLocal({
       campo: p.campo.id, status: p.campo.id + "-status", erro: p.campo.id + "-erro",
-      consultarCep: consultarCep, formatarCep: formatarCep, sugestoes: sugestoesPonta,
+      sugestoes: sugestoesPonta,
       aoEditar: function () {
         p.pendente = null;
         p.msg.textContent = "";
@@ -944,9 +927,7 @@
   });
   redefinir();
   ZELA.iniciarBuscaRota({
-    bairroInicial: bairroInicial,
-    consultarCep: consultarCep,
-    formatarCep: formatarCep,
+    regiaoInicial: regiaoInicial,
     distanciaKm: distanciaKm,
     escolher: escolherLugar
   });

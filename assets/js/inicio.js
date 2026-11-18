@@ -51,16 +51,15 @@
 
   /* ---------- Avisos do bairro escolhido ---------- */
   function iniciarBairro() {
-    var select = document.getElementById("sel-bairro");
     var lista = document.getElementById("lista-perto");
-    if (!select || !lista) return;
+    var vazio = document.getElementById("lista-perto-vazio");
+    var link = document.getElementById("link-meu-bairro");
+    var inicial = ZELA.bairroPreferido.atual();
     var esc = ZELA.escapar;
 
-    function render(anunciar) {
-      var b = select.value;
-      ZELA.store.set("bairro", b);
+    function render(bairro, anunciar) {
       var avisos = ZELA.avisos
-        .filter(function (a) { return a.bairro === b; })
+        .filter(function (a) { return a.bairro === bairro.bairroId; })
         .sort(function (x, y) { return y.apoios - x.apoios; })
         .slice(0, 3);
       lista.innerHTML = avisos.map(function (a) {
@@ -73,13 +72,21 @@
           '<p class="proof-value"><span class="t-number">' + a.apoios + '</span><span class="t-lead">vizinhos também viram</span></p>' +
         "</li>";
       }).join("");
-      if (anunciar) ZELA.anunciar("Mostrando avisos de " + ZELA.bairros[b] + ".");
+      lista.hidden = !avisos.length;
+      vazio.hidden = Boolean(avisos.length);
+      vazio.textContent = !avisos.length ? "O protótipo ainda não tem avisos para " + ZELA.bairroPreferido.rotulo(bairro) + "." : "";
+      link.textContent = bairro.bairroId ? "Ver o mapa do bairro" : "Abrir Meu bairro";
+      if (anunciar) ZELA.anunciar(avisos.length ? "Mostrando avisos de " + bairro.nome + "." : vazio.textContent);
     }
 
-    select.value = ZELA.store.get("bairro", "angela");
-    if (!ZELA.bairros[select.value]) select.value = "angela";
-    select.addEventListener("change", function () { render(true); });
-    render(false);
+    ZELA.iniciarCampoBairro("sel-bairro", {
+      inicial: inicial,
+      escolher: function (bairro) {
+        ZELA.bairroPreferido.salvar(bairro);
+        render(bairro, true);
+      }
+    });
+    render(inicial, false);
   }
 
   /* ---------- Consulta rápida de protocolo ---------- */

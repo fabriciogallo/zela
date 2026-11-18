@@ -4,11 +4,12 @@
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return ZELA.escapar(s); };
   var selecionado = null;
+  var bairro;
   var tiposMobilidade = ["calcada", "buraco", "bueiro", "lixo"];
 
   function filtros() {
     return {
-      bairro: $("f-bairro").value, cat: $("f-cat").value, status: $("f-status").value,
+      bairro: bairro.bairroId, cat: $("f-cat").value, status: $("f-status").value,
       ord: $("f-ord").value, mobilidade: $("f-mobilidade").checked
     };
   }
@@ -43,9 +44,12 @@
   }
 
   function atualizarRotaBairro(bairro) {
-    var pontos = ZELA.locaisRota[bairro];
-    $("rota-bairro-nome").textContent = ZELA.bairros[bairro];
-    $("rota-bairro-valor").value = bairro;
+    var pontos = ZELA.locaisRota[bairro.bairroId];
+    $("rota-bairro-nome").textContent = bairro.nome;
+    $("rota-bairro-exemplo").hidden = !pontos;
+    $("rota-bairro-livre").hidden = Boolean(pontos);
+    if (!pontos) return;
+    $("rota-bairro-valor").value = bairro.bairroId;
     $("rota-bairro-saida").textContent = "Saída sugerida: " + pontos[0].nome + ".";
     $("rota-bairro-destino").replaceChildren(...pontos.slice(1).map(function (ponto) {
       return new Option(ponto.nome, ponto.id);
@@ -56,9 +60,12 @@
   function render() {
     var lista = avisosVisiveis();
     var f = filtros();
-    $("chip-bairro").textContent = ZELA.bairros[f.bairro];
+    $("chip-bairro").textContent = ZELA.bairroPreferido.rotulo(bairro);
+    $("chip-bairro-demo").hidden = !f.bairro;
     $("contagem").textContent = lista.length === 1 ? "1 aviso encontrado" : lista.length + " avisos encontrados";
-    $("vazio").hidden = lista.length > 0;
+    $("vazio").hidden = !f.bairro || lista.length > 0;
+    $("vazio-bairro").hidden = Boolean(f.bairro);
+    $("mapa-bairro").hidden = !f.bairro;
 
     $("lista").innerHTML = lista.map(function (it, i) {
       var a = it.a, n = i + 1, sel = a.id === selecionado;
@@ -76,6 +83,7 @@
       "</li>";
     }).join("");
 
+    if (!f.bairro) return;
     var mapa = $("mapa");
     if (mapa.dataset.bairro !== f.bairro) { ZELA.mapaReal(mapa, ZELA.centros[f.bairro], 1); mapa.dataset.bairro = f.bairro; }
     mapa.querySelectorAll(".pin").forEach(function (p) { p.remove(); });
@@ -124,22 +132,31 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     var parametros = new URLSearchParams(location.search);
-    var bairro = parametros.get("bairro") || ZELA.store.get("bairro", "angela");
-    if (Object.hasOwn(ZELA.bairros, bairro)) $("f-bairro").value = bairro;
+    bairro = ZELA.bairroPreferido.exemplo(parametros.get("bairro")) || ZELA.bairroPreferido.atual();
+    ZELA.iniciarCampoBairro("f-bairro", {
+      inicial: bairro,
+      escolher: function (lugar) {
+        bairro = lugar;
+        ZELA.bairroPreferido.salvar(lugar);
+        if (parametros.has("bairro")) {
+          parametros.delete("bairro");
+          var url = new URL(location.href);
+          url.searchParams.delete("bairro");
+          history.replaceState(history.state, "", url);
+        }
+        selecionado = null;
+        atualizarRotaBairro(lugar);
+        render();
+        ZELA.anunciar("Bairro selecionado: " + ZELA.bairroPreferido.rotulo(lugar) + ".");
+      }
+    });
     $("f-mobilidade").checked = parametros.get("mobilidade") === "1";
     if ($("f-mobilidade").checked) $("f-status").value = "abertos";
-    atualizarRotaBairro($("f-bairro").value);
+    atualizarRotaBairro(bairro);
     $("rota-bairro-destino").addEventListener("change", mostrarDestinoBairro);
 
-    ["f-bairro", "f-cat", "f-status", "f-ord", "f-mobilidade"].forEach(function (id) {
-      $(id).addEventListener("change", function () {
-        if (id === "f-bairro") {
-          ZELA.store.set("bairro", $(id).value);
-          atualizarRotaBairro($(id).value);
-          selecionado = null;
-        }
-        render();
-      });
+    ["f-cat", "f-status", "f-ord", "f-mobilidade"].forEach(function (id) {
+      $(id).addEventListener("change", render);
     });
 
     $("mapa").addEventListener("click", function (e) {
