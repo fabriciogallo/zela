@@ -81,8 +81,8 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Acompanhar | Linha do tempo + avisos por SMS + "Ficou resolvido mesmo?" | Mostra o que acontece após o envio e devolve a palavra ao morador |
 | Meu bairro | Filtros, mapa ligado à lista e "Eu também vi" | Prioriza o mais urgente e facilita encontrar avisos perto de casa |
 | Entrar / Meus avisos | Login sem senha (celular + código SMS simulado) | Avisos e apoios ficam salvos por pessoa; ninguém precisa guardar protocolo |
-| Rota acessível | Sugestões por rua ou CEP e bairros próximos com localização autorizada | Distingue ruas de mesmo nome pelo bairro e pela cidade e ajuda a escolher a saída |
-| Rota acessível | Consulta real ao Valhalla / OpenStreetMap | Mostra distância, tempo estimado, detalhes mapeados e instruções em português, com leitura em voz alta |
+| Rota acessível | Sugestões por rua, CEP ou localização atual na saída e no destino | Distingue ruas de mesmo nome pelo bairro e pela cidade e permite preencher qualquer ponto pelo GPS |
+| Rota acessível | Consulta real ao Valhalla / OpenStreetMap | Sugere trajetos por perfil de mobilidade e mostra distância, tempo estimado e instruções em português, com leitura em voz alta |
 
 ### Como testar
 
@@ -90,8 +90,8 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **CEP:** em Relatar → passo 2, digite **01310-100** (Avenida Paulista) ou **99999-999** (erro).
 - **Aviso repetido:** em Relatar, escolha **Poste apagado** e escreva **Rua das Palmeiras**.
 - **Login:** em Entrar, use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
-- **Rota acessível:** selecione Cidade Tiradentes, Terminal e Casa de Cultura, perfil Cadeira de rodas.
-- **Busca de locais:** na Rota acessível, digite **Rua das Flores** ou **01310-100** no campo **Bairro, rua ou CEP** e selecione uma sugestão. Para ver bairros da região, clique em **Usar minha localização** e permita o acesso no navegador.
+- **Rota acessível:** em **Escolher pela região**, selecione Cidade Tiradentes. Escolha o Terminal e a Casa de Cultura como saída e destino, mantenha o perfil **Cadeira de rodas** e clique em **Buscar trajeto**.
+- **Busca de locais:** nos campos **Saindo de** e **Indo para**, digite **Rua das Flores** ou **01310-100, 1000** e escolha uma sugestão. Os dois campos também aceitam **Minha localização atual**. Para ver os bairros da região, use **Bairros próximos** e permita o acesso à localização no navegador.
 
 ---
 

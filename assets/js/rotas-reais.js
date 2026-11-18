@@ -18,7 +18,7 @@
   function filtrosMarcados() {
     return Array.from(form.querySelectorAll('input[name="filtro-real"]:checked'), function (c) { return c.value; });
   }
-  function ordemAtual() { return marcado("ordem-real") || "distancia"; }
+  function ordemAtual() { return marcado("ordem-real") || "perfil"; }
   const buscar = $("rota-real-buscar");
   const mensagem = $("rota-real-carregando");
   const erro = $("rota-real-erro");
@@ -58,6 +58,7 @@
     }
   };
   const ORDENS = {
+    perfil: "perfil de mobilidade",
     distancia: "menor distância",
     rampa: "mais rampas",
     plano: "mais plano",
@@ -75,38 +76,31 @@
     }
     return opcoes;
   }
-  const CEP = "__cep";
-  const GPS = "__gps";
-  const RUA = "__rua";
   const DISTANCIA_MAXIMA_KM = 15;
   const km = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
   const cache = new Map();
   const ceps = new Map();
   let lugarEscolhido = null;
   let consulta = null;
-  let ocupado = false;
-  let versaoCampos = 0;
+  let preparando = null;
   let ultimaBusca = 0;
   let trajetos = [];
 
-  /* Cada ponta do trajeto (saída e destino) guarda o endereço já localizado. */
+  /* Cada ponta guarda a sugestão escolhida e, quando disponível, sua posição. */
   const pontas = [origem, destino].map(function (campo) {
     const id = campo.id;
     return {
       campo: campo,
-      caixa: $(id + "-cep"),
-      cep: $(id + "-cep-valor"),
-      numero: $(id + "-numero"),
-      botao: $(id + "-localizar"),
       erro: $(id + "-erro"),
       msg: $(id + "-msg"),
+      seletor: null,
+      escolha: null,
       local: null,
       pendente: null,
-      chavePendente: ""
+      editado: false
     };
   });
   function ponta(campo) { return campo === origem ? pontas[0] : pontas[1]; }
-  function especial(valor) { return valor === CEP || valor === GPS; }
 
   function falha(texto) {
     const e = new Error(texto);
@@ -150,34 +144,29 @@
   }
 
   function idBairro() { return lugarEscolhido?.bairroId; }
-  function locais() {
-    const cadastrados = ZELA.locaisRota[idBairro()] || [];
-    if (lugarEscolhido?.tipo !== "rua") return cadastrados;
-    return [Object.assign({ id: RUA }, lugarEscolhido), ...cadastrados];
+  function pontosDoBairro() {
+    const id = idBairro();
+    return (ZELA.locaisRota[id] || []).map(function (lugar) {
+      return Object.assign({ tipo: "ponto", bairroId: id, detalhe: "Ponto cadastrado · " + ZELA.bairros[id] }, lugar);
+    });
   }
 
   function localSelecionado(campo) {
-    if (especial(campo.value)) {
-      const p = ponta(campo);
-      return p.local && p.local.tipo === campo.value && (campo.value === GPS || p.local.chave === chaveCep(p)) ? p.local : null;
-    }
-    return locais().find(function (local) { return local.id === campo.value; }) || null;
+    const p = ponta(campo);
+    return p.seletor?.semRascunho() ? p.local : null;
   }
 
-  function preencherLocais(saida, chegada) {
-    const pontos = locais();
-    [origem, destino].forEach(function (campo) {
-      const outros = document.createElement("optgroup");
-      outros.label = "Outro lugar";
-      outros.append(new Option("Endereço pelo CEP…", CEP), new Option("Minha localização atual", GPS));
-      campo.replaceChildren(...pontos.map(function (local) {
-        return new Option(local.nome, local.id);
-      }), outros);
-    });
-    const valido = function (v) { return especial(v) || pontos.some(function (local) { return local.id === v; }); };
-    origem.value = valido(saida) ? saida : (pontos[0]?.id || CEP);
-    destino.value = valido(chegada) && (especial(chegada) || chegada !== origem.value) ? chegada :
-      (pontos.find(function (local) { return local.id !== origem.value; })?.id || CEP);
+  function sugestoesPonta() {
+    const gps = { tipo: "gps", nome: "Minha localização atual", detalhe: "Usar a posição deste aparelho" };
+    return (navigator.geolocation ? [gps] : []).concat(pontosDoBairro());
+  }
+
+  function definirPonta(p, lugar, editado) {
+    p.escolha = lugar || null;
+    p.local = lugar && Number.isFinite(lugar.lat) && Number.isFinite(lugar.lon) ? lugar : null;
+    p.pendente = null;
+    p.editado = Boolean(editado);
+    p.seletor.definir(p.escolha);
   }
 
   /* ---------- Geocodificação ---------- */
@@ -203,16 +192,13 @@
     return endereco;
   }
 
-  function chaveCep(p) {
-    return p.cep.value.replace(/\D/g, "") + "|" + p.numero.value.replace(/\D/g, "");
-  }
-
   // O Nominatim pede no máximo uma consulta por segundo.
   let ultimaNominatim = 0;
   async function nominatim(caminho, parametros) {
-    const espera = ultimaNominatim + 1100 - Date.now();
+    const horario = Math.max(Date.now(), ultimaNominatim + 1100);
+    const espera = horario - Date.now();
+    ultimaNominatim = horario;
     if (espera > 0) await new Promise(function (ok) { window.setTimeout(ok, espera); });
-    ultimaNominatim = Date.now();
     const url = "https://nominatim.openstreetmap.org/" + caminho + "?" +
       new URLSearchParams(Object.assign({ format: "jsonv2", "accept-language": "pt-BR" }, parametros));
     const resposta = await fetch(url, { headers: { Accept: "application/json" } });
@@ -225,9 +211,9 @@
     return lista[0] ? { lat: Number(lista[0].lat), lon: Number(lista[0].lon) } : null;
   }
 
-  async function localizarCep(p) {
-    const digitos = p.cep.value.replace(/\D/g, "");
-    const numero = p.numero.value.replace(/\D/g, "");
+  async function localizarCep(lugar) {
+    const digitos = lugar.cep;
+    const numero = lugar.numero || "";
     const end = await consultarCep(digitos);
 
     const cidade = end.localidade, uf = end.uf, rua = end.logradouro || "";
@@ -247,13 +233,12 @@
 
     const precisao = {
       numero: "",
-      rua: numero ? " Não achamos o número no mapa: usamos o meio da rua." : " Posição aproximada: meio da rua. Informe o número para mais precisão.",
+      rua: numero ? " Não achamos o número no mapa: usamos um ponto aproximado da rua." : " Posição aproximada da rua. Para buscar o número, acrescente-o após uma vírgula no campo do CEP.",
       cep: " Posição aproximada pelo CEP.",
       bairro: " Posição aproximada: centro do bairro."
     }[nivel];
     return {
-      tipo: CEP,
-      chave: digitos + "|" + numero,
+      tipo: "cep",
       nome: rua ? rua + (numero && nivel === "numero" ? ", " + numero : "") : (end.bairro || cidade),
       descricao: "Endereço: " + endereco + "." + precisao,
       lat: ponto.lat,
@@ -274,7 +259,7 @@
       }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
     }).then(async function (pos) {
       const local = {
-        tipo: GPS,
+        tipo: "gps",
         nome: "Sua localização",
         lat: pos.coords.latitude,
         lon: pos.coords.longitude,
@@ -296,53 +281,40 @@
 
   /* Localiza a ponta escolhida e mostra o resultado embaixo do campo. */
   async function resolverPonta(p) {
-    const tipo = p.campo.value;
-    if (!especial(tipo)) return localSelecionado(p.campo);
-    const pronto = localSelecionado(p.campo);
-    if (pronto && (tipo === CEP || Date.now() - pronto.quando < 120000)) return pronto;
-
-    const chave = tipo === CEP ? chaveCep(p) : GPS;
-    if (!p.pendente || p.chavePendente !== chave) {
-      p.chavePendente = chave;
-      p.pendente = tipo === CEP ? localizarCep(p) : localizarGps();
-    }
-    const pendente = p.pendente;
+    const lugar = p.escolha;
+    if (!lugar || !p.seletor.semRascunho()) return null;
+    if (p.local && (lugar.tipo !== "gps" || Date.now() - p.local.quando < 120000)) return p.local;
+    if (p.pendente) return p.pendente;
     p.erro.textContent = "";
-    p.cep.removeAttribute("aria-invalid");
-    p.botao.setAttribute("aria-disabled", "true");
-    p.msg.textContent = tipo === GPS ? "Procurando sua localização…" : "Buscando o endereço…";
-    try {
-      const local = await pendente;
+    p.campo.removeAttribute("aria-invalid");
+    p.msg.textContent = lugar.tipo === "gps" ? "Procurando sua localização…" : "Localizando o CEP no mapa…";
+    const requisicao = lugar.tipo === "gps" ? localizarGps() : localizarCep(lugar);
+    const pendente = requisicao.then(function (local) {
+      if (p.pendente !== pendente || !p.seletor.semRascunho()) return null;
       local.quando = Date.now();
-      if (p.campo.value !== tipo || (tipo === CEP && chaveCep(p) !== local.chave)) return null;
       p.local = local;
-      p.msg.textContent = local.descricao;
+      atualizarPonta(p);
       if (resultado.hidden) mostrarMapa([]);
       return local;
-    } catch (e) {
-      if (p.campo.value !== tipo) return null;
+    }).catch(function (e) {
+      if (p.pendente !== pendente || !p.seletor.semRascunho()) return null;
       p.msg.textContent = "";
-      p.erro.textContent = e.amigavel ? e.message : "Não conseguimos localizar agora (sem internet?). Tente de novo ou escolha um ponto do bairro.";
-      if (tipo === CEP) p.cep.setAttribute("aria-invalid", "true");
+      p.erro.textContent = e.amigavel ? e.message : "Não foi possível localizar o endereço agora. Tente novamente ou escolha outra sugestão.";
       return null;
-    } finally {
-      if (p.pendente === pendente) { p.pendente = null; p.chavePendente = ""; }
-      p.botao.removeAttribute("aria-disabled");
-    }
+    }).finally(function () {
+      if (p.pendente === pendente) p.pendente = null;
+    });
+    p.pendente = pendente;
+    return pendente;
   }
 
   function atualizarPonta(p) {
-    const tipo = p.campo.value;
-    p.caixa.hidden = tipo !== CEP;
+    if (!p.escolha || !p.seletor.semRascunho()) { p.msg.textContent = ""; return; }
     const local = localSelecionado(p.campo);
-    if (!especial(tipo)) {
-      p.erro.textContent = "";
-      p.msg.textContent = local?.tipo === "rua" ? "Posição aproximada da rua. " + local.detalhe : "";
-    } else if (local) {
-      p.msg.textContent = local.descricao;
-    } else if (!p.pendente) {
-      p.msg.textContent = tipo === CEP ? "Digite o CEP para localizar o endereço." : "";
-    }
+    if (local?.descricao) p.msg.textContent = local.descricao;
+    else if (local?.tipo === "rua") p.msg.textContent = [local.aproximado ? "Posição aproximada da rua." : "Endereço mapeado.", local.detalhe].filter(Boolean).join(" ");
+    else if (!p.pendente && p.escolha.tipo === "cep" && !p.erro.textContent) p.msg.textContent = p.escolha.detalhe || "";
+    else if (!p.pendente) p.msg.textContent = "";
   }
 
   /* ---------- Mapa ---------- */
@@ -675,6 +647,7 @@
   /* Ordena: o critério escolhido pesa mais, e cada filtro marcado ajuda a desempatar. */
   function ordenar(rotas, ordem, filtros) {
     const criterios = {
+      perfil: function (r) { return rotas.indexOf(r); },
       distancia: function (r) { return r.distancia; },
       rampa: function (r) { return r.rampas == null ? 0 : -r.rampas; },
       plano: function (r) { return r.subida == null ? 0 : r.subida + r.inclinacao * 4; },
@@ -743,7 +716,7 @@
     trajetos = rotas;
     $("rota-real-resultado-titulo").textContent =
       "De " + localSelecionado(origem).nome + " até " + localSelecionado(destino).nome;
-    $("rota-real-resultado-perfil").textContent = [perfil.nome, "ordenado por " + ORDENS[ordem]]
+    $("rota-real-resultado-perfil").textContent = [perfil.nome, ordem === "perfil" ? "sugerido para este perfil" : "ordenado por " + ORDENS[ordem]]
       .concat(filtros.map(function (f) { return FILTROS[f]; })).join(" · ");
     const nota = $("rota-real-destaques-nota");
     nota.hidden = false;
@@ -751,7 +724,7 @@
       ? "Não conseguimos consultar " + falhas.join(" e ") + " agora; a ordem usa os dados disponíveis."
       : "Contagens segundo o OpenStreetMap: o mapa pode não ter todos os bancos, árvores, bebedouros e rampas.";
     const avisos = $("rota-real-avisos");
-    const bairroDosAvisos = idBairro();
+    const bairroDosAvisos = ponta(origem).escolha?.bairroId;
     avisos.hidden = !bairroDosAvisos;
     if (bairroDosAvisos) {
       avisos.href = "bairro.html?" + new URLSearchParams({ bairro: bairroDosAvisos, mobilidade: "1" }) + "#lista-t";
@@ -772,19 +745,21 @@
     mensagem.textContent = emBusca ? texto || "Buscando um trajeto…" : "";
   }
 
+  function limparErroDestino() {
+    if (!erroDestino.textContent) return;
+    erroDestino.textContent = "";
+    destino.removeAttribute("aria-invalid");
+  }
+
   function redefinir() {
-    versaoCampos++;
+    preparando = null;
     if (consulta) consulta.abort();
     consulta = null;
     estadoBusca(false);
     erro.textContent = "";
-    erroDestino.textContent = "";
-    destino.removeAttribute("aria-invalid");
+    limparErroDestino();
     resultado.hidden = true;
     pararLeitura();
-    [origem, destino].forEach(function (campo) {
-      $(campo.id + "-texto").textContent = campo.selectedOptions[0].textContent;
-    });
     pontas.forEach(atualizarPonta);
     $("rota-real-preferencia").textContent = perfis[perfil.value].dica;
     mostrarMapa([]);
@@ -793,56 +768,35 @@
   function escolherLugar(lugar) {
     lugarEscolhido = lugar;
     if (lugar.bairroId) ZELA.store.set("bairro", lugar.bairroId);
-    preencherLocais(lugar.tipo === "cep" ? CEP : undefined);
-    if (lugar.tipo === "cep") {
-      const saida = pontas[0];
-      saida.cep.value = formatarCep(lugar.cep);
-      saida.numero.value = "";
-      saida.erro.textContent = "";
-      saida.cep.removeAttribute("aria-invalid");
+    const [a, b] = pontas, pontos = pontosDoBairro();
+    if (lugar.tipo !== "bairro") definirPonta(a, lugar, true);
+    else if (!a.editado && a.seletor.semRascunho()) definirPonta(a, pontos[0]);
+    if (!b.editado && b.seletor.semRascunho()) {
+      definirPonta(b, pontos.find(function (p) { return p.id !== a.escolha?.id; }));
     }
     redefinir();
+    if (lugar.tipo === "cep") resolverPonta(a);
   }
 
   /* ---------- Eventos ---------- */
-  pontas.forEach(function (p) {
-    p.cep.addEventListener("input", function () {
-      const digitos = p.cep.value.replace(/\D/g, "").slice(0, 8);
-      p.cep.value = formatarCep(digitos);
-      p.erro.textContent = "";
-      p.cep.removeAttribute("aria-invalid");
-      if (digitos.length === 8) resolverPonta(p);
-    });
-    p.numero.addEventListener("input", function () {
-      p.numero.value = p.numero.value.replace(/\D/g, "");
-    });
-    p.numero.addEventListener("change", function () {
-      if (p.cep.value.replace(/\D/g, "").length === 8) resolverPonta(p);
-    });
-    p.botao.addEventListener("click", function () {
-      if (p.botao.getAttribute("aria-disabled") !== "true") resolverPonta(p);
-    });
-    p.campo.addEventListener("change", function () {
-      if (p.campo.value === GPS) resolverPonta(p);
-    });
-  });
-
   $("rota-real-inverter").addEventListener("click", function () {
     const [a, b] = pontas;
-    const valor = origem.value;
-    origem.value = destino.value;
-    destino.value = valor;
+    for (const p of pontas) {
+      if (!p.seletor.semRascunho()) { p.seletor.confirmar(); return; }
+    }
+    [a.escolha, b.escolha] = [b.escolha, a.escolha];
     [a.local, b.local] = [b.local, a.local];
-    [a.cep.value, b.cep.value] = [b.cep.value, a.cep.value];
-    [a.numero.value, b.numero.value] = [b.numero.value, a.numero.value];
-    [a.erro.textContent, b.erro.textContent] = ["", ""];
+    pontas.forEach(function (p) {
+      p.pendente = null;
+      p.editado = true;
+      p.seletor.definir(p.escolha);
+    });
     redefinir();
-    ZELA.anunciar("Invertido. Saindo de " + origem.selectedOptions[0].textContent + ", indo para " + destino.selectedOptions[0].textContent + ".");
+    ZELA.anunciar("Saída e destino invertidos.");
   });
 
   form.addEventListener("change", function (event) {
-    if (event.target.id === "rota-local-busca") return;
-    redefinir();
+    if (event.target.matches('input[type="checkbox"], input[type="radio"]')) redefinir();
   });
   alternativa.addEventListener("change", function () {
     const indice = Number(alternativa.value);
@@ -852,38 +806,27 @@
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
-    if (consulta || ocupado) return;
-    if (!buscaLocal.confirmada()) return;
+    if (consulta || preparando) return;
+    if (!pontas.every(function (p) { return p.seletor.confirmar(); })) return;
     erro.textContent = "";
-    erroDestino.textContent = "";
-    destino.removeAttribute("aria-invalid");
-    if (origem.value === destino.value && !especial(origem.value)) {
-      erroDestino.textContent = "Escolha um destino diferente do ponto de saída.";
-      destino.setAttribute("aria-invalid", "true");
-      destino.focus();
-      return;
-    }
-
+    limparErroDestino();
     // Localiza os endereços por CEP ou GPS que ainda não foram encontrados.
-    ocupado = true;
-    const versao = versaoCampos;
+    const etapa = Symbol("endereços");
+    preparando = etapa;
     estadoBusca(true, "Localizando os endereços…");
     const encontrados = [];
     for (const p of pontas) {
       const local = await resolverPonta(p);
-      if (versao !== versaoCampos) {
-        ocupado = false;
-        return;
-      }
+      if (preparando !== etapa) return;
       if (!local) {
-        ocupado = false;
+        preparando = null;
         estadoBusca(false);
-        (p.campo.value === CEP ? p.cep : p.campo).focus();
+        p.campo.focus();
         return;
       }
       encontrados.push(local);
     }
-    ocupado = false;
+    preparando = null;
     estadoBusca(false);
 
     const [saida, chegada] = encontrados;
@@ -970,17 +913,37 @@
   const bairroSalvo = parametros.get("bairro") || ZELA.store.get("bairro", "angela");
   const bairroInicial = Object.hasOwn(ZELA.locaisRota, bairroSalvo) ? bairroSalvo : "angela";
   lugarEscolhido = { tipo: "bairro", bairroId: bairroInicial };
-  const cepInicial = { de: parametros.get("cep_de"), para: parametros.get("cep_para") };
-  preencherLocais(cepInicial.de ? CEP : parametros.get("origem"), cepInicial.para ? CEP : parametros.get("destino"));
-  [["de", pontas[0]], ["para", pontas[1]]].forEach(function (par) {
-    const digitos = (cepInicial[par[0]] || "").replace(/\D/g, "").slice(0, 8);
-    if (!digitos) return;
-    par[1].campo.value = CEP;
-    par[1].cep.value = formatarCep(digitos);
-    par[1].numero.value = (parametros.get("num_" + par[0]) || "").replace(/\D/g, "").slice(0, 6);
+  const pontosIniciais = pontosDoBairro();
+  pontas.forEach(function (p, i) {
+    p.seletor = ZELA.iniciarCampoRota({
+      campo: p.campo.id, status: p.campo.id + "-status", erro: p.campo.id + "-erro",
+      consultarCep: consultarCep, formatarCep: formatarCep, sugestoes: sugestoesPonta,
+      aoEditar: function () {
+        p.pendente = null;
+        p.msg.textContent = "";
+        limparErroDestino();
+        if (consulta || preparando || !resultado.hidden) redefinir();
+      },
+      escolher: function (lugar) {
+        definirPonta(p, lugar, true);
+        redefinir();
+        if (!p.local) resolverPonta(p);
+      }
+    });
+    const pontaUrl = i === 0 ? "de" : "para";
+    const digitos = (parametros.get("cep_" + pontaUrl) || "").replace(/\D/g, "");
+    if (digitos.length === 8) {
+      const numero = (parametros.get("num_" + pontaUrl) || "").replace(/\D/g, "").slice(0, 6);
+      definirPonta(p, { tipo: "cep", cep: digitos, numero: numero, nome: "CEP " + formatarCep(digitos) }, true);
+      return;
+    }
+    const id = parametros.get(i === 0 ? "origem" : "destino");
+    const enviado = pontosIniciais.find(function (l) { return l.id === id; });
+    const padrao = pontosIniciais.find(function (l) { return i === 0 || l.id !== pontas[0].escolha?.id; });
+    definirPonta(p, enviado || padrao, Boolean(enviado));
   });
   redefinir();
-  const buscaLocal = ZELA.iniciarBuscaRota({
+  ZELA.iniciarBuscaRota({
     bairroInicial: bairroInicial,
     consultarCep: consultarCep,
     formatarCep: formatarCep,
@@ -988,6 +951,6 @@
     escolher: escolherLugar
   });
   pontas.forEach(function (p) {
-    if (p.campo.value === CEP && p.cep.value.replace(/\D/g, "").length === 8) resolverPonta(p);
+    if (p.escolha?.tipo === "cep") resolverPonta(p);
   });
 })();

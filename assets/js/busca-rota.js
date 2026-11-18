@@ -4,6 +4,7 @@
 
   const PHOTON = "https://photon.komoot.io/";
   const RAIO_BAIRROS_KM = 5;
+  const cacheRuas = new Map();
   function normalizar(texto) {
     return (texto || "").trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   }
@@ -47,14 +48,17 @@
     const p = feature.properties || {};
     const coordenadas = feature.geometry?.coordinates || [];
     const [lon, lat] = coordenadas;
-    if (!p.name || p.countrycode !== "BR" || !Number.isFinite(lat) || !Number.isFinite(lon) ||
+    const temNumero = tipo === "rua" && p.type === "house" && p.street && p.housenumber;
+    const nome = temNumero ? p.street + ", " + p.housenumber : p.name;
+    if (!nome || p.countrycode !== "BR" || !Number.isFinite(lat) || !Number.isFinite(lon) ||
         Math.abs(lat) > 85 || Math.abs(lon) > 180) return null;
     const cidade = p.city || p.county;
     const detalhe = partes((tipo === "rua" ? [p.locality, p.district] : [p.district === p.name ? "" : p.district])
       .concat([cidade, p.state, tipo === "rua" ? p.postcode : ""]));
     return {
       tipo: tipo,
-      nome: p.name,
+      nome: nome,
+      aproximado: tipo === "rua" && !temNumero,
       detalhe: detalhe,
       cidade: cidade,
       bairroId: bairroCadastrado(cidade, tipo === "rua" ? [p.district, p.locality] : [p.name, p.district]),
@@ -64,30 +68,23 @@
     };
   }
 
-  ZELA.iniciarBuscaRota = function (config) {
-    const $ = function (id) { return document.getElementById("rota-local-" + id); };
-    const campo = $("busca"), lista = $("lista"), status = $("busca-status"), erro = $("erro");
-    const perto = $("perto-lista"), pertoStatus = $("perto-status"), gps = $("usar-gps");
-    const cadastrados = Object.entries(ZELA.bairros).map(function (par) {
-      return { tipo: "bairro", nome: par[1], bairroId: par[0], cidade: "São Paulo",
-        detalhe: "São Paulo · Pontos cadastrados", centro: ZELA.centros[par[0]] };
-    });
-    const cacheRuas = new Map();
+  function conteudoOpcao(elemento, lugar) {
+    const nome = document.createElement("strong");
+    nome.textContent = lugar.nome;
+    elemento.append(nome);
+    if (!lugar.detalhe) return;
+    const detalhe = document.createElement("span");
+    detalhe.className = "place-detail";
+    detalhe.textContent = lugar.detalhe;
+    elemento.append(detalhe);
+  }
+
+  ZELA.iniciarCampoRota = function (config) {
+    const campo = document.getElementById(config.campo);
+    const lista = document.getElementById(campo.getAttribute("aria-controls"));
+    const status = document.getElementById(config.status);
+    const erro = document.getElementById(config.erro);
     let opcoes = [], ativo = -1, termoEscolhido = "", timer = 0, consulta = null;
-    let consultaPerto = null, gpsConsultado = false;
-
-    $("escolhido").textContent = "Pontos cadastrados de " + ZELA.bairros[config.bairroInicial] + ".";
-
-    function conteudoOpcao(elemento, lugar) {
-      const nome = document.createElement("strong");
-      nome.textContent = lugar.nome;
-      elemento.append(nome);
-      if (!lugar.detalhe) return;
-      const detalhe = document.createElement("span");
-      detalhe.className = "place-detail";
-      detalhe.textContent = lugar.detalhe;
-      elemento.append(detalhe);
-    }
 
     function destacar(indice) {
       if (ativo >= 0) lista.children[ativo]?.setAttribute("aria-selected", "false");
@@ -107,7 +104,7 @@
       opcoes = lugares;
       lista.replaceChildren(...lugares.map(function (lugar, i) {
         const li = document.createElement("li");
-        li.id = "rota-local-opcao-" + i;
+        li.id = lista.id + "-opcao-" + i;
         li.dataset.indice = String(i);
         li.setAttribute("role", "option");
         li.setAttribute("aria-selected", "false");
@@ -131,31 +128,28 @@
       status.textContent = "";
     }
 
-    function escolher(lugar) {
+    function definir(lugar) {
       fechar();
       erro.textContent = "";
       campo.removeAttribute("aria-invalid");
-      termoEscolhido = lugar.tipo === "cep" ? config.formatarCep(lugar.cep) : lugar.nome;
+      termoEscolhido = !lugar ? "" : lugar.tipo === "cep"
+        ? config.formatarCep(lugar.cep) + (lugar.numero ? ", " + lugar.numero : "") : lugar.nome;
       campo.value = termoEscolhido;
-      config.escolher(lugar);
-      const nomeCompleto = partes([lugar.nome, lugar.detalhe]);
-      const orientacao = lugar.tipo === "cep" ? " O CEP foi preenchido na saída." :
-        lugar.tipo === "rua" ? " A saída aponta para uma posição aproximada na rua." : "";
-      $("escolhido").textContent = "Local escolhido: " + nomeCompleto + "." + orientacao;
     }
 
-    async function pesquisar(texto, digitos, locais) {
+    async function pesquisar(texto, postal, locais) {
       const controlador = new AbortController();
       consulta = controlador;
-      status.textContent = digitos ? "Consultando o CEP…" : "Buscando ruas…";
+      status.textContent = postal ? "Consultando o CEP…" : "Buscando endereços…";
       const prazo = window.setTimeout(function () { controlador.abort(); }, 8000);
       try {
         let encontrados;
-        if (digitos) {
+        if (postal) {
+          const digitos = postal[1].replace(/\D/g, ""), numero = postal[2] || "";
           const e = await config.consultarCep(digitos, controlador.signal);
           const nome = e.logradouro?.trim() || e.bairro?.trim();
           encontrados = nome ? [{
-            tipo: "cep", cep: digitos, nome: nome,
+            tipo: "cep", cep: digitos, numero: numero, nome: nome + (numero ? ", " + numero : ""),
             detalhe: partes([e.bairro, [e.localidade, e.uf].filter(Boolean).join("/"), config.formatarCep(digitos)]),
             bairroId: bairroCadastrado(e.localidade, [e.bairro])
           }] : [];
@@ -164,9 +158,11 @@
           encontrados = cacheRuas.get(chave);
           if (!encontrados) {
             // O Photon suporta busca durante a digitação; o Nominatim público não.
-            const dados = await consultarPhoton("api/", {
+            const filtros = new URLSearchParams({
               q: texto, layer: "street", countrycode: "BR", lat: "-23.5505", lon: "-46.6333", limit: "10"
-            }, controlador.signal);
+            });
+            if (/[ ,]\d{1,6}$/.test(texto)) filtros.append("layer", "house");
+            const dados = await consultarPhoton("api/", filtros, controlador.signal);
             encontrados = semRepeticoes(dados.map(function (f) { return lugarDoMapa(f, "rua"); }), function (lugar) {
               return normalizar(lugar.nome + "|" + lugar.detalhe);
             });
@@ -179,7 +175,7 @@
         mostrarOpcoes(sugestoes);
         status.textContent = sugestoes.length
           ? (sugestoes.length === 1 ? "1 sugestão disponível." : sugestoes.length + " sugestões disponíveis.")
-          : (digitos ? "Esse CEP não identifica uma rua ou um bairro. Tente outro CEP." :
+          : (postal ? "Esse CEP não identifica uma rua ou um bairro. Tente outro CEP." :
             "Nenhuma rua encontrada. Tente incluir a cidade ou digitar um CEP.");
       } catch (e) {
         if (consulta !== controlador) return;
@@ -198,38 +194,47 @@
       campo.removeAttribute("aria-invalid");
       status.textContent = "";
       const texto = campo.value.trim().replace(/\s+/g, " ");
+      const cadastrados = config.sugestoes();
       if (!texto || texto === termoEscolhido) {
         mostrarOpcoes(cadastrados);
         return;
       }
-      const digitos = /^[\d.\s-]+$/.test(texto) ? texto.replace(/\D/g, "") : "";
+      const postal = texto.match(/^(\d{5}-?\d{3})(?:\s*,\s*(\d{1,6}))?$/);
       const filtro = normalizar(texto);
       const locais = cadastrados.filter(function (l) { return normalizar(l.nome).includes(filtro); });
       mostrarOpcoes(locais);
-      if (digitos && digitos.length !== 8) {
-        if (agora || digitos.length > 8) status.textContent = "Digite os 8 números do CEP.";
+      if (!postal && /^[\d.,\s-]+$/.test(texto)) {
+        if (agora || texto.replace(/\D/g, "").length > 8) status.textContent = "Digite os 8 números do CEP. Se quiser incluir o número, separe com vírgula.";
         return;
       }
-      if (!digitos && texto.replace(/^(rua|avenida|av\.?|travessa)\s*/i, "").length < 3) return;
+      if (!postal && (texto.replace(/^(rua|avenida|av\.?|travessa)\s*/i, "").length < 3 ||
+        locais.some(function (l) { return normalizar(l.nome) === filtro; }))) return;
       if (agora) {
-        pesquisar(texto, digitos, locais);
+        pesquisar(texto, postal, locais);
       } else {
         timer = window.setTimeout(function () {
           timer = 0;
-          pesquisar(texto, digitos, locais);
+          pesquisar(texto, postal, locais);
         }, 500);
       }
     }
 
-    campo.addEventListener("input", function (event) { if (!event.isComposing) atualizar(false); });
-    campo.addEventListener("compositionend", function () { atualizar(false); });
-    campo.addEventListener("focus", function () { atualizar(false); });
+    function editar() {
+      config.aoEditar?.();
+      atualizar(false);
+    }
+    campo.addEventListener("input", function (event) { if (!event.isComposing) editar(); });
+    campo.addEventListener("compositionend", editar);
+    campo.addEventListener("focus", function () {
+      if (campo.value === termoEscolhido && termoEscolhido) campo.select();
+      if (!erro.textContent && campo.getAttribute("aria-invalid") !== "true") atualizar(false);
+    });
     campo.addEventListener("click", function () { if (lista.hidden && !timer && !consulta) atualizar(false); });
     campo.addEventListener("blur", fechar);
     lista.addEventListener("mousedown", function (event) { event.preventDefault(); });
     lista.addEventListener("click", function (event) {
       const opcao = event.target.closest("[data-indice]");
-      if (opcao) escolher(opcoes[Number(opcao.dataset.indice)]);
+      if (opcao) config.escolher(opcoes[Number(opcao.dataset.indice)]);
     });
     campo.addEventListener("keydown", function (event) {
       if (event.isComposing) return;
@@ -244,14 +249,51 @@
         else destacar(ativo < 0 ? opcoes.length - 1 : Math.max(ativo - 1, 0));
       } else if (event.key === "Enter") {
         event.preventDefault();
-        if (ativo >= 0) escolher(opcoes[ativo]);
-        else if (opcoes.length === 1 && !timer && !consulta) escolher(opcoes[0]);
+        if (ativo >= 0) config.escolher(opcoes[ativo]);
+        else if (opcoes.length === 1 && !timer && !consulta) config.escolher(opcoes[0]);
         else if (opcoes.length > 1) destacar(0);
         else if (!consulta) atualizar(true);
       } else if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
         destacar(-1);
       }
     });
+
+    function semRascunho() { return campo.value.trim() === termoEscolhido; }
+    return {
+      definir: definir,
+      semRascunho: semRascunho,
+      confirmar: function () {
+        if (termoEscolhido && semRascunho()) return true;
+        campo.focus();
+        campo.setAttribute("aria-invalid", "true");
+        erro.textContent = campo.value.trim() ? "Escolha uma sugestão da lista." : "Digite uma rua, um CEP ou escolha um local da lista.";
+        return false;
+      }
+    };
+  };
+
+  ZELA.iniciarBuscaRota = function (config) {
+    const $ = function (id) { return document.getElementById("rota-local-" + id); };
+    const perto = $("perto-lista"), pertoStatus = $("perto-status"), gps = $("usar-gps"), escolhido = $("escolhido");
+    const cadastrados = Object.entries(ZELA.bairros).map(function (par) {
+      return { tipo: "bairro", nome: par[1], bairroId: par[0], cidade: "São Paulo",
+        detalhe: "São Paulo · Pontos cadastrados", centro: ZELA.centros[par[0]] };
+    });
+    const seletor = ZELA.iniciarCampoRota({
+      campo: "rota-local-busca", status: "rota-local-busca-status", erro: "rota-local-erro",
+      consultarCep: config.consultarCep, formatarCep: config.formatarCep,
+      sugestoes: function () { return cadastrados; },
+      escolher: escolher
+    });
+    let consultaPerto = null, gpsConsultado = false;
+
+    escolhido.textContent = "Pontos cadastrados de " + ZELA.bairros[config.bairroInicial] + ".";
+    function escolher(lugar) {
+      seletor.definir(lugar);
+      config.escolher(lugar);
+      escolhido.textContent = "Local escolhido: " + partes([lugar.nome, lugar.detalhe]) + "." +
+        (lugar.tipo === "bairro" ? "" : " O endereço foi preenchido na saída.");
+    }
 
     /* Bairros próximos só são consultados depois da permissão do navegador. */
     function montarBairros(lugares) {
@@ -356,14 +398,5 @@
       pertoStatus.textContent = "Seu navegador não permite localizar bairros próximos. Digite uma rua ou CEP.";
     }
 
-    return {
-      confirmada: function () {
-        const texto = campo.value.trim();
-        if (!texto || texto === termoEscolhido) return true;
-        campo.focus();
-        erro.textContent = "Escolha uma sugestão da lista para usar esse local na rota.";
-        return false;
-      }
-    };
   };
 })();

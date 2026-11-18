@@ -198,6 +198,7 @@
     if (!botao || !barra) return;
     var cabecalho = barra.closest(".site-header");
     var atalho = document.querySelector(".report-action");
+    var abertura = document.querySelector(".landscape--topo");
 
     function definirAberto(aberto) {
       barra.classList.toggle("is-open", aberto);
@@ -222,15 +223,29 @@
 
     function ajustarMargens() {
       root.style.setProperty("--header-clearance", Math.ceil(cabecalho.offsetHeight + 8) + "px");
-      if (atalho) {
+      if (atalho && !atalho.hidden) {
         root.style.setProperty("--report-clearance", Math.ceil(window.innerHeight - atalho.getBoundingClientRect().top + 8) + "px");
-      }
+      } else root.style.removeProperty("--report-clearance");
       if (!botao.getClientRects().length) definirAberto(false);
     }
-    ajustarMargens();
-    window.addEventListener("resize", ajustarMargens);
+    function atualizarAtalho(posicao) {
+      if (!atalho) return;
+      var passouDoInicio = abertura ? abertura.getBoundingClientRect().bottom <= cabecalho.offsetHeight : posicao >= 160;
+      var ocultar = !passouDoInicio && document.activeElement !== atalho;
+      if (atalho.hidden === ocultar) return;
+      atalho.hidden = ocultar;
+      ajustarMargens();
+    }
+    function ajustarTela() {
+      atualizarAtalho(Math.max(0, window.scrollY));
+      ajustarMargens();
+    }
+    ajustarTela();
+    window.addEventListener("resize", ajustarTela);
+    window.addEventListener("pageshow", ajustarTela);
+    if (atalho) atalho.addEventListener("focusout", function () { window.requestAnimationFrame(ajustarTela); });
     if ("ResizeObserver" in window) {
-      var medidas = new ResizeObserver(ajustarMargens);
+      var medidas = new ResizeObserver(ajustarTela);
       medidas.observe(cabecalho);
       if (atalho) medidas.observe(atalho);
     }
@@ -247,6 +262,7 @@
       quadro = window.requestAnimationFrame(function () {
         quadro = 0;
         var posicao = Math.max(0, window.scrollY);
+        atualizarAtalho(posicao);
         var novoSentido = Math.sign(posicao - ultimaPosicao);
         if (!novoSentido) return;
         if (novoSentido !== sentido) {
