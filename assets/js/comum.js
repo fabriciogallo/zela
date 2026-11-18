@@ -60,17 +60,13 @@
 
   /* Link "Entrar" / "Meus avisos" no menu de todas as páginas */
   function iniciarLinkConta() {
-    var lado = document.querySelector(".header-actions");
-    if (!lado) return;
-    var u = ZELA.conta.atual();
-    var a = document.createElement("a");
-    a.className = "btn btn--ghost account-link";
-    var prefixo = location.pathname.includes("/pages/") ? "" : "pages/";
-    a.href = u ? prefixo + "meus-avisos.html" : prefixo + "entrar.html";
-    a.textContent = u ? "Meus avisos" + (u.nome ? " · " + u.nome.split(" ")[0] : "") : "Entrar";
-    var aqui = location.pathname.split("/").pop();
-    if (aqui === "meus-avisos.html" || aqui === "entrar.html") a.setAttribute("aria-current", "page");
-    lado.insertBefore(a, lado.firstChild);
+    var link = document.querySelector("[data-nav-conta]");
+    if (!link || !ZELA.conta.atual()) return;
+    var destino = new URL("meus-avisos.html", link.href);
+    link.href = destino.href;
+    link.textContent = "Meus avisos";
+    if (destino.pathname === location.pathname) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
   }
 
 
@@ -195,11 +191,14 @@
     aplicar(false);
   }
 
-  /* ---------- Menu no celular ---------- */
+  /* ---------- Menu e navegação que volta ao subir a página ---------- */
   function iniciarMenu() {
     var botao = document.querySelector(".menu-toggle");
     var barra = document.getElementById("nav-bar");
     if (!botao || !barra) return;
+    var cabecalho = barra.closest(".site-header");
+    var atalho = document.querySelector(".report-action");
+
     function definirAberto(aberto) {
       barra.classList.toggle("is-open", aberto);
       botao.setAttribute("aria-expanded", String(aberto));
@@ -217,6 +216,51 @@
     barra.addEventListener("focusout", function (e) {
       if (e.relatedTarget && !barra.contains(e.relatedTarget)) definirAberto(false);
     });
+    document.addEventListener("pointerdown", function (e) {
+      if (barra.classList.contains("is-open") && !barra.contains(e.target)) definirAberto(false);
+    });
+
+    function ajustarMargens() {
+      root.style.setProperty("--header-clearance", Math.ceil(cabecalho.offsetHeight + 8) + "px");
+      if (atalho) {
+        root.style.setProperty("--report-clearance", Math.ceil(window.innerHeight - atalho.getBoundingClientRect().top + 8) + "px");
+      }
+      if (!botao.getClientRects().length) definirAberto(false);
+    }
+    ajustarMargens();
+    window.addEventListener("resize", ajustarMargens);
+    if ("ResizeObserver" in window) {
+      var medidas = new ResizeObserver(ajustarMargens);
+      medidas.observe(cabecalho);
+      if (atalho) medidas.observe(atalho);
+    }
+
+    function mostrarBarra(visivel) {
+      barra.dataset.open = String(visivel);
+    }
+
+    barra.addEventListener("focusin", function () { mostrarBarra(true); });
+    var ultimaPosicao = Math.max(0, window.scrollY);
+    var inicioDirecao = ultimaPosicao, sentido = 0, quadro = 0;
+    window.addEventListener("scroll", function () {
+      if (quadro) return;
+      quadro = window.requestAnimationFrame(function () {
+        quadro = 0;
+        var posicao = Math.max(0, window.scrollY);
+        var novoSentido = Math.sign(posicao - ultimaPosicao);
+        if (!novoSentido) return;
+        if (novoSentido !== sentido) {
+          inicioDirecao = ultimaPosicao;
+          sentido = novoSentido;
+        }
+        ultimaPosicao = posicao;
+        if (posicao <= 16 || (sentido < 0 && inicioDirecao - posicao >= 12)) mostrarBarra(true);
+        else if (sentido > 0 && posicao > cabecalho.offsetHeight && posicao - inicioDirecao >= 24 &&
+          !barra.classList.contains("is-open") && !barra.querySelector(":focus-visible")) {
+          mostrarBarra(false);
+        }
+      });
+    }, { passive: true });
   }
 
   function iniciarLibras() {
@@ -431,8 +475,8 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     iniciarTamanhoTexto();
-    iniciarMenu();
     iniciarLinkConta();
+    iniciarMenu();
     desenharCenas();
     iniciarLibras();
   });
