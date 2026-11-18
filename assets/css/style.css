@@ -395,7 +395,8 @@ html:has(.report-action) { --report-clearance: calc(76px + env(safe-area-inset-b
 .js .nav-bar.is-open .nav-collapsible { display: block; }
 .nav-collapsible a { width: 100%; }
 
-@container zela-nav (min-width: 66rem) {
+/* Ícone e espaços têm largura fixa; os rótulos crescem com o tamanho do texto. */
+@container zela-nav (min-width: max(1056px, 300px + 40rem)) {
   .nav-bar { width: fit-content; gap: 4px 14px; padding-inline-start: 14px; }
   .js .menu-toggle { display: none; }
   .js .nav-bar .nav-collapsible, .js .nav-bar.is-open .nav-collapsible, .nav-collapsible { display: contents; }
@@ -406,6 +407,13 @@ html:has(.report-action) { --report-clearance: calc(76px + env(safe-area-inset-b
 }
 
 /* ---------- Abertura: paisagem + vidro ---------- */
+.js .home-page {
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto;
+}
+/* A barra fica sobre a abertura e pode acompanhar a página até o rodapé. */
+.js .home-page > .site-header { grid-column: 1; grid-row: 1 / -1; align-self: start; }
+.js .home-page > main { grid-area: 1 / 1; }
+.js .home-page > .site-footer { grid-area: 2 / 1; }
 .landscape {
   position: relative; overflow: hidden; isolation: isolate;
   margin-inline: calc(-1 * var(--gutter)); border-radius: 0; background: #4d96d6;
@@ -415,7 +423,8 @@ html:has(.report-action) { --report-clearance: calc(76px + env(safe-area-inset-b
 }
 .landscape > .pixel-scene { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; object-fit: cover; image-rendering: pixelated; }
 .landscape--topo {
-  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto;
+  --hero-header-space: var(--header-clearance, 80px);
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(var(--hero-header-space), 1fr) auto;
   gap: 24px; justify-items: start;
 }
 .landscape--topo > .glass { grid-row: 2; }
@@ -431,7 +440,7 @@ html:has(.report-action) { --report-clearance: calc(76px + env(safe-area-inset-b
 .glass .row { gap: 8px 16px; align-items: center; }
 @media (min-width: 761px) {
   html[data-texto-grande] .landscape {
-    display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(min-content, 1fr) auto;
+    display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(var(--hero-header-space, min-content), 1fr) auto;
     gap: 20px; padding-block-start: clamp(40px, 7vw, 96px);
   }
   html[data-texto-grande] .glass { max-width: min(100%, 24rem); }
@@ -664,7 +673,7 @@ tr:last-child td { border-bottom: 0; }
 @media (max-width: 760px) {
   :root { --chapter: 56px; }
   .landscape {
-    display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(184px, auto) auto;
+    display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(max(184px, var(--hero-header-space, 0px)), auto) auto;
     gap: 16px; min-height: 0; padding: 40px 8px 8px;
   }
   .glass { padding: 20px; }
