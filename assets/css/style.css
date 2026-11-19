@@ -182,7 +182,7 @@ html[data-texto-grande] .row > :is(.col-main, .col-side) { flex-basis: 100%; }
 .page-title { padding: clamp(32px, 4vw, 56px) 0 24px; display: flex; flex-direction: column; gap: 16px; }
 .page-title .t-lead { max-width: 70ch; text-wrap: pretty; }
 .page-title--wide .t-lead { max-width: none; }
-.page-eyebrow { display: flex; flex-wrap: wrap; gap: .35em; color: var(--muted); font-size: .9375rem; font-weight: 600; line-height: 1.5; }
+.page-eyebrow { display: flex; flex-wrap: wrap; gap: .35em; padding-inline-start: 10px; border-inline-start: 3px solid var(--sky-deep); color: var(--sky-hover); font-size: .9375rem; font-weight: 600; line-height: 1.5; }
 
 /* ---------- Superfícies ---------- */
 .panel, .protocol-box {
