@@ -197,7 +197,7 @@
     function ajustarMargens() {
       root.style.setProperty("--header-clearance", Math.ceil(cabecalho.offsetHeight + 8) + "px");
       if (atalho && !atalho.hidden) {
-        root.style.setProperty("--report-clearance", Math.ceil(window.innerHeight - atalho.getBoundingClientRect().top + 8) + "px");
+        root.style.setProperty("--report-clearance", Math.ceil(window.innerHeight - atalho.getBoundingClientRect().top + 12) + "px");
       } else root.style.removeProperty("--report-clearance");
       if (!botao.getClientRects().length) definirAberto(false);
     }
@@ -267,6 +267,12 @@
         acesso.style.bottom = "var(--libras-bottom, auto)";
         acesso.style.transition = "width var(--libras-duration, .5s) ease";
         root.setAttribute("data-libras", "");
+        function medirBotao() {
+          var altura = acesso.getBoundingClientRect().height;
+          if (altura > 0) root.style.setProperty("--libras-height", Math.ceil(altura) + "px");
+        }
+        medirBotao();
+        if ("ResizeObserver" in window) new ResizeObserver(medirBotao).observe(acesso);
         window.clearTimeout(prazo);
         observador.disconnect();
       }

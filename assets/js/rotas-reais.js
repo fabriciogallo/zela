@@ -699,8 +699,19 @@
     const filtros = filtrosMarcados(), ordem = ordemAtual();
     const rotas = ordenar(todas, ordem, filtros);
     trajetos = rotas;
-    $("rota-real-resultado-titulo").textContent =
-      "De " + localSelecionado(origem).nome + " até " + localSelecionado(destino).nome;
+    const titulo = $("rota-real-resultado-titulo");
+    const partes = [
+      ["route-summary-label", "De "],
+      ["route-summary-place", localSelecionado(origem).nome],
+      ["route-summary-label", " até "],
+      ["route-summary-place", localSelecionado(destino).nome]
+    ];
+    titulo.replaceChildren(...partes.map(function (parte) {
+      const texto = document.createElement("span");
+      texto.className = parte[0];
+      texto.textContent = parte[1];
+      return texto;
+    }));
     $("rota-real-resultado-perfil").textContent = [perfil.nome, ordem === "perfil" ? "sugerido para este perfil" : "ordenado por " + ORDENS[ordem]]
       .concat(filtros.map(function (f) { return FILTROS[f]; })).join(" · ");
     const nota = $("rota-real-destaques-nota");

@@ -100,8 +100,8 @@ body > main { flex: 1 0 auto; }
 @media (max-width: 1100px) {
   html[data-libras] {
     --libras-top: auto;
-    --libras-bottom: calc(12px + env(safe-area-inset-bottom));
-    --libras-space: calc(64px + env(safe-area-inset-bottom));
+    --libras-bottom: max(calc(12px + env(safe-area-inset-bottom, 0px)), var(--report-clearance, 0px));
+    --libras-space: calc(var(--libras-bottom) + var(--libras-height, 50px) + 8px);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -315,11 +315,19 @@ legend { padding: 0; }
 html:has(.report-action:not([hidden])) { --report-clearance: calc(76px + env(safe-area-inset-bottom, 0px)); }
 .report-action {
   position: fixed; z-index: 28;
-  inset-inline-start: max(12px, env(safe-area-inset-left, 0px));
+  inset-inline-end: max(12px, env(safe-area-inset-right, 0px));
   inset-block-end: calc(12px + env(safe-area-inset-bottom, 0px));
-  max-inline-size: min(16rem, calc(100% - 72px - env(safe-area-inset-left, 0px)));
+  max-inline-size: min(18rem, calc(100% - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
   box-shadow: var(--shadow-sheet);
 }
+.report-action-icon {
+  display: inline-block; flex: 0 0 1.5em; inline-size: 1.5em; block-size: 1.5em;
+  background: currentColor;
+  -webkit-mask: url("../img/relatar-problema.png") center / contain no-repeat;
+  mask: url("../img/relatar-problema.png") center / contain no-repeat;
+  forced-color-adjust: none;
+}
+.icon-credit { color: var(--muted); }
 
 /* Transitions.dev: a barra desliza para fora e volta ao subir a página. */
 :root {
@@ -820,6 +828,12 @@ html[data-texto-grande] .cat-destaque { grid-column: auto; grid-row: auto; }
   gap: 20px; align-items: start;
 }
 .route-form, .route-form-scroll, .route-fields, .route-area, .route-map-panel, .route-result, .route-instructions { gap: 16px; }
+.route-summary-label { color: var(--muted); font-size: .85em; font-weight: 600; }
+.route-summary-place {
+  color: var(--sky-hover);
+  text-decoration: underline; text-decoration-color: var(--mint-soft);
+  text-decoration-thickness: .12em; text-underline-offset: .16em;
+}
 .route-location-label { display: flex; align-items: center; gap: 8px; }
 .route-scroll-note { display: none; }
 .route-form-scroll:focus-visible { outline-offset: 1px; }

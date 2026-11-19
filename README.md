@@ -174,6 +174,7 @@ zela/
 │       ├── favicon.svg
 │       ├── abertura-animada.svg
 │       ├── abertura.gif
+│       ├── relatar-problema.png # Ícone do botão flutuante (Magnific / Flaticon)
 │       └── cat-*.svg           # Ícones de categoria de problema
 │
 ├── .nojekyll                   # Necessário para o GitHub Pages ignorar o Jekyll
@@ -181,6 +182,10 @@ zela/
 ```
 
 ---
+
+## Créditos visuais
+
+Ícone do botão **Relatar problema**: [Customer Problem, de Magnific / Flaticon](https://www.flaticon.com/free-icon/customer-problem_87706), usado sob a licença gratuita com atribuição no rodapé.
 
 ## Deploy no GitHub Pages
 
