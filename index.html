@@ -16,13 +16,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@600;700&amp;display=swap"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
-    <script>
-      document.documentElement.classList.add("js");
-      try {
-        var t = JSON.parse(localStorage.getItem("zela:texto"));
-        if (t) document.documentElement.setAttribute("data-texto", t);
-      } catch (e) {}
-    </script>
+    <link rel="stylesheet" href="assets/css/acessibilidade.css">
+  <script src="assets/js/acessibilidade.js"></script>
     <script src="assets/js/dados.js" defer></script>
     <script src="assets/js/comum.js" defer></script>
     <script src="assets/js/busca-locais.js" defer></script>
@@ -101,7 +96,7 @@
     <main id="conteudo" class="page-pad" tabindex="-1">
       <!-- Abertura: paisagem em pixel art com promessa no vidro -->
       <section class="landscape landscape--topo" aria-labelledby="hero-titulo">
-        <img class="pixel-scene" src="assets/img/abertura-animada.svg" alt="" />
+        <img class="pixel-scene" src="assets/img/abertura-animada.svg#sem-movimento" alt="" />
         <h1 id="hero-titulo" class="sr-only">Zela: sua rua avisa, a prefeitura responde.</h1>
         <div class="glass">
           <p>

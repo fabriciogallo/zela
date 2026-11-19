@@ -163,42 +163,6 @@
     });
   };
 
-  /* ---------- Tamanho do texto (A− / A+), lembrado entre páginas ---------- */
-  function iniciarTamanhoTexto() {
-    var menos = document.querySelector("[data-texto-menos]");
-    var mais = document.querySelector("[data-texto-mais]");
-    if (!menos || !mais) return;
-    var tamanhos = [100, 125, 150, 175, 200];
-    var salvo = ZELA.store.get("texto", 100);
-    var tamanhoAnterior = [100, 125, 150, 200][salvo];
-    var nivel = Math.max(0, tamanhos.indexOf(tamanhoAnterior || salvo));
-
-    var grupo = mais.closest(".text-size");
-    grupo.closest(".nav-collapsible").after(grupo);
-    var repor = document.createElement("button");
-    repor.type = "button";
-    repor.className = "text-size-value";
-    repor.title = "Voltar ao tamanho padrão (100%)";
-    grupo.querySelector(".v-rule").replaceWith(repor);
-
-    function aplicar(anunciar) {
-      var tamanho = tamanhos[nivel];
-      root.setAttribute("data-texto", String(tamanho));
-      root.toggleAttribute("data-texto-grande", tamanho >= 150);
-      menos.setAttribute("aria-disabled", String(nivel === 0));
-      mais.setAttribute("aria-disabled", String(nivel === tamanhos.length - 1));
-      repor.setAttribute("aria-disabled", String(nivel === 0));
-      repor.setAttribute("aria-label", tamanho + "%, voltar ao tamanho padrão");
-      repor.textContent = tamanho + "%";
-      ZELA.store.set("texto", tamanho);
-      if (anunciar) ZELA.anunciar("Tamanho do texto: " + tamanho + "%.");
-    }
-    menos.addEventListener("click", function () { if (nivel > 0) { nivel--; aplicar(true); } });
-    mais.addEventListener("click", function () { if (nivel < tamanhos.length - 1) { nivel++; aplicar(true); } });
-    repor.addEventListener("click", function () { if (nivel > 0) { nivel = 0; aplicar(true); } });
-    aplicar(false);
-  }
-
   /* ---------- Menu e navegação que volta ao subir a página ---------- */
   function iniciarMenu() {
     var botao = document.querySelector(".menu-toggle");
@@ -499,7 +463,6 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    iniciarTamanhoTexto();
     iniciarLinkConta();
     iniciarMenu();
     desenharCenas();

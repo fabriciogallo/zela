@@ -69,7 +69,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 
 | Tela | Interação | Problema de experiência resolvido |
 | --- | --- | --- |
-| Todas | Botões A− / A+ e VLibras | Texto ampliável até 200% e tradução automática para Libras |
+| Todas | Painel Leitura e VLibras | Texto até 200%, contraste, links destacados, áreas de toque maiores, espaçamento e tradução automática para Libras |
 | Todas | Menu recolhível (fecha com Esc), que volta ao rolar para cima | Dá acesso à navegação e à conta sem voltar até o topo |
 | Início | Abas "Como funciona" com setas do teclado | Explica o serviço em partes, sem muro de texto |
 | Início | Avisos por bairro + consulta rápida de protocolo | Mostra que vizinhos já usam; avisa na hora se o número está errado |
@@ -91,6 +91,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **CEP:** em Relatar → passo 2, digite **01310-100** (Avenida Paulista) ou **99999-999** (erro).
 - **Aviso repetido:** em Relatar, escolha **Poste apagado** e escreva **Rua das Palmeiras**.
 - **Login:** em Entrar, use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
+- **Leitura:** no cabeçalho, abra **Leitura**. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. Troque de página para confirmar a preferência salva; **Voltar ao padrão** preserva o bairro, a conta e os avisos.
 - **Meu bairro:** busque **Grajaú** para ver avisos simulados ou **01310-100** para escolher Bela Vista e experimentar o estado sem avisos. Você também pode salvar ou remover o bairro em **Meus avisos → Seus dados**.
 - **Rota acessível:** em **Escolher pela região**, selecione Cidade Tiradentes. Escolha o Terminal e a Casa de Cultura como saída e destino, mantenha o perfil **Cadeira de rodas** e clique em **Buscar trajeto**.
 - **Busca de locais:** nos campos **Saindo de** e **Indo para**, digite **Rua das Flores** ou **01310-100, 1000** e escolha uma sugestão. Os dois campos também aceitam **Minha localização atual**. Para ver os bairros da região, use **Bairros próximos** e permita o acesso à localização no navegador.
@@ -106,6 +107,9 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - Área de toque mínima de 44 px e navegação pelo teclado (setas nas abas, Esc para fechar o menu)
 - Ícones decorativos com `aria-hidden`; prévia de foto com texto alternativo
 - Preferência `prefers-reduced-motion` respeitada; texto ajustável de 100 % a 200 %
+- Painel **Ajustes de leitura** em todas as páginas, com janela nativa, fechamento por Esc e retorno do foco ao botão que abriu
+- Atalho **Leitura confortável**, alto contraste, links sublinhados, mais espaço entre linhas, botões maiores e fundo acolhedor opcionais
+- Preferências guardadas só neste navegador; se o armazenamento estiver bloqueado, os ajustes continuam funcionando na página atual
 - Tradução automática via [VLibras](https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/vlibras/vlibras)
 - Linguagem simples e direta
 
@@ -151,10 +155,12 @@ zela/
 │
 ├── assets/
 │   ├── css/
-│   │   └── style.css           # Tokens de design, componentes e responsivo
+│   │   ├── style.css           # Tokens de design, componentes e responsivo
+│   │   └── acessibilidade.css  # Painel e preferências opcionais de leitura
 │   ├── js/
+│   │   ├── acessibilidade.js   # Carrega preferências cedo e monta o painel Leitura
 │   │   ├── dados.js            # Avisos e protocolos simulados, pontos públicos e bairros
-│   │   ├── comum.js            # Menu, tamanho de texto, pixel art, utilidades
+│   │   ├── comum.js            # Menu, VLibras, pixel art e utilidades
 │   │   ├── inicio.js           # Lógica da página inicial
 │   │   ├── relatar.js          # Formulário de 4 passos + CEP + localização
 │   │   ├── acompanhar.js       # Linha do tempo e confirmação
