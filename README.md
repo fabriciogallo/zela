@@ -124,11 +124,11 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - Tradução automática via [VLibras](https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/vlibras/vlibras)
 - Linguagem simples e direta
 
-### Voz natural opcional
+### Leitura em voz alta
 
 O site usa as vozes em português disponíveis no aparelho. A escolha automática prioriza português brasileiro e vozes naturais quando instaladas. A qualidade varia conforme o sistema e o navegador.
 
-A integração com **Azure Speech F0** está preparada, mas **desativada**: não há chave ou endpoint ativo no site. A chave fica em um serviço separado, nunca no JavaScript público. Consulte [a configuração e os limites do serviço de voz](services/voz/README.md) para ativar após criar a conta. Falhas de rede ou cota usam a voz local quando disponível, com mensagem visível.
+A leitura usa o recurso de voz do navegador, sem cadastro, chave ou serviço adicional do projeto. É possível escolher uma voz disponível, ajustar a velocidade, pausar, retomar e parar. Quando a voz não está disponível, as instruções continuam em texto.
 
 ### Acessibilidade para pessoas surdas: próxima etapa
 
@@ -142,15 +142,15 @@ Referências: [barreiras auditivas — W3C](https://www.w3.org/WAI/people-use-we
 
 Em ambiente local isolado, com dados fictícios, foram verificados recuperação e descarte de rascunhos, envio, armazenamento bloqueado, perfil entre páginas, falha e ausência de registros de mapa, controles de voz e navegação das instruções por teclado. As vozes foram simuladas nos testes para verificar os controles; isso não mede a qualidade do áudio real.
 
-Testes automatizados sem credenciais ou consumo de API paga (Node.js):
+Testes automatizados da leitura pelo aparelho (Node.js):
 
 ```sh
-node --test tests/voz.test.mjs services/voz/worker.test.mjs
+node --test tests/voz.test.mjs
 ```
 
 A revisão visual considera telas pequenas e desktop, ampliação de texto até 200%, alto contraste e movimento reduzido. A análise automática com axe complementa a revisão; não certifica conformidade com WCAG. O contraste de itens sobre imagens e mapas exige avaliação visual adicional.
 
-Antes da entrega, ainda são necessários testes com NVDA, TalkBack e VoiceOver em aparelhos reais, zoom nativo do navegador a 400%, escuta das vozes reais após configurar o Azure e testes de tarefas com pessoas idosas e com deficiência. Registrar se conseguem escolher uma rota, compreender os limites dos dados, recuperar um relato e concluir a tarefa sem ajuda. Veja [como envolver usuários na avaliação — W3C](https://www.w3.org/WAI/test-evaluate/involving-users/).
+Antes da entrega, ainda são necessários testes com NVDA, TalkBack e VoiceOver em aparelhos reais, zoom nativo do navegador a 400%, escuta das vozes disponíveis em cada aparelho e testes de tarefas com pessoas idosas e com deficiência. Registrar se conseguem escolher uma rota, compreender os limites dos dados, recuperar um relato e concluir a tarefa sem ajuda. Veja [como envolver usuários na avaliação — W3C](https://www.w3.org/WAI/test-evaluate/involving-users/).
 
 ---
 
@@ -172,7 +172,7 @@ Antes da entrega, ainda são necessários testes com NVDA, TalkBack e VoiceOver 
 - Consulta de trajetos via [API Valhalla](https://valhalla.github.io/valhalla/api/route/api-reference/) (servidor FOSSGIS)
 - APIs públicas: [ViaCEP](https://viacep.com.br/), [Nominatim](https://nominatim.org/) e [Photon](https://github.com/komoot/photon#demo-server). A busca usa o servidor de demonstração do Photon, com pausa entre digitação e consulta. A posição enviada para identificar o bairro é arredondada; a preferência salva no navegador guarda só a identificação do bairro e da cidade.
 - `localStorage` para sessão, preferências, apoios e protocolos
-- Web Speech para leitura opcional; ponte Azure Speech em Cloudflare Workers preparada em `services/voz/`
+- Web Speech do navegador para leitura opcional
 - Pixel art em SVG gerado por código (`assets/js/comum.js`)
 
 ---
@@ -202,7 +202,6 @@ zela/
 │   │   ├── dados.js            # Avisos e protocolos simulados, pontos públicos e bairros
 │   │   ├── comum.js            # Menu, VLibras, pixel art e utilidades
 │   │   ├── mobilidade.js       # Perfil compartilhado entre Início, bairro e rota
-│   │   ├── voz-config.js       # Endpoint público opcional, sem chaves
 │   │   ├── voz.js              # Leitura, pausa, parada, vozes e velocidade
 │   │   ├── inicio.js           # Lógica da página inicial
 │   │   ├── relatar.js          # Formulário de 4 passos + CEP + localização
@@ -220,7 +219,6 @@ zela/
 │       ├── relatar-problema.svg # Ícone local do botão flutuante
 │       └── cat-*.svg           # Ícones de categoria de problema
 │
-├── services/voz/               # Serviço opcional Azure, configuração e testes
 ├── tests/                      # Testes dos controles de voz
 ├── .nojekyll                   # Necessário para o GitHub Pages ignorar o Jekyll
 └── README.md

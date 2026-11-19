@@ -4,34 +4,23 @@ import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 const fonte = readFileSync(new URL('../assets/js/voz.js', import.meta.url), 'utf8');
 
-function ambiente({ online = false, falha, nativo = true, vozes = [] } = {}) {
-  const eventos = [], falas = [], ouvintes = {}, audios = [];
+function ambiente({ nativo = true, vozes = [], preferencias = {} } = {}) {
+  const eventos = [], falas = [];
   const sintese = {
     paused: false, getVoices: () => vozes, speak: f => falas.push(f), cancel() {},
     pause() { this.paused = true; }, resume() { this.paused = false; }, addEventListener() {}
   };
-  class AudioFalso {
-    constructor() { audios.push(this); }
-    pause() {} load() {} removeAttribute() {}
-    play() { return Promise.resolve(); }
-  }
-  const janela = {
-    ZELA_VOZ_CONFIG: online ? { endpoint: 'https://voz.example', vozes: [{ id: 'pt-BR-FranciscaNeural', nome: 'Teste' }] } : {},
-    addEventListener(nome, fn) { ouvintes[nome] = fn; },
-    dispatchEvent(e) { eventos.push(e.detail); }, setTimeout, clearTimeout
-  };
+  const janela = { addEventListener() {}, dispatchEvent(e) { eventos.push(e.detail); } };
   if (nativo) { janela.speechSynthesis = sintese; janela.SpeechSynthesisUtterance = class { constructor(texto) { this.text = texto; } }; }
   const contexto = {
-    window: janela, ZELA: { store: { get: (_, padrao) => padrao, set() {} } },
-    document: { addEventListener() {} }, Audio: AudioFalso,
+    window: janela, ZELA: { store: { get: (chave, padrao) => preferencias[chave] ?? padrao, set() {} } },
+    document: { addEventListener() {} },
     SpeechSynthesisUtterance: janela.SpeechSynthesisUtterance, CustomEvent: class { constructor(_, o) { this.detail = o.detail; } },
-    fetch: falha || (async () => new Response(new Uint8Array([1]), { headers: { 'Content-Type': 'audio/mpeg' } })),
-    AbortController, URL, setTimeout, clearTimeout, console
+    fetch() { throw new Error('A leitura do aparelho não deve chamar um serviço externo.'); }
   };
   vm.runInNewContext(fonte, contexto);
-  return { voz: contexto.ZELA.voz, eventos, falas, audios, sintese };
+  return { voz: contexto.ZELA.voz, eventos, falas, sintese };
 }
-const assentar = () => new Promise(r => setTimeout(r, 10));
 
 test('prioriza português brasileiro natural e expande abreviações na fala', () => {
   const brasil = { lang: 'pt-BR', name: 'Voz Natural', voiceURI: 'br-natural' };
@@ -40,6 +29,7 @@ test('prioriza português brasileiro natural e expande abreviações na fala', (
   assert.equal(a.falas[0].voice, brasil);
   assert(a.falas[0].text.includes('100 metros') && a.falas[0].text.includes('unidade básica de saúde'));
 });
+
 test('cancelar uma leitura longa impede a continuação por eventos atrasados', () => {
   const a = ambiente();
   a.voz.falar('Uma instrução curta. '.repeat(70), { origem: 'rota' });
@@ -49,6 +39,7 @@ test('cancelar uma leitura longa impede a continuação por eventos atrasados', 
   assert.equal(a.falas.length, 1);
   assert.equal(a.eventos.at(-1).estado, 'parada');
 });
+
 test('sem sintetizador a indisponibilidade é informada sem impedir o texto', () => {
   const a = ambiente({ nativo: false });
   a.voz.falar('Texto acessível.');
@@ -66,44 +57,30 @@ test('começar outra leitura depois de pausar libera a síntese do aparelho', ()
   assert.equal(a.falas.length, 2);
   assert.equal(a.eventos.at(-1).origem, 'ajuda');
 });
-test('falha de rede online usa a voz local e informa a troca', async () => {
-  const a = ambiente({ online: true, falha: async () => new Response('', { status: 429 }) });
-  a.voz.falar('Uma instrução.', { origem: 'rota' });
-  await assentar();
-  assert.equal(a.falas.length, 1);
-  assert.match(a.eventos.at(-1).mensagem, /aparelho/);
-});
-test('uma resposta de voz atrasada não toca depois de Parar', async () => {
-  let resolver;
-  const a = ambiente({ online: true, falha: () => new Promise(r => { resolver = r; }) });
-  a.voz.falar('Uma instrução.', { origem: 'rota' });
-  a.voz.parar();
-  resolver(new Response(new Uint8Array([1]), { headers: { 'Content-Type': 'audio/mpeg' } }));
-  await assentar();
-  assert.equal(a.falas.length, 0);
-  assert.equal(a.eventos.at(-1).estado, 'parada');
+
+test('respeita a voz e a velocidade escolhidas pela pessoa', () => {
+  const escolhida = { lang: 'pt-BR', name: 'Voz escolhida', voiceURI: 'br-escolhida' };
+  const a = ambiente({
+    vozes: [escolhida, { lang: 'pt-BR', name: 'Outra Voz Natural' }],
+    preferencias: { 'voz-preferida': 'aparelho:br-escolhida', 'voz-velocidade': 0.8 }
+  });
+  a.voz.falar('Uma instrução.');
+  assert.equal(a.falas[0].voice, escolhida);
+  assert.equal(a.falas[0].rate, 0.8);
 });
 
-test('o início atrasado do áudio não reativa uma leitura já parada', async () => {
-  let resolver;
-  const a = ambiente({ online: true });
-  a.audios[0].play = () => new Promise(r => { resolver = r; });
-  a.voz.falar('Uma instrução.', { origem: 'rota' });
-  await assentar();
-  assert.equal(typeof resolver, 'function');
-  a.voz.parar(); resolver();
-  await assentar();
-  assert.equal(a.eventos.at(-1).estado, 'parada');
+test('preferências antigas ou inválidas usam a voz automática em ritmo normal', () => {
+  const brasileira = { lang: 'pt-BR', name: 'Voz Brasileira', voiceURI: 'br' };
+  const a = ambiente({ vozes: [brasileira], preferencias: { 'voz-preferida': 'servico-antigo:voz', 'voz-velocidade': 99 } });
+  a.voz.falar('Uma instrução.');
+  assert.equal(a.falas[0].voice, brasileira);
+  assert.equal(a.falas[0].rate, 1);
 });
 
-test('retomar com resposta atrasada respeita um novo comando Parar', async () => {
-  let resolver;
-  const a = ambiente({ online: true });
-  a.voz.falar('Uma instrução.', { origem: 'rota' });
-  await assentar();
-  a.voz.pausar();
-  a.audios[0].play = () => new Promise(r => { resolver = r; });
-  a.voz.retomar(); a.voz.parar(); resolver();
-  await assentar();
-  assert.equal(a.eventos.at(-1).estado, 'parada');
+test('uma falha do sintetizador mantém a alternativa em texto', () => {
+  const a = ambiente();
+  a.voz.falar('Uma instrução.');
+  a.falas[0].onerror({ error: 'synthesis-failed' });
+  assert.equal(a.eventos.at(-1).estado, 'indisponivel');
+  assert.match(a.eventos.at(-1).mensagem, /texto/);
 });

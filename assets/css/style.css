@@ -730,7 +730,6 @@ tr:last-child td { border-bottom: 0; }
 .voz-status:empty { display: none; }
 .page-title > .voz-controles { margin-block-start: 16px; }
 .leitura-voz { gap: 12px; }
-.voz-controles .btn[aria-disabled="true"] { cursor: wait; }
 .route-more { border: var(--line); border-radius: var(--r-ctl); background: var(--paper); }
 .route-more > summary {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
