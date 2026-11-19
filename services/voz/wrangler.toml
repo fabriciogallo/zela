@@ -1,0 +1,13 @@
+name = "zela-voz"
+main = "worker.mjs"
+compatibility_date = "2026-11-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://fabriciogallo.github.io"
+# Defina a região do recurso Speech F0 criado na sua conta. A chave é um secret.
+AZURE_SPEECH_REGION = "brazilsouth"
+
+[[ratelimits]]
+name = "VOZ_LIMIT"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }

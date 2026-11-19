@@ -2,6 +2,8 @@
 
 > Sua rua avisa. A prefeitura responde.
 
+Projeto acadêmico da **FIAP**, desenvolvido para a **Global Solution**, no contexto de CitizenTech. É um protótipo: os relatos, as contas e os SMS são simulados; as consultas a endereços e trajetos usam serviços externos.
+
 **Deploy:** https://fabriciogallo.github.io/zela/ &nbsp;·&nbsp; **Repositório:** https://github.com/fabriciogallo/zela
 
 ---
@@ -75,6 +77,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Início | Avisos por bairro + consulta rápida de protocolo | Mostra que vizinhos já usam; avisa na hora se o número está errado |
 | Início / Meu bairro / Perfil | Busca por bairro, rua, CEP ou geolocalização | Mostra os avisos do bairro escolhido e permite salvar a região no perfil sem depender do GPS |
 | Relatar | 4 passos com progresso, validação e foco no título | Divide a tarefa, evita erro no fim e orienta leitores de tela |
+| Relatar | Rascunho automático com recuperação por até 7 dias | Permite sair e continuar depois, sem repetir o preenchimento; a foto precisa ser escolhida novamente |
 | Relatar | Busca por CEP via API ViaCEP | Preenche rua, bairro e cidade automaticamente |
 | Relatar | "Usar minha localização" (OpenStreetMap/Nominatim) | Poupa digitação do endereço |
 | Relatar | Detecção de aviso repetido → "Apoiar esse aviso" | Evita filas duplicadas; mostra que outros vizinhos se importam |
@@ -84,6 +87,10 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Sua conta / Meus avisos | Login sem senha (celular + código SMS simulado) | Avisos e apoios ficam salvos por pessoa; ninguém precisa guardar protocolo |
 | Rota acessível | Sugestões por rua, CEP ou localização atual na saída e no destino | Distingue ruas de mesmo nome pelo bairro e pela cidade e permite preencher qualquer ponto pelo GPS |
 | Rota acessível | Consulta real ao Valhalla / OpenStreetMap | Sugere trajetos por perfil de mobilidade e mostra distância, tempo estimado e instruções em português, com leitura em voz alta |
+| Início / Meu bairro / Rota acessível | Perfil de mobilidade lembrado no aparelho, sem exigir conta | Evita escolher o mesmo perfil em cada página |
+| Rota acessível | Preferências opcionais recolhidas e instruções por etapas | Mantém saída, destino e perfil em destaque; permite avançar, voltar e ouvir uma instrução por vez |
+| Rota acessível | Fonte, data da consulta e disponibilidade dos dados | Diferencia uma consulta sem registros de uma consulta indisponível; não promete acessibilidade verificada em campo |
+| Todas | Ajuda falada opcional, voz e velocidade ajustáveis | Oferece outra forma de acompanhar o conteúdo, com pausa e parada, mantendo tudo disponível em texto |
 
 ### Como testar
 
@@ -95,6 +102,10 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **Meu bairro:** busque **Grajaú** para ver avisos simulados ou **01310-100** para escolher Bela Vista e experimentar o estado sem avisos. Você também pode salvar ou remover o bairro em **Meus avisos → Seus dados**.
 - **Rota acessível:** em **Escolher pela região**, selecione Cidade Tiradentes. Escolha o Terminal e a Casa de Cultura como saída e destino, mantenha o perfil **Cadeira de rodas** e clique em **Buscar trajeto**.
 - **Busca de locais:** nos campos **Saindo de** e **Indo para**, digite **Rua das Flores** ou **01310-100, 1000** e escolha uma sugestão. Os dois campos também aceitam **Minha localização atual**. Para ver os bairros da região, use **Bairros próximos** e permita o acesso à localização no navegador.
+- **Rascunho:** preencha parte de um relato e recarregue a página. Escolha **Continuar de onde parei** ou **Descartar rascunho**. O envio concluído limpa o rascunho; falhas ao guardar o aviso mantêm as respostas na tela.
+- **Perfil de mobilidade:** escolha um perfil na chamada da rota no Início. Abra Meu bairro e depois Rota acessível para confirmar a mesma escolha.
+- **Instruções:** busque um trajeto e use **Próxima instrução**, **Instrução anterior** e **Ver todas as instruções**. O avanço é manual; não há navegação automática pela posição em tempo real.
+- **Voz:** em Leitura, escolha voz e velocidade e use **Testar esta voz**. Depois experimente a apresentação de uma página, a ajuda do relato, um aviso em Acompanhar e uma instrução de trajeto. Nenhum áudio começa sem uma ação da pessoa.
 
 ---
 
@@ -112,6 +123,34 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - Preferências guardadas só neste navegador; se o armazenamento estiver bloqueado, os ajustes continuam funcionando na página atual
 - Tradução automática via [VLibras](https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/vlibras/vlibras)
 - Linguagem simples e direta
+
+### Voz natural opcional
+
+O site usa as vozes em português disponíveis no aparelho. A escolha automática prioriza português brasileiro e vozes naturais quando instaladas. A qualidade varia conforme o sistema e o navegador.
+
+A integração com **Azure Speech F0** está preparada, mas **desativada**: não há chave ou endpoint ativo no site. A chave fica em um serviço separado, nunca no JavaScript público. Consulte [a configuração e os limites do serviço de voz](services/voz/README.md) para ativar após criar a conta. Falhas de rede ou cota usam a voz local quando disponível, com mensagem visível.
+
+### Acessibilidade para pessoas surdas: próxima etapa
+
+As instruções, os alertas e as confirmações já têm texto; a voz é opcional. O VLibras oferece uma tradução automática complementar. Isso não substitui a revisão com pessoas surdas nem torna o site acessível para todos os perfis de surdez.
+
+A proposta para a equipe é validar primeiro os fluxos com pessoas surdas, incluindo quem usa Libras e quem prefere português escrito. Depois, produzir vídeos curtos em Libras com tradução humana revisada para as tarefas essenciais (planejar rota, relatar e acompanhar), acompanhados de legendas revisadas e transcrição. No vídeo-pitch, incluir legendas que identifiquem também sons relevantes. Não depender de alertas sonoros ou de contato por chamada de voz; qualquer atendimento futuro precisa oferecer um canal escrito.
+
+Referências: [barreiras auditivas — W3C](https://www.w3.org/WAI/people-use-web/abilities-barriers/auditory/), [línguas de sinais — W3C](https://www.w3.org/WAI/media/av/sign-languages/).
+
+### Verificação e limites
+
+Em ambiente local isolado, com dados fictícios, foram verificados recuperação e descarte de rascunhos, envio, armazenamento bloqueado, perfil entre páginas, falha e ausência de registros de mapa, controles de voz e navegação das instruções por teclado. As vozes foram simuladas nos testes para verificar os controles; isso não mede a qualidade do áudio real.
+
+Testes automatizados sem credenciais ou consumo de API paga (Node.js):
+
+```sh
+node --test tests/voz.test.mjs services/voz/worker.test.mjs
+```
+
+A revisão visual considera telas pequenas e desktop, ampliação de texto até 200%, alto contraste e movimento reduzido. A análise automática com axe complementa a revisão; não certifica conformidade com WCAG. O contraste de itens sobre imagens e mapas exige avaliação visual adicional.
+
+Antes da entrega, ainda são necessários testes com NVDA, TalkBack e VoiceOver em aparelhos reais, zoom nativo do navegador a 400%, escuta das vozes reais após configurar o Azure e testes de tarefas com pessoas idosas e com deficiência. Registrar se conseguem escolher uma rota, compreender os limites dos dados, recuperar um relato e concluir a tarefa sem ajuda. Veja [como envolver usuários na avaliação — W3C](https://www.w3.org/WAI/test-evaluate/involving-users/).
 
 ---
 
@@ -133,6 +172,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - Consulta de trajetos via [API Valhalla](https://valhalla.github.io/valhalla/api/route/api-reference/) (servidor FOSSGIS)
 - APIs públicas: [ViaCEP](https://viacep.com.br/), [Nominatim](https://nominatim.org/) e [Photon](https://github.com/komoot/photon#demo-server). A busca usa o servidor de demonstração do Photon, com pausa entre digitação e consulta. A posição enviada para identificar o bairro é arredondada; a preferência salva no navegador guarda só a identificação do bairro e da cidade.
 - `localStorage` para sessão, preferências, apoios e protocolos
+- Web Speech para leitura opcional; ponte Azure Speech em Cloudflare Workers preparada em `services/voz/`
 - Pixel art em SVG gerado por código (`assets/js/comum.js`)
 
 ---
@@ -161,6 +201,9 @@ zela/
 │   │   ├── acessibilidade.js   # Carrega preferências cedo e monta o painel Leitura
 │   │   ├── dados.js            # Avisos e protocolos simulados, pontos públicos e bairros
 │   │   ├── comum.js            # Menu, VLibras, pixel art e utilidades
+│   │   ├── mobilidade.js       # Perfil compartilhado entre Início, bairro e rota
+│   │   ├── voz-config.js       # Endpoint público opcional, sem chaves
+│   │   ├── voz.js              # Leitura, pausa, parada, vozes e velocidade
 │   │   ├── inicio.js           # Lógica da página inicial
 │   │   ├── relatar.js          # Formulário de 4 passos + CEP + localização
 │   │   ├── acompanhar.js       # Linha do tempo e confirmação
@@ -177,6 +220,8 @@ zela/
 │       ├── relatar-problema.svg # Ícone local do botão flutuante
 │       └── cat-*.svg           # Ícones de categoria de problema
 │
+├── services/voz/               # Serviço opcional Azure, configuração e testes
+├── tests/                      # Testes dos controles de voz
 ├── .nojekyll                   # Necessário para o GitHub Pages ignorar o Jekyll
 └── README.md
 ```

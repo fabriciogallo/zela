@@ -39,6 +39,7 @@
   }
 
   function buscar(bruto, focar) {
+    if (ZELA.voz) ZELA.voz.parar();
     var input = $("f-proto");
     var r = ZELA.buscarProtocolo(bruto);
     if (r.erro) {

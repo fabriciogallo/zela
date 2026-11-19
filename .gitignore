@@ -1,1 +1,3 @@
 .claude/
+services/voz/.dev.vars*
+services/voz/.wrangler/

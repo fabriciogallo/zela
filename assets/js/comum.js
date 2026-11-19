@@ -12,7 +12,8 @@
       catch (e) { return padrao; }
     },
     set: function (k, v) {
-      try { localStorage.setItem("zela:" + k, JSON.stringify(v)); } catch (e) { /* ignora */ }
+      try { localStorage.setItem("zela:" + k, JSON.stringify(v)); return true; }
+      catch (e) { return false; }
     }
   };
 
@@ -263,6 +264,11 @@
       function ajustarBotao() {
         var acesso = window.VLibrasWidget?.initBtn?.parentElement;
         if (!acesso || acesso.id !== "vlibras-access") return;
+        var painelLibras = document.getElementById("vlibras-access-wrapper");
+        if (painelLibras) {
+          painelLibras.setAttribute("role", "complementary");
+          painelLibras.setAttribute("aria-label", "Tradução em Libras");
+        }
         acesso.style.top = "var(--libras-top, calc(50vh - 20px))";
         acesso.style.bottom = "var(--libras-bottom, auto)";
         acesso.style.transition = "width var(--libras-duration, .5s) ease";

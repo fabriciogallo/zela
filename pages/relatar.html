@@ -9,12 +9,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=leitura-conta-v2">
+  <link rel="stylesheet" href="../assets/css/style.css?v=jornada-v3">
   <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=leitura-conta-v2">
   <script src="../assets/js/acessibilidade.js?v=leitura-conta-v2"></script>
   <script src="../assets/js/dados.js" defer></script>
-  <script src="../assets/js/comum.js?v=conta" defer></script>
-  <script src="../assets/js/relatar.js" defer></script>
+  <script src="../assets/js/comum.js?v=jornada-v3" defer></script>
+  <script src="../assets/js/mobilidade.js?v=jornada-v3" defer></script>
+  <script src="../assets/js/voz-config.js?v=jornada-v3" defer></script>
+  <script src="../assets/js/voz.js?v=jornada-v3" defer></script>
+  <script src="../assets/js/relatar.js?v=jornada-v3" defer></script>
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -65,7 +68,18 @@
         </div>
 
         <div class="row">
+          <section id="rascunho-aviso" class="col-main panel panel-lg stack draft-banner" aria-labelledby="rascunho-titulo" hidden>
+            <h2 id="rascunho-titulo" class="t-card">Você tem um relato por terminar</h2>
+            <p id="rascunho-resumo"></p>
+            <p class="hint">É um rascunho guardado neste aparelho por até 7 dias. Nenhum aviso foi enviado.</p>
+            <div class="action-row">
+              <button type="button" id="rascunho-retomar" class="btn btn--primary">Continuar de onde parei</button>
+              <button type="button" id="rascunho-descartar" class="btn btn--ghost">Descartar rascunho</button>
+            </div>
+          </section>
           <form id="form-relato" class="wizard panel panel-lg panel--cream col-main" novalidate>
+            <p id="rascunho-status" class="hint t-small draft-status">Suas respostas serão guardadas neste aparelho enquanto você preenche.</p>
+            <p id="err-envio" class="error" role="alert" tabindex="-1" hidden></p>
 
             <section data-step="1" aria-labelledby="t-passo-1">
               <p>Passo 1 de 4</p>
@@ -105,7 +119,7 @@
                   <label for="f-end">Endereço do problema</label>
                   <p id="f-end-dica" class="hint">Rua e número. Se não souber o número, diga só a rua.</p>
                   <div class="inline-form">
-                    <input id="f-end" name="endereco" class="input" type="text" autocomplete="street-address" aria-describedby="f-end-dica err-end loc-msg">
+                    <input id="f-end" name="endereco" class="input" type="text" required autocomplete="street-address" aria-describedby="f-end-dica err-end loc-msg">
                     <button type="button" id="btn-loc" class="btn btn--ghost btn--lg">Usar minha localização</button>
                   </div>
                   <p id="err-end" class="error" role="alert"></p>
@@ -134,14 +148,14 @@
                 <div class="field">
                   <label for="f-desc">Descreva o problema</label>
                   <p id="f-desc-dica" class="hint">Uma frase basta. Ex.: o buraco ocupa metade da pista.</p>
-                  <textarea id="f-desc" name="descricao" class="input" rows="4" maxlength="300" aria-describedby="f-desc-dica f-desc-cont err-desc"></textarea>
-                  <p id="f-desc-cont" class="hint t-small" aria-live="polite">0 de 300 caracteres</p>
+                  <textarea id="f-desc" name="descricao" class="input" rows="4" maxlength="300" required aria-describedby="f-desc-dica f-desc-cont err-desc"></textarea>
+                  <p id="f-desc-cont" class="hint t-small">0 de 300 caracteres</p>
                   <p id="err-desc" class="error" role="alert"></p>
                 </div>
                 <div class="field">
                   <span class="legend" id="foto-rotulo">Foto do local <span class="muted">(opcional)</span></span>
                   <div id="foto-vazia">
-                    <input id="f-foto" name="foto" type="file" accept="image/*" capture="environment" class="sr-only file-input" aria-labelledby="foto-btn-texto foto-rotulo" aria-describedby="err-foto">
+                    <input id="f-foto" name="foto" type="file" accept="image/*" class="sr-only file-input" aria-labelledby="foto-btn-texto foto-rotulo" aria-describedby="err-foto">
                     <label for="f-foto" class="btn btn--ghost btn--lg" id="foto-btn-texto">Tirar ou escolher foto</label>
                   </div>
                   <div id="foto-cheia" class="photo-chip" hidden>
@@ -170,7 +184,7 @@
 
             <div class="wizard-nav">
               <button type="button" id="btn-voltar" class="btn btn--ghost btn--lg">Voltar</button>
-              <a id="btn-cancelar" class="btn btn--ghost btn--lg" href="../index.html">Cancelar</a>
+              <a id="btn-cancelar" class="btn btn--ghost btn--lg" href="../index.html">Sair e continuar depois</a>
               <button type="submit" id="btn-avancar" class="btn btn--primary btn--lg" style="margin-left:auto">Continuar</button>
             </div>
           </form>
@@ -182,6 +196,7 @@
                 <h2 id="ajuda-t" class="t-tab">Escolher o tipo certo</h2>
                 <ul class="list-reset tick-list" id="ajuda-dicas"></ul>
                 <p class="help-why"><strong>Por que perguntamos:</strong> <span id="ajuda-texto">Cada tipo de problema vai para um órgão diferente. Escolher o tipo certo faz o aviso chegar mais rápido a quem resolve.</span></p>
+                <div id="relato-ouvir-ajuda"></div>
               </div>
             </div>
             <div class="panel stack" style="gap:6px;padding:20px 24px">

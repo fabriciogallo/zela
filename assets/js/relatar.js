@@ -22,6 +22,8 @@
   var passo = 1;
   var dupIgnorado = false;
   var fotoUrl = null;
+  var rascunhoAtivo = false, rascunhoTimer = null, concluido = false, armazenamentoAvisado = false;
+  var CHAVE_RASCUNHO = "zela:rascunho-relato";
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -30,8 +32,81 @@
     return el ? el.value : "";
   }
 
+  /* Guarda só o texto e as escolhas. A foto precisa ser escolhida novamente. */
+  function guardarRascunho() {
+    if (!rascunhoAtivo || concluido) return;
+    clearTimeout(rascunhoTimer);
+    var dados = {
+      versao: 1, quando: Date.now(), passo: passo, cat: valor("cat"),
+      cep: $("f-cep").value.slice(0, 9), endereco: $("f-end").value.slice(0, 600),
+      referencia: $("f-ref").value.slice(0, 300), descricao: $("f-desc").value.slice(0, 300),
+      risco: valor("risco"), anonimo: $("f-anon").checked, tinhaFoto: Boolean($("f-foto").files.length)
+    };
+    if (![dados.cat, dados.cep, dados.endereco, dados.referencia, dados.descricao].some(Boolean)) return;
+    try {
+      localStorage.setItem(CHAVE_RASCUNHO, JSON.stringify(dados));
+      $("rascunho-status").textContent = "Rascunho guardado neste aparelho. Você pode sair e continuar depois. A foto não é guardada.";
+    } catch (e) {
+      $("rascunho-status").textContent = "Este navegador não conseguiu guardar o rascunho. Mantenha esta página aberta até concluir.";
+      if (!armazenamentoAvisado) { armazenamentoAvisado = true; ZELA.anunciar($("rascunho-status").textContent); }
+    }
+  }
+
+  function apagarRascunho() {
+    clearTimeout(rascunhoTimer);
+    try { localStorage.removeItem(CHAVE_RASCUNHO); } catch (e) { /* O formulário continua utilizável. */ }
+  }
+
+  function lerRascunho() {
+    var d;
+    try { d = JSON.parse(localStorage.getItem(CHAVE_RASCUNHO)); } catch (e) { apagarRascunho(); return null; }
+    if (!d || d.versao !== 1 || !Number.isFinite(d.quando) || d.quando > Date.now() ||
+      Date.now() - d.quando > 7 * 24 * 60 * 60 * 1000 || !Number.isInteger(d.passo) || d.passo < 1 || d.passo > 4 ||
+      !["cat", "cep", "endereco", "referencia", "descricao", "risco"].every(function (k) { return typeof d[k] === "string"; })) { apagarRascunho(); return null; }
+    d.endereco = d.endereco.slice(0, 600); d.referencia = d.referencia.slice(0, 300); d.descricao = d.descricao.slice(0, 300);
+    return d;
+  }
+
+  function iniciarRascunho() {
+    var d = lerRascunho(), form = $("form-relato"), aviso = $("rascunho-aviso");
+    rascunhoAtivo = !d;
+    if (d) {
+      form.hidden = true; aviso.hidden = false;
+      $("rascunho-resumo").textContent = "Seu último preenchimento chegou ao passo " + d.passo + " de 4, em " +
+        new Date(d.quando).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) + ".";
+    }
+    $("rascunho-retomar").addEventListener("click", function () {
+      if (!d) return;
+      var cat = Array.from(form.querySelectorAll('[name="cat"]')).find(function (r) { return r.value === d.cat; });
+      if (cat) cat.checked = true;
+      $("f-cep").value = d.cep.replace(/[^\d-]/g, "").slice(0, 9);
+      $("f-end").value = d.endereco; $("f-ref").value = d.referencia; $("f-desc").value = d.descricao;
+      form.querySelector('[name="risco"][value="' + (d.risco === "alto" ? "alto" : "baixo") + '"]').checked = true;
+      $("f-anon").checked = d.anonimo === true;
+      $("f-desc-cont").textContent = d.descricao.length + " de 300 caracteres";
+      var primeiroIncompleto = !cat ? 1 : d.endereco.trim().length < 3 ? 2 : d.descricao.trim().length < 10 ? 3 : 4;
+      var retomar = Math.min(d.passo, primeiroIncompleto);
+      aviso.hidden = true; form.hidden = false; rascunhoAtivo = true;
+      mostrarPasso(retomar, true);
+      var mensagem = "Rascunho recuperado." + (d.tinhaFoto ? " Escolha a foto novamente no passo 3." : "");
+      $("rascunho-status").textContent = mensagem;
+      ZELA.anunciar(mensagem);
+    });
+    $("rascunho-descartar").addEventListener("click", function () {
+      apagarRascunho(); d = null; rascunhoAtivo = true;
+      aviso.hidden = true; form.hidden = false;
+      mostrarPasso(1, true);
+      $("rascunho-status").textContent = "Rascunho descartado. Você pode começar um novo relato.";
+      ZELA.anunciar("Rascunho descartado.");
+    });
+    form.addEventListener("input", function () { clearTimeout(rascunhoTimer); rascunhoTimer = setTimeout(guardarRascunho, 400); });
+    form.addEventListener("change", guardarRascunho);
+    window.addEventListener("pagehide", guardarRascunho);
+  }
+
   /* ---------- Navegação entre passos ---------- */
   function mostrarPasso(n, focar) {
+    if (ZELA.voz) ZELA.voz.parar();
     passo = n;
     document.querySelectorAll("[data-step]").forEach(function (s) {
       s.hidden = Number(s.getAttribute("data-step")) !== n;
@@ -56,6 +131,7 @@
       t.focus({ preventScroll: true });
       t.scrollIntoView({ block: "center" });
     }
+    guardarRascunho();
   }
 
   function erro(idCampo, idErro, msg) {
@@ -225,6 +301,7 @@
       $("foto-vazia").hidden = false;
       input.focus();
       ZELA.anunciar("Foto removida.");
+      guardarRascunho();
     });
   }
 
@@ -253,12 +330,13 @@
   }
 
   function concluir(apoio) {
+    $("err-envio").hidden = true;
     var id, texto;
     if (apoio) {
       var aviso = ZELA.avisos[0];
       var apoiados = ZELA.store.get("apoiados", {});
       apoiados[aviso.id] = true;
-      ZELA.store.set("apoiados", apoiados);
+      if (!ZELA.store.set("apoiados", apoiados)) { falhaAoGuardar(); return; }
       ZELA.conta.marcarApoio(aviso.id, true);
       id = aviso.protocolo;
       $("ok-titulo").textContent = "Apoio registrado. Agora são " + (aviso.apoios + 1) + " vizinhos.";
@@ -275,11 +353,12 @@
         datas: [hoje(), "Previsão: em até 2 dias úteis", "—", "—"],
         dono: (ZELA.conta.atual() || {}).tel || null
       };
-      ZELA.store.set("protocolos", meus);
+      if (!ZELA.store.set("protocolos", meus)) { falhaAoGuardar(); return; }
       texto = ZELA.conta.atual()
         ? "Seu aviso chegou ao Zela e já está na fila do bairro. Ele também ficou guardado em Meus avisos."
         : "Seu aviso chegou ao Zela e já está na fila do bairro. Guarde o número abaixo ou entre com seu celular para salvar seus avisos.";
     }
+    concluido = true; rascunhoAtivo = false; apagarRascunho();
     $("ok-texto").textContent = texto;
     $("ok-protocolo").textContent = id;
     $("link-acompanhar").href = "acompanhar.html?p=" + encodeURIComponent(id);
@@ -289,6 +368,14 @@
     document.title = "Aviso enviado — Zela";
     window.scrollTo(0, 0);
     $("ok-titulo").focus();
+  }
+
+  function falhaAoGuardar() {
+    var mensagem = "Não conseguimos guardar o aviso neste aparelho. Suas respostas continuam nesta página. Libere o armazenamento do navegador e tente enviar novamente.";
+    var erroEnvio = $("err-envio");
+    erroEnvio.textContent = mensagem; erroEnvio.hidden = false;
+    erroEnvio.focus({ preventScroll: true });
+    erroEnvio.scrollIntoView({ block: "center" });
   }
 
   function copiar() {
@@ -351,5 +438,11 @@
     iniciarFoto();
     $("btn-copiar").addEventListener("click", copiar);
     mostrarPasso(1, false);
+    iniciarRascunho();
+    if (ZELA.voz) ZELA.voz.controles($("relato-ouvir-ajuda"), {
+      rotulo: "Ouvir a ajuda deste passo", origem: "ajuda-relato",
+      texto: function () { return "Passo " + passo + " de 4. " + $("t-passo-" + passo).textContent + ". " +
+        DICAS[passo - 1].join(". ") + ". " + AJUDA[passo - 1]; }
+    });
   });
 })();

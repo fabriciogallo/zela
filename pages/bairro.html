@@ -9,11 +9,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=leitura-conta-v2">
+  <link rel="stylesheet" href="../assets/css/style.css?v=jornada-v3">
   <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=leitura-conta-v2">
   <script src="../assets/js/acessibilidade.js?v=leitura-conta-v2"></script>
   <script src="../assets/js/dados.js" defer></script>
-  <script src="../assets/js/comum.js?v=conta" defer></script>
+  <script src="../assets/js/comum.js?v=jornada-v3" defer></script>
+  <script src="../assets/js/mobilidade.js?v=jornada-v3" defer></script>
+  <script src="../assets/js/voz-config.js?v=jornada-v3" defer></script>
+  <script src="../assets/js/voz.js?v=jornada-v3" defer></script>
   <script src="../assets/js/busca-locais.js" defer></script>
   <script src="../assets/js/preferencia-bairro.js" defer></script>
   <script src="../assets/js/bairro.js" defer></script>
@@ -50,7 +53,9 @@
       </div>
     </div>
   </header>
-  <a class="btn btn--primary report-action" hidden href="relatar.html"><span class="report-action-icon" aria-hidden="true"></span><span>Relatar problema</span></a>
+  <nav aria-label="Relatar">
+    <a class="btn btn--primary report-action" hidden href="relatar.html"><span class="report-action-icon" aria-hidden="true"></span><span>Relatar problema</span></a>
+  </nav>
 
   <main id="conteudo" class="page-pad" tabindex="-1">
     <div class="wrap">
@@ -118,6 +123,12 @@
           <h2 id="rota-bairro-titulo" class="t-card">Planeje uma rota em <span id="rota-bairro-nome">Jardim Ângela</span></h2>
           <p>Compare trajetos de acordo com seu <strong class="mobility-emphasis">perfil de mobilidade</strong>: cadeira de rodas, andador, baixa visão e outras opções.</p>
         </div>
+        <div class="stack neighborhood-route-choices">
+        <div class="field mobility-picker">
+          <label for="bairro-perfil">Seu perfil de mobilidade</label>
+          <select id="bairro-perfil" class="input" data-perfil-mobilidade aria-describedby="bairro-perfil-nota"></select>
+          <p id="bairro-perfil-nota" class="hint t-small" data-perfil-mobilidade-nota></p>
+        </div>
         <form id="rota-bairro-exemplo" class="stack" action="rota.html" method="get" hidden>
           <input type="hidden" id="rota-bairro-valor" name="bairro" value="angela">
           <div class="field">
@@ -131,6 +142,7 @@
         <div class="stack" id="rota-bairro-livre" hidden>
           <p class="hint">Informe sua saída e seu destino no planejador.</p>
           <div><a class="btn btn--primary" href="rota.html">Escolher saída e destino</a></div>
+        </div>
         </div>
       </section>
       <div class="row" style="align-items:flex-start">

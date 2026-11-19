@@ -26,6 +26,7 @@
   const resultado = $("rota-real-resultado");
   const alternativa = $("rota-real-alternativa");
   const mapa = $("rota-real-mapa");
+  let trajetoAtual = 0, instrucaoAtual = 0;
   const pararLeitura = iniciarLeitura();
   const perfis = {
     cadeira: {
@@ -109,39 +110,46 @@
   }
 
   function iniciarLeitura() {
-    const botao = $("rota-real-ouvir");
-    if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
-      botao.hidden = true;
-      return function () {};
-    }
-    let atual = null;
-    function parar(cancelar) {
-      if (!atual) return;
-      atual = null;
-      botao.textContent = "Ouvir as instruções";
-      if (cancelar) window.speechSynthesis.cancel();
-    }
-    botao.addEventListener("click", function () {
-      if (atual) { parar(true); return; }
-      const instrucoes = Array.from(document.querySelectorAll("#rota-real-passos .route-step-text"), function (el, i) {
-        return "Passo " + (i + 1) + ". " + el.textContent.trim();
-      });
-      if (!instrucoes.length) return;
-      const fala = new SpeechSynthesisUtterance(instrucoes.join(" "));
-      fala.lang = "pt-BR";
-      fala.rate = 0.9;
-      fala.onend = function () { if (atual === fala) parar(false); };
-      fala.onerror = function () {
-        if (atual !== fala) return;
-        parar(false);
-        ZELA.anunciar("A leitura em voz alta está indisponível. Veja a lista de instruções.");
-      };
-      atual = fala;
-      botao.textContent = "Parar a leitura";
-      window.speechSynthesis.speak(fala);
+    if (ZELA.voz) ZELA.voz.controles($("rota-guia-voz"), {
+      rotulo: "Ouvir esta instrução", origem: "rota", texto: textoInstrucao
     });
-    return function () { parar(true); };
+    return function () { if (ZELA.voz) ZELA.voz.parar(); };
   }
+
+  function textoInstrucao() {
+    const passos = trajetos[trajetoAtual]?.passos || [];
+    const passo = passos[instrucaoAtual];
+    if (!passo) return "";
+    const alertas = alertasPasso(passo).map(function (a) { return a.texto; }).join(". ");
+    return ["Instrução " + (instrucaoAtual + 1) + " de " + passos.length,
+      passo.texto.replace(/[.!?]+\s*$/, ""),
+      medidaPasso(passo) ? "Trecho de " + medidaPasso(passo).replace(" · ", ", em aproximadamente ") : "", alertas]
+      .filter(Boolean).join(". ") + ".";
+  }
+
+  function mostrarInstrucao(anunciar) {
+    const passos = trajetos[trajetoAtual]?.passos || [];
+    if (!passos.length) return;
+    instrucaoAtual = Math.max(0, Math.min(instrucaoAtual, passos.length - 1));
+    $("rota-guia-progresso").textContent = "Instrução " + (instrucaoAtual + 1) + " de " + passos.length;
+    $("rota-guia-passo").replaceChildren(criarPasso(passos[instrucaoAtual], instrucaoAtual, passos.length));
+    $("rota-guia-anterior").setAttribute("aria-disabled", String(instrucaoAtual === 0));
+    $("rota-guia-proxima").setAttribute("aria-disabled", String(instrucaoAtual === passos.length - 1));
+    $("rota-real-passos").querySelectorAll("li").forEach(function (li, i) {
+      if (i === instrucaoAtual) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+    });
+    if (anunciar) {
+      $("rota-guia-anuncio").textContent = textoInstrucao();
+      if ($("rota-guia-auto").checked && ZELA.voz) ZELA.voz.falar(textoInstrucao(), { origem: "rota" });
+    }
+  }
+
+  [["rota-guia-anterior", -1], ["rota-guia-proxima", 1]].forEach(function (acao) {
+    $(acao[0]).addEventListener("click", function () {
+      if (this.getAttribute("aria-disabled") === "true") return;
+      pararLeitura(); instrucaoAtual += acao[1]; mostrarInstrucao(true);
+    });
+  });
 
   function idBairro() { return lugarEscolhido?.bairroId; }
   function pontosDoBairro() {
@@ -590,6 +598,9 @@
     let inicio = 0;
     fatias.forEach(function (fatia, r) {
       let subida = 0, maxIncl = 0;
+      if (fatia.some(function (_, i) { return !Number.isFinite(alturas[inicio + i]); })) {
+        inicio += fatia.length; return;
+      }
       for (let i = 1; i < fatia.length; i++) {
         const h0 = alturas[inicio + i - 1], h1 = alturas[inicio + i];
         if (h0 == null || h1 == null) continue;
@@ -608,7 +619,7 @@
     const planos = rotas.map(function (r) { return amostrar(r.pontos, plano, 10); });
     const [arredores, elevacao] = await Promise.allSettled([buscarArredores(rotas), buscarElevacao(rotas, planos)]);
     const falhas = [];
-    if (elevacao.status === "rejected") falhas.push("a inclinação");
+    if (elevacao.status === "rejected" || rotas.some(function (r) { return r.subida == null; })) falhas.push("a inclinação");
     if (arredores.status === "fulfilled") {
       const g = arredores.value;
       const proj = {};
@@ -619,7 +630,10 @@
         r.bancos = conta(proj.bancos, 25);
         r.agua = conta(proj.agua, 40);
         r.rampas = conta(proj.rampas, 12);
-        r.obstaculos = conta(proj.obstaculos, 8) + r.passos.filter(function (p) { return p.tipo === 40 || p.tipo === 41; }).length * 3;
+        const escadas = r.passos.filter(function (p) { return p.tipo === 40 || p.tipo === 41; }).length;
+        const registros = conta(proj.obstaculos, 8);
+        r.obstaculos = registros + escadas;
+        r.pesoObstaculos = registros + escadas * 3;
         const sombreadas = amostras.filter(function (a) { return perto(a, proj.arvores, 12); }).length;
         r.sombra = amostras.length ? Math.round(sombreadas / amostras.length * 100) : 0;
       });
@@ -634,12 +648,12 @@
     const criterios = {
       perfil: function (r) { return rotas.indexOf(r); },
       distancia: function (r) { return r.distancia; },
-      rampa: function (r) { return r.rampas == null ? 0 : -r.rampas; },
-      plano: function (r) { return r.subida == null ? 0 : r.subida + r.inclinacao * 4; },
-      obstaculos: function (r) { return r.obstaculos == null ? 0 : r.obstaculos; },
-      sombra: function (r) { return -(r.sombra || 0); },
-      bancos: function (r) { return -(r.bancos || 0); },
-      agua: function (r) { return -(r.agua || 0); }
+      rampa: function (r) { return r.rampas == null ? Infinity : -r.rampas; },
+      plano: function (r) { return r.subida == null ? Infinity : r.subida + r.inclinacao * 4; },
+      obstaculos: function (r) { return r.obstaculos == null ? Infinity : r.pesoObstaculos; },
+      sombra: function (r) { return r.sombra == null ? Infinity : -r.sombra; },
+      bancos: function (r) { return r.bancos == null ? Infinity : -r.bancos; },
+      agua: function (r) { return r.agua == null ? Infinity : -r.agua; }
     };
     function posicoes(criterio) {
       const lista = rotas.slice().sort(function (a, b) { return criterio(a) - criterio(b) || a.distancia - b.distancia; });
@@ -658,15 +672,15 @@
     const itens = [];
     function add(icone, texto, destaque, alerta) { itens.push({ icone: icone, texto: texto, destaque: destaque, alerta: alerta }); }
     if (trajeto.subida != null) {
-      add("⛰", trajeto.subida <= 5 ? "Quase plano" : "Sobe " + trajeto.subida + " m no total", ordem === "plano", trajeto.inclinacao > 8);
-      if (trajeto.inclinacao) add("↗", "Inclinação máx. " + trajeto.inclinacao + "%", ordem === "plano", trajeto.inclinacao > 8);
+      add("⛰", trajeto.subida <= 5 && trajeto.inclinacao <= 3 ? "Pouca variação de altura no mapa" : "Subida estimada: " + trajeto.subida + " m", ordem === "plano", trajeto.inclinacao > 8);
+      if (trajeto.inclinacao) add("↗", "Inclinação estimada de até " + trajeto.inclinacao + "%", ordem === "plano", trajeto.inclinacao > 8);
     }
     if (trajeto.sombra != null) {
-      add("🌳", trajeto.sombra ? "Sombra em ~" + trajeto.sombra + "% do caminho" : "Sem árvores mapeadas", filtros.includes("sombra"), false);
+      add("🌳", trajeto.sombra ? "Árvores perto de ~" + trajeto.sombra + "% do caminho" : "Nenhuma árvore registrada na consulta", filtros.includes("sombra"), false);
       add("🪑", trajeto.bancos ? trajeto.bancos + (trajeto.bancos > 1 ? " bancos" : " banco") : "Nenhum banco mapeado", filtros.includes("bancos"), false);
       add("💧", trajeto.agua ? trajeto.agua + (trajeto.agua > 1 ? " pontos de água" : " ponto de água") : "Sem água mapeada", filtros.includes("agua"), false);
       add("♿", trajeto.rampas + (trajeto.rampas === 1 ? " rampa mapeada" : " rampas mapeadas"), ordem === "rampa", false);
-      add("⚠", trajeto.obstaculos ? trajeto.obstaculos + (trajeto.obstaculos > 1 ? " obstáculos" : " obstáculo") : "Sem obstáculos mapeados", ordem === "obstaculos", trajeto.obstaculos > 0);
+      add("⚠", trajeto.obstaculos ? trajeto.obstaculos + (trajeto.obstaculos > 1 ? " registros de obstáculos" : " registro de obstáculo") : "Nenhum obstáculo registrado na consulta", ordem === "obstaculos", trajeto.obstaculos > 0);
     }
     $("rota-real-destaques").replaceChildren(...itens.map(function (item) {
       const li = document.createElement("li");
@@ -683,6 +697,7 @@
 
   function mostrarTrajeto(indice) {
     pararLeitura();
+    trajetoAtual = indice; instrucaoAtual = 0;
     const trajeto = trajetos[indice];
     $("rota-real-distancia").textContent = distanciaTexto(trajeto.distancia);
     $("rota-real-tempo").textContent = tempoTexto(trajeto.tempo);
@@ -692,7 +707,29 @@
     $("rota-real-passos").replaceChildren(...trajeto.passos.map(function (passo, i) {
       return criarPasso(passo, i, trajeto.passos.length);
     }));
+    mostrarInstrucao(false);
+    mostrarDados(trajeto);
     mostrarMapa(trajeto.pontos);
+  }
+
+  function mostrarDados(trajeto) {
+    const campos = [
+      ["Inclinação", trajeto.subida != null], ["Rampas e obstáculos", trajeto.rampas != null],
+      ["Árvores, bancos e água", trajeto.sombra != null]
+    ];
+    const incompleto = campos.some(function (c) { return !c[1]; });
+    $("rota-dados-situacao").textContent = incompleto
+      ? "Parte das informações não pôde ser consultada. Compare as opções com os dados disponíveis."
+      : "Encontramos informações no mapa para comparar as opções. Acessibilidade em campo ainda não verificada.";
+    $("rota-dados-lista").replaceChildren(...campos.map(function (c) {
+      const item = document.createElement("div"), nome = document.createElement("dt"), valor = document.createElement("dd");
+      nome.textContent = c[0]; valor.textContent = c[1] ? "Consulta disponível" : "Informação indisponível";
+      item.className = c[1] ? "data-available" : "data-unknown";
+      item.append(nome, valor); return item;
+    }));
+    $("rota-dados-consulta").textContent = "Fontes: Valhalla e OpenStreetMap. Consulta em " +
+      new Date(trajeto.consultadoEm || Date.now()).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) +
+      ". Árvores próximas sugerem possível sombra; não indicam a sombra neste momento.";
   }
 
   function mostrarResultado(todas, falhas) {
@@ -712,7 +749,11 @@
       texto.textContent = parte[1];
       return texto;
     }));
-    $("rota-real-resultado-perfil").textContent = [perfil.nome, ordem === "perfil" ? "sugerido para este perfil" : "ordenado por " + ORDENS[ordem]]
+    const campoOrdem = { rampa: "rampas", plano: "subida", obstaculos: "obstaculos" }[ordem];
+    const comparavel = !campoOrdem || rotas.some(function (r) { return r[campoOrdem] != null; });
+    const descricaoOrdem = ordem === "perfil" ? "sugerido para este perfil" : comparavel
+      ? "ordenado por " + ORDENS[ordem] : "preferência por " + ORDENS[ordem] + "; dados indisponíveis para comparar";
+    $("rota-real-resultado-perfil").textContent = [perfil.nome, descricaoOrdem]
       .concat(filtros.map(function (f) { return FILTROS[f]; })).join(" · ");
     const nota = $("rota-real-destaques-nota");
     nota.hidden = false;
@@ -726,7 +767,7 @@
       avisos.href = "bairro.html?" + new URLSearchParams({ bairro: bairroDosAvisos, mobilidade: "1" }) + "#lista-t";
     }
     alternativa.replaceChildren(...rotas.map(function (rota, i) {
-      const nome = i === 0 ? "Recomendado" : "Opção " + (i + 1);
+      const nome = i === 0 ? "Opção sugerida" : "Opção " + (i + 1);
       return new Option(nome + " · " + distanciaTexto(rota.distancia) + " · " + tempoTexto(rota.tempo), String(i));
     }));
     $("rota-real-alternativas").hidden = rotas.length < 2;
@@ -791,7 +832,12 @@
   });
 
   form.addEventListener("change", function (event) {
-    if (event.target.matches('input[type="checkbox"], input[type="radio"]')) redefinir();
+    if (event.target.name === "perfil-real") ZELA.mobilidade.salvar(perfil.value);
+    if (event.target.matches('input[type="checkbox"], input[type="radio"]')) {
+      const qtd = filtrosMarcados().length + (ordemAtual() !== "perfil" ? 1 : 0);
+      $("rota-preferencias-resumo").textContent = qtd ? "· " + qtd + (qtd === 1 ? " escolhida" : " escolhidas") : "";
+      redefinir();
+    }
   });
   alternativa.addEventListener("change", function () {
     const indice = Number(alternativa.value);
@@ -801,6 +847,7 @@
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
+    ZELA.mobilidade.salvar(perfil.value);
     if (consulta || preparando) return;
     if (!pontas.every(function (p) { return p.seletor.confirmar(); })) return;
     erro.textContent = "";
@@ -889,6 +936,7 @@
         falhas = ["inclinação, sombra, bancos, água, rampas e obstáculos"];
       }
       if (consulta !== controlador) return;
+      rotas.forEach(function (r) { r.consultadoEm = Date.now(); });
       cache.set(chave, { rotas: rotas, falhas: falhas });
       mostrarResultado(rotas, falhas);
     } catch (falhaBusca) {
@@ -905,6 +953,8 @@
 
   /* Início: aceita ?bairro=, ?origem=, ?destino= e ?cep_de= / ?cep_para= (com ?num_de= / ?num_para=). */
   const parametros = new URLSearchParams(location.search);
+  const lembrado = ZELA.mobilidade.atual();
+  if (lembrado) form.querySelector('input[name="perfil-real"][value="' + lembrado + '"]').checked = true;
   const regiaoInicial = ZELA.bairroPreferido.exemplo(parametros.get("bairro")) || ZELA.bairroPreferido.atual();
   lugarEscolhido = regiaoInicial;
   const pontosIniciais = pontosDoBairro();
