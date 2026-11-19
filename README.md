@@ -90,7 +90,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Início / Meu bairro / Rota acessível | Perfil de mobilidade lembrado no aparelho, sem exigir conta | Evita escolher o mesmo perfil em cada página |
 | Rota acessível | Preferências opcionais recolhidas e instruções por etapas | Mantém saída, destino e perfil em destaque; permite avançar, voltar e ouvir uma instrução por vez |
 | Rota acessível | Fonte, data da consulta e disponibilidade dos dados | Diferencia uma consulta sem registros de uma consulta indisponível; não promete acessibilidade verificada em campo |
-| Todas | Ajuda falada opcional, voz e velocidade ajustáveis | Oferece outra forma de acompanhar o conteúdo, com pausa e parada, mantendo tudo disponível em texto |
+| Relatar / Acompanhar / Rota acessível | Ajuda falada opcional, voz e velocidade ajustáveis | Oferece outra forma de acompanhar o conteúdo, com pausa e parada, mantendo tudo disponível em texto |
 
 ### Como testar
 
@@ -98,14 +98,15 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **CEP:** em Relatar → passo 2, digite **01310-100** (Avenida Paulista) ou **99999-999** (erro).
 - **Aviso repetido:** em Relatar, escolha **Poste apagado** e escreva **Rua das Palmeiras**.
 - **Sua conta:** use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
-- **Leitura:** abra **Aa Leitura** na barra superior em telas compactas ou no canto inferior esquerdo em telas maiores, alinhado ao botão de relato. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. Troque de página para confirmar a preferência salva; **Voltar ao padrão** preserva o bairro, a conta e os avisos.
+- **Leitura:** abra **Aa Leitura** na barra superior em telas compactas ou no canto inferior esquerdo em telas maiores, alinhado ao botão de relato. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. **Fechar** mantém as preferências; **Limpar configurações** restaura somente os ajustes de leitura e preserva o bairro, a conta e os avisos.
 - **Meu bairro:** busque **Grajaú** para ver avisos simulados ou **01310-100** para escolher Bela Vista e experimentar o estado sem avisos. Você também pode salvar ou remover o bairro em **Meus avisos → Seus dados**.
+  Ao selecionar uma rua ou um CEP, o endereço permanece visível no campo e o bairro identifica os avisos. O GPS usa uma posição aproximada; confira a rua sugerida antes de continuar.
 - **Rota acessível:** em **Escolher pela região**, selecione Cidade Tiradentes. Escolha o Terminal e a Casa de Cultura como saída e destino, mantenha o perfil **Cadeira de rodas** e clique em **Buscar trajeto**.
 - **Busca de locais:** nos campos **Saindo de** e **Indo para**, digite **Rua das Flores** ou **01310-100, 1000** e escolha uma sugestão. Os dois campos também aceitam **Minha localização atual**. Para ver os bairros da região, use **Bairros próximos** e permita o acesso à localização no navegador.
 - **Rascunho:** preencha parte de um relato e recarregue a página. Escolha **Continuar de onde parei** ou **Descartar rascunho**. O envio concluído limpa o rascunho; falhas ao guardar o aviso mantêm as respostas na tela.
 - **Perfil de mobilidade:** escolha um perfil na chamada da rota no Início. Abra Meu bairro e depois Rota acessível para confirmar a mesma escolha.
 - **Instruções:** busque um trajeto e use **Próxima instrução**, **Instrução anterior** e **Ver todas as instruções**. O avanço é manual; não há navegação automática pela posição em tempo real.
-- **Voz:** em Leitura, escolha voz e velocidade e use **Testar esta voz**. Depois experimente a apresentação de uma página, a ajuda do relato, um aviso em Acompanhar e uma instrução de trajeto. Nenhum áudio começa sem uma ação da pessoa.
+- **Voz:** em Leitura, escolha voz e velocidade e use **Testar esta voz**. Depois experimente a ajuda do relato, um aviso em Acompanhar e uma instrução de trajeto. Nenhum áudio começa sem uma ação da pessoa. Os títulos e as descrições das páginas podem ser lidos pelo leitor de tela do aparelho.
 
 ---
 
@@ -145,7 +146,7 @@ Em ambiente local isolado, com dados fictícios, foram verificados recuperação
 Testes automatizados da leitura pelo aparelho (Node.js):
 
 ```sh
-node --test tests/voz.test.mjs
+node --test tests/voz.test.mjs tests/localizacao.test.mjs
 ```
 
 A revisão visual considera telas pequenas e desktop, ampliação de texto até 200%, alto contraste e movimento reduzido. A análise automática com axe complementa a revisão; não certifica conformidade com WCAG. O contraste de itens sobre imagens e mapas exige avaliação visual adicional.

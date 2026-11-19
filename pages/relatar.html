@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=jornada-v3">
-  <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=leitura-conta-v2">
-  <script src="../assets/js/acessibilidade.js?v=leitura-conta-v2"></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=feedback-v1">
+  <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=feedback-v1">
+  <script src="../assets/js/acessibilidade.js?v=feedback-v1"></script>
   <script src="../assets/js/dados.js" defer></script>
   <script src="../assets/js/comum.js?v=jornada-v3" defer></script>
   <script src="../assets/js/mobilidade.js?v=jornada-v3" defer></script>
-  <script src="../assets/js/voz.js?v=voz-aparelho-v1" defer></script>
+  <script src="../assets/js/voz.js?v=feedback-v1" defer></script>
   <script src="../assets/js/relatar.js?v=jornada-v3" defer></script>
 </head>
 <body>
@@ -56,14 +56,8 @@
 
       <!-- Formulário em etapas -->
       <div id="area-form">
-        <div class="page-title row" style="flex-direction:row;align-items:flex-end;justify-content:space-between;gap:24px 48px">
+        <div class="page-title">
           <h1 class="t-page">Relatar um problema</h1>
-          <ol class="list-reset progress" id="progresso" aria-label="Etapas do relato">
-            <li class="is-current" aria-current="step"><span class="display">1</span><span>Tipo</span></li>
-            <li><span class="display">2</span><span>Local</span></li>
-            <li><span class="display">3</span><span>Detalhes</span></li>
-            <li><span class="display">4</span><span>Enviar</span></li>
-          </ol>
         </div>
 
         <div class="row">
@@ -77,6 +71,12 @@
             </div>
           </section>
           <form id="form-relato" class="wizard panel panel-lg panel--cream col-main" novalidate>
+            <ol class="list-reset progress" id="progresso" aria-label="Etapas do relato">
+              <li class="is-current" aria-current="step"><span class="display">1</span><span>Tipo</span></li>
+              <li><span class="display">2</span><span>Local</span></li>
+              <li><span class="display">3</span><span>Detalhes</span></li>
+              <li><span class="display">4</span><span>Enviar</span></li>
+            </ol>
             <p id="rascunho-status" class="hint t-small draft-status">Suas respostas serão guardadas neste aparelho enquanto você preenche.</p>
             <p id="err-envio" class="error" role="alert" tabindex="-1" hidden></p>
 

@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=jornada-v3">
-  <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=leitura-conta-v2">
-  <script src="../assets/js/acessibilidade.js?v=leitura-conta-v2"></script>
+  <link rel="stylesheet" href="../assets/css/style.css?v=feedback-v1">
+  <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=feedback-v1">
+  <script src="../assets/js/acessibilidade.js?v=feedback-v1"></script>
   <script src="../assets/js/dados.js" defer></script>
   <script src="../assets/js/comum.js?v=jornada-v3" defer></script>
   <script src="../assets/js/mobilidade.js?v=jornada-v3" defer></script>
-  <script src="../assets/js/voz.js?v=voz-aparelho-v1" defer></script>
+  <script src="../assets/js/voz.js?v=feedback-v1" defer></script>
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -112,33 +112,35 @@
             </figure>
           </div>
         </div>
-        <ol class="list-reset grid-auto journey" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-          <li class="panel panel--cream">
-            <span class="step-n" aria-hidden="true">01</span>
-            <h3 class="t-tab">Você avisa</h3>
-            <p>Escolhe o tipo de problema, marca o local (o celular pode achar sozinho), conta em uma frase e, se quiser, manda uma foto. São 4 passos curtos.</p>
-          </li>
-          <li class="panel panel--orange">
-            <span class="step-n" aria-hidden="true">02</span>
-            <h3 class="t-tab">Os vizinhos apoiam</h3>
-            <p>Se alguém já avisou o mesmo problema, você apoia o aviso em vez de abrir outro. Quanto mais apoios, mais alto ele sobe na fila.</p>
-          </li>
-          <li class="panel panel--cream">
-            <span class="step-n" aria-hidden="true">03</span>
-            <h3 class="t-tab">Vai para o órgão certo</h3>
-            <p>O aviso segue para quem cuida daquele assunto: subprefeitura, iluminação pública ou limpeza. A prioridade leva em conta apoios, risco e tempo de espera.</p>
-          </li>
-          <li class="panel panel--cream">
-            <span class="step-n" aria-hidden="true">04</span>
-            <h3 class="t-tab">Você acompanha</h3>
-            <p>Com o número do protocolo, você vê cada etapa: recebido, encaminhado, em execução e resolvido. Pode ligar avisos por SMS.</p>
-          </li>
-          <li class="panel panel--ink">
-            <span class="step-n" aria-hidden="true">05</span>
-            <h3 class="t-tab">Você confirma</h3>
-            <p>Quando a prefeitura diz que resolveu, quem confirma é o morador. Se continua igual, o aviso é reaberto com prioridade alta.</p>
-          </li>
-        </ol>
+        <div class="journey-layout">
+          <ol class="list-reset journey">
+            <li class="panel panel--cream">
+              <span class="step-n" aria-hidden="true">01</span>
+              <h3 class="t-tab">Você avisa</h3>
+              <p>Escolha o problema, informe o local e conte o que aconteceu. A foto é opcional. Você confere tudo antes de enviar.</p>
+            </li>
+            <li class="panel panel--orange">
+              <span class="step-n" aria-hidden="true">02</span>
+              <h3 class="t-tab">Os vizinhos apoiam</h3>
+              <p>Se alguém já avisou, apoie o relato existente. Mais apoios ajudam a mostrar a urgência do problema.</p>
+            </li>
+            <li class="panel panel--cream">
+              <span class="step-n" aria-hidden="true">03</span>
+              <h3 class="t-tab">Vai para o órgão certo</h3>
+              <p>O tipo de problema indica o responsável. Apoios, risco e tempo de espera ajudam a definir a prioridade.</p>
+            </li>
+            <li class="panel panel--cream">
+              <span class="step-n" aria-hidden="true">04</span>
+              <h3 class="t-tab">Você acompanha</h3>
+              <p>Use o protocolo para ver o andamento: recebido, encaminhado, em execução ou resolvido.</p>
+            </li>
+            <li class="panel panel--ink">
+              <span class="step-n" aria-hidden="true">05</span>
+              <h3 class="t-tab">Você confirma</h3>
+              <p>Confira se o problema foi resolvido. Se continuar igual, peça a reabertura do aviso.</p>
+            </li>
+          </ol>
+        </div>
         <div class="panel panel--green row" style="margin-top:16px;gap:24px 48px;align-items:center">
           <div class="stack" style="gap:12px;flex:999 1 480px">
             <h3 class="t-tab">E para quem anda com dificuldade</h3>

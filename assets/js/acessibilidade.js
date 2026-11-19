@@ -137,7 +137,7 @@
     painel.innerHTML = `
       <header class="leitura-cabecalho">
         <h2 id="leitura-titulo" class="t-tab">Ajustes de leitura</h2>
-        <button type="button" class="btn btn--ghost btn--sm" data-leitura-fechar autofocus>Fechar <span aria-hidden="true">×</span></button>
+        <button type="button" class="btn btn--ghost leitura-fechar-icone" data-leitura-fechar aria-label="Fechar ajustes de leitura" autofocus><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
       </header>
       <div class="leitura-conteudo" role="region" aria-label="Opções de leitura" tabindex="0">
         <div class="stack leitura-boas-vindas">
@@ -181,7 +181,9 @@
         <p class="hint t-small leitura-status" id="leitura-status" role="status"></p>
       </div>
       <footer class="leitura-rodape">
-        <button type="button" class="btn btn--ghost" id="leitura-restaurar">Voltar ao padrão</button>
+        <button type="button" class="btn leitura-limpar" id="leitura-restaurar" aria-describedby="leitura-limpar-dica"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m18 3-8 8M8 10l6 6-6 5H3v-5zM5 15l4 4M8 13l4 4"/></svg><span>Limpar configurações</span></button>
+        <button type="button" class="btn btn--primary" data-leitura-fechar>Fechar</button>
+        <p id="leitura-limpar-dica" class="hint t-small">Somente ajustes de leitura.</p>
       </footer>`;
     document.body.appendChild(painel);
     aplicar();
@@ -190,7 +192,9 @@
       painel.querySelector("#leitura-status").textContent = "";
       painel.showModal();
     });
-    painel.querySelector("[data-leitura-fechar]").addEventListener("click", function () { painel.close(); });
+    painel.querySelectorAll("[data-leitura-fechar]").forEach(function (botao) {
+      botao.addEventListener("click", function () { painel.close(); });
+    });
     painel.querySelector("[data-texto-menos]").addEventListener("click", function () {
       const nivel = tamanhos.indexOf(tamanho);
       if (nivel > 0) { tamanho = tamanhos[nivel - 1]; salvar("Tamanho do texto: " + tamanho + "%."); }
@@ -218,7 +222,7 @@
     painel.querySelector("#leitura-restaurar").addEventListener("click", function () {
       tamanho = 100;
       preferencias = Object.assign({}, padrao);
-      salvar("Ajustes de leitura restaurados. Seu bairro e seus avisos foram mantidos.");
+      salvar("Configurações de leitura limpas. Seu bairro e seus avisos foram mantidos.");
     });
   });
 })();

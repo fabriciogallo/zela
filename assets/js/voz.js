@@ -160,11 +160,6 @@
   }
   document.addEventListener("DOMContentLoaded", function () {
     montarAjustes();
-    const apresentacao = document.querySelector("main .page-title");
-    if (apresentacao) controles(apresentacao, {
-      rotulo: "Ouvir a apresentação", origem: "apresentacao",
-      texto: function () { return Array.from(apresentacao.querySelectorAll("h1, .t-lead")).map(function (p) { return p.textContent; }).join(". "); }
-    });
     const chamada = document.querySelector(".rota-destaque-conteudo");
     if (chamada) controles(chamada, {
       rotulo: "Ouvir sobre a rota acessível", origem: "chamada-rota",

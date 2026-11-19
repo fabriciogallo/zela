@@ -46,6 +46,12 @@
     const gps = document.getElementById(id + "-gps");
     const recado = document.getElementById(id + "-gps-status");
     const perfil = document.getElementById(id + "-perfil");
+    const endereco = document.createElement("p");
+    endereco.id = id + "-endereco";
+    endereco.className = "hint bairro-endereco";
+    endereco.hidden = true;
+    campo.after(endereco);
+    campo.setAttribute("aria-describedby", [campo.getAttribute("aria-describedby"), endereco.id].filter(Boolean).join(" "));
     const temLocalizacao = window.isSecureContext && Boolean(navigator.geolocation);
     const exemplos = Object.keys(ZELA.bairros).map(function (chave) {
       return Object.assign({ detalhe: "São Paulo · Bairro com avisos de exemplo" }, exemplo(chave));
@@ -83,12 +89,16 @@
 
     function editar() {
       cancelarBusca();
+      endereco.hidden = true;
       if (temLocalizacao && !negada) mensagem("");
     }
 
     function definir(valor) {
       lugar = dados(valor);
-      seletor.definir(lugar);
+      const rotuloBusca = typeof valor?.rotuloBusca === "string" ? valor.rotuloBusca : "";
+      seletor.definir(lugar ? Object.assign({}, lugar, { rotuloBusca: rotuloBusca }) : null);
+      endereco.hidden = !lugar || !rotuloBusca;
+      endereco.textContent = lugar && rotuloBusca ? rotuloBusca + ". Bairro dos avisos: " + rotulo(lugar) + "." : "";
     }
 
     function escolher(opcao) {
@@ -121,7 +131,7 @@
             return;
           }
           escolher(bairro);
-          mensagem("Bairro encontrado: " + rotulo(lugar) + ".");
+          mensagem(bairro.rotuloBusca ? "Localização aproximada encontrada. Confira a rua e o bairro acima." : "Bairro encontrado: " + rotulo(lugar) + ".");
         } catch (e) {
           if (operacao !== consulta) return;
           if (e.code === 1) { negada = true; informarBloqueio(); }

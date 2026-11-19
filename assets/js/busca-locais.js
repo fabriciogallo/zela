@@ -82,7 +82,11 @@
     if (p.countrycode !== "BR") return null;
     if (eBairroNoMapa(p)) return sugestaoBairro(p.name, p.city || p.county, p.state);
     if (aceitarRua && p.type === "street") {
-      return sugestaoBairro(p.district || p.locality, p.city || p.county, p.state, p.name);
+      const bairro = sugestaoBairro(p.district || p.locality, p.city || p.county, p.state);
+      if (!bairro) return null;
+      bairro.rotuloBusca = p.name;
+      bairro.detalhe = partes([bairro.nome, bairro.cidade, p.state, p.postcode]);
+      return bairro;
     }
     return null;
   }
@@ -91,10 +95,10 @@
     // Envia ao buscador uma área aproximada, sem guardar a posição do aparelho.
     const dados = await consultarPhoton("reverse", [
       ["lat", coords.latitude.toFixed(3)], ["lon", coords.longitude.toFixed(3)],
-      ["radius", 2], ["limit", 8], ["layer", "district"], ["layer", "locality"],
-      ["osm_tag", "place:suburb"], ["osm_tag", "place:neighbourhood"], ["osm_tag", "place:quarter"]
+      ["radius", 2], ["limit", 8], ["layer", "street"], ["layer", "district"], ["layer", "locality"]
     ], signal);
-    return dados.map(function (item) { return bairroDoMapa(item, false); }).find(Boolean) || null;
+    const rua = dados.map(function (item) { return bairroDoMapa(item, true); }).find(function (lugar) { return lugar?.rotuloBusca; });
+    return rua || dados.map(function (item) { return bairroDoMapa(item, false); }).find(Boolean) || null;
   }
 
   ZELA.buscaLocais = { consultarCep: consultarCep, formatarCep: formatarCep, bairroPelaPosicao: bairroPelaPosicao };
@@ -125,7 +129,7 @@
 
   function conteudoOpcao(elemento, lugar) {
     const nome = document.createElement("strong");
-    nome.textContent = lugar.nome;
+    nome.textContent = lugar.rotuloBusca || lugar.nome;
     elemento.append(nome);
     if (!lugar.detalhe) return;
     const detalhe = document.createElement("span");
@@ -189,7 +193,7 @@
       erro.textContent = "";
       campo.removeAttribute("aria-invalid");
       termoEscolhido = !lugar ? "" : lugar.tipo === "cep"
-        ? formatarCep(lugar.cep) + (lugar.numero ? ", " + lugar.numero : "") : lugar.nome;
+        ? formatarCep(lugar.cep) + (lugar.numero ? ", " + lugar.numero : "") : lugar.rotuloBusca || lugar.nome;
       campo.value = termoEscolhido;
     }
 
@@ -206,6 +210,10 @@
           const nome = e.logradouro?.trim() || e.bairro?.trim();
           const bairro = soBairro && sugestaoBairro(e.bairro?.trim(), e.localidade, e.uf,
             partes([e.logradouro, formatarCep(digitos)]));
+          if (bairro) {
+            bairro.rotuloBusca = partes([e.logradouro, formatarCep(digitos)]);
+            bairro.detalhe = partes([bairro.nome, bairro.cidade, e.uf]);
+          }
           encontrados = soBairro ? (bairro ? [bairro] : []) : nome ? [{
             tipo: "cep", cep: digitos, numero: numero, nome: nome + (numero ? ", " + numero : ""),
             detalhe: partes([e.bairro, [e.localidade, e.uf].filter(Boolean).join("/"), formatarCep(digitos)]),
@@ -230,7 +238,7 @@
         if (consulta !== controlador) return;
         const sugestoes = semRepeticoes(locais.concat(encontrados), function (lugar) {
           return normalizar(soBairro
-            ? lugar.bairroId || [lugar.nome, lugar.cidade, lugar.estado].join("|")
+            ? (lugar.bairroId || [lugar.nome, lugar.cidade, lugar.estado].join("|")) + "|" + (lugar.rotuloBusca || "")
             : lugar.nome + "|" + lugar.detalhe);
         }).slice(0, 8);
         mostrarOpcoes(sugestoes);
