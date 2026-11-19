@@ -59,7 +59,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Acompanhar | `pages/acompanhar.html` | Ver as etapas do aviso, ativar avisos por SMS, confirmar a solução |
 | Meu bairro | `pages/bairro.html` | Filtrar avisos no mapa, ver os mais urgentes e apoiar vizinhos |
 | Rota acessível | `pages/rota.html` | Buscar ruas e CEPs, ver bairros próximos e planejar trajetos por perfil de mobilidade |
-| Entrar | `pages/entrar.html` | Login com celular e código por SMS (simulado), com bairro opcional |
+| Sua conta | `pages/entrar.html` | Acesso aos avisos e apoios com celular e código por SMS (simulado), com bairro opcional |
 | Meus avisos | `pages/meus-avisos.html` | Avisos feitos e apoiados; consulta e alteração do bairro do perfil |
 | Sobre | `pages/sobre.html` | Como o Zela funciona, integrantes e conexão com os ODS |
 
@@ -81,7 +81,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Relatar | Foto com prévia, revisão com "Alterar", copiar protocolo | Dá segurança antes de enviar e impede que o número se perca |
 | Acompanhar | Linha do tempo + avisos por SMS + "Ficou resolvido mesmo?" | Mostra o que acontece após o envio e devolve a palavra ao morador |
 | Meu bairro | Filtros, mapa ligado à lista e "Eu também vi" | Prioriza o mais urgente e facilita encontrar avisos perto de casa |
-| Entrar / Meus avisos | Login sem senha (celular + código SMS simulado) | Avisos e apoios ficam salvos por pessoa; ninguém precisa guardar protocolo |
+| Sua conta / Meus avisos | Login sem senha (celular + código SMS simulado) | Avisos e apoios ficam salvos por pessoa; ninguém precisa guardar protocolo |
 | Rota acessível | Sugestões por rua, CEP ou localização atual na saída e no destino | Distingue ruas de mesmo nome pelo bairro e pela cidade e permite preencher qualquer ponto pelo GPS |
 | Rota acessível | Consulta real ao Valhalla / OpenStreetMap | Sugere trajetos por perfil de mobilidade e mostra distância, tempo estimado e instruções em português, com leitura em voz alta |
 
@@ -90,8 +90,8 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **Protocolo:** `ZL-2026-04817` (em execução), `ZL-2026-03991` (resolvido), `ZL-2026-05102`.
 - **CEP:** em Relatar → passo 2, digite **01310-100** (Avenida Paulista) ou **99999-999** (erro).
 - **Aviso repetido:** em Relatar, escolha **Poste apagado** e escreva **Rua das Palmeiras**.
-- **Login:** em Entrar, use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
-- **Leitura:** abra o botão fixo **Aa Leitura**, no canto inferior esquerdo. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. Troque de página para confirmar a preferência salva; **Voltar ao padrão** preserva o bairro, a conta e os avisos.
+- **Sua conta:** use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
+- **Leitura:** abra **Aa Leitura** na barra superior em telas compactas ou no canto inferior esquerdo em telas maiores, alinhado ao botão de relato. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. Troque de página para confirmar a preferência salva; **Voltar ao padrão** preserva o bairro, a conta e os avisos.
 - **Meu bairro:** busque **Grajaú** para ver avisos simulados ou **01310-100** para escolher Bela Vista e experimentar o estado sem avisos. Você também pode salvar ou remover o bairro em **Meus avisos → Seus dados**.
 - **Rota acessível:** em **Escolher pela região**, selecione Cidade Tiradentes. Escolha o Terminal e a Casa de Cultura como saída e destino, mantenha o perfil **Cadeira de rodas** e clique em **Buscar trajeto**.
 - **Busca de locais:** nos campos **Saindo de** e **Indo para**, digite **Rua das Flores** ou **01310-100, 1000** e escolha uma sugestão. Os dois campos também aceitam **Minha localização atual**. Para ver os bairros da região, use **Bairros próximos** e permita o acesso à localização no navegador.
@@ -174,7 +174,7 @@ zela/
 │       ├── favicon.svg
 │       ├── abertura-animada.svg
 │       ├── abertura.gif
-│       ├── relatar-problema.png # Ícone do botão flutuante (Magnific / Flaticon)
+│       ├── relatar-problema.svg # Ícone local do botão flutuante
 │       └── cat-*.svg           # Ícones de categoria de problema
 │
 ├── .nojekyll                   # Necessário para o GitHub Pages ignorar o Jekyll
@@ -182,10 +182,6 @@ zela/
 ```
 
 ---
-
-## Créditos visuais
-
-Ícone do botão **Relatar problema**: [Customer Problem, de Magnific / Flaticon](https://www.flaticon.com/free-icon/customer-problem_87706), usado sob a licença gratuita com atribuição no rodapé.
 
 ## Deploy no GitHub Pages
 

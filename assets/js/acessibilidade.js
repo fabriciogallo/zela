@@ -32,6 +32,7 @@
   const salvo = Number(ler("texto", 100));
   let tamanho = tamanhos.includes(salvo) ? salvo : [100, 125, 150, 200][salvo] || 100;
   let painel = null;
+  let reposicionarAtalho = null;
 
   function movimentoReduzido() { return preferencias.movimento || movimentoDoAparelho.matches; }
 
@@ -42,6 +43,7 @@
     Object.keys(atributos).forEach(function (chave) { root.toggleAttribute(atributos[chave], preferencias[chave]); });
     root.toggleAttribute("data-movimento-reduzido", movimentoReduzido());
     root.setAttribute("data-aparencia", preferencias.aparencia);
+    if (reposicionarAtalho) reposicionarAtalho();
     const abertura = document.querySelector(".landscape--topo > img");
     if (abertura) {
       const url = new URL(abertura.getAttribute("src"), document.baseURI);
@@ -90,7 +92,10 @@
   document.addEventListener("DOMContentLoaded", function () {
     const grupo = document.querySelector(".text-size");
     if (!grupo) return;
-    document.querySelector(".site-header").before(grupo);
+    const cabecalho = document.querySelector(".site-header");
+    const barra = document.getElementById("nav-bar");
+    const menu = barra.querySelector(".menu-toggle");
+    cabecalho.before(grupo);
     grupo.className = "leitura-atalho";
     grupo.removeAttribute("role");
     grupo.removeAttribute("aria-label");
@@ -105,8 +110,24 @@
     function medirAtalho() {
       root.style.setProperty("--leitura-height", Math.ceil(grupo.getBoundingClientRect().height) + "px");
     }
-    medirAtalho();
-    if ("ResizeObserver" in window) new ResizeObserver(medirAtalho).observe(grupo);
+    // Move o mesmo botão: não cria cópias nem perde as preferências ou o foco.
+    reposicionarAtalho = function () {
+      const naBarra = getComputedStyle(barra).getPropertyValue("--leitura-na-barra").trim() === "1";
+      const destino = naBarra ? barra : cabecalho.parentElement;
+      if (grupo.parentElement !== destino) {
+        const manterFoco = grupo.contains(document.activeElement);
+        (naBarra ? menu : cabecalho).before(grupo);
+        if (manterFoco) abrir.focus({ preventScroll: true });
+      }
+      medirAtalho();
+    };
+    reposicionarAtalho();
+    window.addEventListener("resize", reposicionarAtalho);
+    if ("ResizeObserver" in window) {
+      const medidas = new ResizeObserver(reposicionarAtalho);
+      medidas.observe(cabecalho);
+      medidas.observe(grupo);
+    }
 
     painel = document.createElement("dialog");
     painel.id = "ajustes-leitura";

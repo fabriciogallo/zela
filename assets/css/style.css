@@ -325,13 +325,12 @@ html:has(.report-action:not([hidden])) { --report-clearance: calc(76px + env(saf
   box-shadow: var(--shadow-sheet);
 }
 .report-action-icon {
-  display: inline-block; flex: 0 0 1.5em; inline-size: 1.5em; block-size: 1.5em;
+  display: inline-block; flex: 0 0 1em; inline-size: 1em; block-size: 1em;
   background: currentColor;
-  -webkit-mask: url("../img/relatar-problema.png") center / contain no-repeat;
-  mask: url("../img/relatar-problema.png") center / contain no-repeat;
+  -webkit-mask: url("../img/relatar-problema.svg") center / contain no-repeat;
+  mask: url("../img/relatar-problema.svg") center / contain no-repeat;
   forced-color-adjust: none;
 }
-.icon-credit { color: var(--muted); }
 
 /* Transitions.dev: a barra desliza para fora e volta ao subir a página. */
 :root {
@@ -368,6 +367,7 @@ html:has(.report-action:not([hidden])) { --report-clearance: calc(76px + env(saf
 .t-panel-slide:focus-within { transition: none; }
 
 .nav-bar {
+  --leitura-na-barra: 1;
   --panel-open-dur: 250ms;
   --panel-close-dur: 150ms;
   --panel-translate-y: calc(-100% - 20px);
@@ -387,11 +387,6 @@ html:has(.report-action:not([hidden])) { --report-clearance: calc(76px + env(saf
 .nav-list a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; border-radius: var(--r-ctl); text-decoration: none; color: var(--body); font-size: .9375rem; }
 .nav-list a:hover { color: var(--ink); background: rgba(0, 0, 0, .04); opacity: 1; }
 .nav-list a[aria-current="page"] { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
-.nav-list a[data-nav-conta] {
-  padding-inline: 12px; border: 1px solid #a7cee3;
-  background-color: var(--sky-soft); color: var(--sky-hover); font-weight: 700;
-}
-.nav-list a[data-nav-conta]:hover { background-color: var(--sky-soft-hover); color: var(--sky-hover); }
 .brand-rule, .nav-spacer { display: none; }
 .text-size { display: flex; flex-wrap: wrap; align-items: center; max-width: 100%; border: var(--line); border-radius: var(--r-ctl); padding: 0 2px; background: var(--paper); }
 .text-size button { min-width: 44px; min-height: 44px; border: 0; background: transparent; border-radius: 6px; font-weight: 600; color: var(--ink); }
@@ -415,7 +410,7 @@ html:has(.report-action:not([hidden])) { --report-clearance: calc(76px + env(saf
 
 /* Ícone e espaços têm largura fixa; os rótulos crescem com o tamanho do texto. */
 @container zela-nav (min-width: max(1056px, 300px + 40rem)) {
-  .nav-bar { width: fit-content; gap: 4px 14px; padding-inline-start: 14px; }
+  .nav-bar { --leitura-na-barra: 0; width: fit-content; gap: 4px 14px; padding-inline-start: 14px; }
   .js .menu-toggle { display: none; }
   .js .nav-bar .nav-collapsible, .js .nav-bar.is-open .nav-collapsible, .nav-collapsible { display: contents; }
   .brand-rule, .nav-spacer { display: block; }
@@ -906,7 +901,6 @@ html[data-texto-grande] .cat-destaque { grid-column: auto; grid-row: auto; }
 .chip:has(input:focus-visible) { outline: 3px solid var(--surface-focus); outline-offset: 3px; }
 .route-profile-hint:not(:empty) { margin-top: 4px; }
 @media (forced-colors: active) {
-  .nav-list a[data-nav-conta] { border-color: LinkText; }
   .chip:has(input:checked) { border-width: 3px; }
   .chip:has(input:checked)::before { background: Highlight; }
 }

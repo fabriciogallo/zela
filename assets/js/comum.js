@@ -66,13 +66,13 @@
     }
   };
 
-  /* Link "Entrar" / "Meus avisos" no menu de todas as páginas */
+  /* "Sua conta" leva ao acesso ou aos avisos de quem já entrou. */
   function iniciarLinkConta() {
     var link = document.querySelector("[data-nav-conta]");
     if (!link || !ZELA.conta.atual()) return;
     var destino = new URL("meus-avisos.html", link.href);
     link.href = destino.href;
-    link.textContent = "Meus avisos";
+    link.textContent = "Sua conta";
     if (destino.pathname === location.pathname) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   }
