@@ -72,7 +72,7 @@
 
 html {
   font-size: 100%;
-  --bottom-clearance: max(var(--libras-space, 0px), var(--report-clearance, 0px));
+  --bottom-clearance: max(var(--libras-space, 0px), var(--report-clearance, 0px), var(--leitura-space, 0px));
   scroll-padding-block: var(--header-clearance, 80px) var(--bottom-clearance);
 }
 html:is([data-texto="1"], [data-texto="125"]) { font-size: 125%; }
@@ -98,9 +98,10 @@ body {
 body > main { flex: 1 0 auto; }
 
 @media (max-width: 1100px) {
+  html { --floating-tools-bottom: max(calc(12px + env(safe-area-inset-bottom, 0px)), var(--report-clearance, 0px)); }
   html[data-libras] {
     --libras-top: auto;
-    --libras-bottom: max(calc(12px + env(safe-area-inset-bottom, 0px)), var(--report-clearance, 0px));
+    --libras-bottom: var(--floating-tools-bottom);
     --libras-space: calc(var(--libras-bottom) + var(--libras-height, 50px) + 8px);
   }
 }

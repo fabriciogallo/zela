@@ -90,8 +90,10 @@
   document.addEventListener("DOMContentLoaded", function () {
     const grupo = document.querySelector(".text-size");
     if (!grupo) return;
-    grupo.closest(".nav-collapsible").after(grupo);
+    document.querySelector(".site-header").before(grupo);
     grupo.className = "leitura-atalho";
+    grupo.removeAttribute("role");
+    grupo.removeAttribute("aria-label");
     const abrir = document.createElement("button");
     abrir.type = "button";
     abrir.className = "btn btn--ghost btn--sm";
@@ -100,6 +102,11 @@
     abrir.setAttribute("aria-controls", "ajustes-leitura");
     abrir.innerHTML = '<span class="leitura-aa" aria-hidden="true">Aa</span> Leitura';
     grupo.replaceChildren(abrir);
+    function medirAtalho() {
+      root.style.setProperty("--leitura-height", Math.ceil(grupo.getBoundingClientRect().height) + "px");
+    }
+    medirAtalho();
+    if ("ResizeObserver" in window) new ResizeObserver(medirAtalho).observe(grupo);
 
     painel = document.createElement("dialog");
     painel.id = "ajustes-leitura";

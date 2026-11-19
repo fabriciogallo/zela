@@ -1,5 +1,17 @@
 /* Painel de leitura e preferências opcionais. As cores continuam vindo dos tokens do Zela. */
-.leitura-atalho { flex: 0 0 auto; }
+:root { --leitura-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+:root:has(.leitura-atalho) { --leitura-space: calc(var(--leitura-bottom) + var(--leitura-height, 48px) + 8px); }
+.leitura-atalho {
+  position: fixed; z-index: 28;
+  inset-inline-start: max(12px, env(safe-area-inset-left, 0px));
+  inset-block-end: var(--leitura-bottom);
+  max-inline-size: min(18rem, calc(100% - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+}
+.leitura-atalho > .btn { min-block-size: 48px; border-color: var(--sky-deep); color: var(--sky-hover); box-shadow: var(--shadow-sheet); }
+@media (max-width: 1100px) {
+  :root { --leitura-bottom: var(--floating-tools-bottom); }
+  .leitura-atalho { max-inline-size: calc(100% - 88px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); }
+}
 .leitura-aa { font-size: 1.1875em; font-weight: 700; }
 .leitura-dialog {
   --modal-open-dur: 250ms;

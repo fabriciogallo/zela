@@ -91,7 +91,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **CEP:** em Relatar → passo 2, digite **01310-100** (Avenida Paulista) ou **99999-999** (erro).
 - **Aviso repetido:** em Relatar, escolha **Poste apagado** e escreva **Rua das Palmeiras**.
 - **Login:** em Entrar, use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
-- **Leitura:** no cabeçalho, abra **Leitura**. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. Troque de página para confirmar a preferência salva; **Voltar ao padrão** preserva o bairro, a conta e os avisos.
+- **Leitura:** abra o botão fixo **Aa Leitura**, no canto inferior esquerdo. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. Troque de página para confirmar a preferência salva; **Voltar ao padrão** preserva o bairro, a conta e os avisos.
 - **Meu bairro:** busque **Grajaú** para ver avisos simulados ou **01310-100** para escolher Bela Vista e experimentar o estado sem avisos. Você também pode salvar ou remover o bairro em **Meus avisos → Seus dados**.
 - **Rota acessível:** em **Escolher pela região**, selecione Cidade Tiradentes. Escolha o Terminal e a Casa de Cultura como saída e destino, mantenha o perfil **Cadeira de rodas** e clique em **Buscar trajeto**.
 - **Busca de locais:** nos campos **Saindo de** e **Indo para**, digite **Rua das Flores** ou **01310-100, 1000** e escolha uma sugestão. Os dois campos também aceitam **Minha localização atual**. Para ver os bairros da região, use **Bairros próximos** e permita o acesso à localização no navegador.
