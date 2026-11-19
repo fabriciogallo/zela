@@ -108,7 +108,9 @@
 
     definir(lugar);
 
-    if (!temLocalizacao) {
+    if (config.somenteBusca) {
+      gps.hidden = true;
+    } else if (!temLocalizacao) {
       gps.hidden = true;
       mensagem("A localização não está disponível aqui. Digite o bairro, uma rua ou o CEP.", true);
     } else {

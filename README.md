@@ -79,6 +79,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Relatar | 4 passos com progresso, validação e foco no título | Divide a tarefa, evita erro no fim e orienta leitores de tela |
 | Relatar | Rascunho automático com recuperação por até 7 dias | Permite sair e continuar depois, sem repetir o preenchimento; a foto precisa ser escolhida novamente |
 | Relatar | Busca por CEP via API ViaCEP | Preenche rua, bairro e cidade automaticamente |
+| Relatar / Meu bairro | Bairro confirmado, relato salvo e atalho para vê-lo na lista | Faz o aviso aparecer junto aos demais do mesmo bairro e cidade neste navegador |
 | Relatar | "Usar minha localização" (OpenStreetMap/Nominatim) | Poupa digitação do endereço |
 | Relatar | Detecção de aviso repetido → "Apoiar esse aviso" | Evita filas duplicadas; mostra que outros vizinhos se importam |
 | Relatar | Foto com prévia, revisão com "Alterar", copiar protocolo | Dá segurança antes de enviar e impede que o número se perca |
@@ -96,6 +97,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 
 - **Protocolo:** `ZL-2026-04817` (em execução), `ZL-2026-03991` (resolvido), `ZL-2026-05102`.
 - **CEP:** em Relatar → passo 2, digite **01310-100** (Avenida Paulista) ou **99999-999** (erro).
+- **Relato no bairro:** no passo Local, confira o **Bairro do aviso** preenchido pelo CEP ou GPS; no endereço manual, escolha uma sugestão de bairro. Depois de enviar, use **Ver aviso no bairro**, disponível também em Acompanhar. O atalho abre a região do aviso sem alterar o bairro salvo no perfil.
 - **Aviso repetido:** em Relatar, escolha **Poste apagado** e escreva **Rua das Palmeiras**.
 - **Sua conta:** use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
 - **Leitura:** abra **Aa Leitura** na barra superior em telas compactas ou no canto inferior esquerdo em telas maiores, alinhado ao botão de relato. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. **Fechar** mantém as preferências; **Limpar configurações** restaura somente os ajustes de leitura e preserva o bairro, a conta e os avisos.
@@ -143,10 +145,14 @@ Referências: [barreiras auditivas — W3C](https://www.w3.org/WAI/people-use-we
 
 Em ambiente local isolado, com dados fictícios, foram verificados recuperação e descarte de rascunhos, envio, armazenamento bloqueado, perfil entre páginas, falha e ausência de registros de mapa, controles de voz e navegação das instruções por teclado. As vozes foram simuladas nos testes para verificar os controles; isso não mede a qualidade do áudio real.
 
-Testes automatizados da leitura pelo aparelho (Node.js):
+Os relatos novos guardam bairro e cidade separadamente. Relatos antigos com endereço no formato `Rua — Bairro — Cidade/UF` também entram na lista, sem regravar ou apagar o original. Endereços antigos sem região suficiente continuam em Acompanhar e Sua conta; não são atribuídos a um bairro por suposição. Sem coordenadas, os relatos aparecem na lista com o endereço, sem um ponto inventado no mapa.
+
+O protótipo guarda os relatos somente no navegador em que foram criados. A prévia local e o site publicado têm armazenamentos separados; os dados não são compartilhados entre aparelhos ou moradores.
+
+Testes automatizados dos relatos, localização e leitura pelo aparelho (Node.js):
 
 ```sh
-node --test tests/voz.test.mjs tests/localizacao.test.mjs
+node --test tests/avisos.test.mjs tests/localizacao.test.mjs tests/voz.test.mjs
 ```
 
 A revisão visual considera telas pequenas e desktop, ampliação de texto até 200%, alto contraste e movimento reduzido. A análise automática com axe complementa a revisão; não certifica conformidade com WCAG. O contraste de itens sobre imagens e mapas exige avaliação visual adicional.
@@ -202,6 +208,7 @@ zela/
 │   │   ├── acessibilidade.js   # Carrega preferências cedo e monta o painel Leitura
 │   │   ├── dados.js            # Avisos e protocolos simulados, pontos públicos e bairros
 │   │   ├── comum.js            # Menu, VLibras, pixel art e utilidades
+│   │   ├── avisos.js           # Exemplos e relatos locais, compatibilidade e filtro por região
 │   │   ├── mobilidade.js       # Perfil compartilhado entre Início, bairro e rota
 │   │   ├── voz.js              # Leitura, pausa, parada, vozes e velocidade
 │   │   ├── inicio.js           # Lógica da página inicial
@@ -220,7 +227,7 @@ zela/
 │       ├── relatar-problema.svg # Ícone local do botão flutuante
 │       └── cat-*.svg           # Ícones de categoria de problema
 │
-├── tests/                      # Testes dos controles de voz
+├── tests/                      # Testes de relatos, localização e controles de voz
 ├── .nojekyll                   # Necessário para o GitHub Pages ignorar o Jekyll
 └── README.md
 ```

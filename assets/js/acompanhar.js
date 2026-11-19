@@ -10,6 +10,9 @@
     $("res-chip").textContent = cat.nome + " · " + id;
     $("res-titulo").textContent = dados.titulo;
     $("res-local").textContent = dados.local + " · Responsável: " + cat.orgao;
+    var linkBairro = ZELA.mural.linkBairro(id);
+    $("res-bairro").hidden = !linkBairro;
+    if (linkBairro) $("res-bairro").href = linkBairro;
     $("res-dias").textContent = dados.dias;
     $("res-apoios").textContent = dados.apoios;
 

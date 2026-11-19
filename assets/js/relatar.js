@@ -22,6 +22,7 @@
   var passo = 1;
   var dupIgnorado = false;
   var fotoUrl = null;
+  var campoBairro = null;
   var rascunhoAtivo = false, rascunhoTimer = null, concluido = false, armazenamentoAvisado = false;
   var CHAVE_RASCUNHO = "zela:rascunho-relato";
 
@@ -42,6 +43,7 @@
       referencia: $("f-ref").value.slice(0, 300), descricao: $("f-desc").value.slice(0, 300),
       risco: valor("risco"), anonimo: $("f-anon").checked, tinhaFoto: Boolean($("f-foto").files.length)
     };
+    dados.bairro = campoBairro ? campoBairro.escolhido() : null;
     if (![dados.cat, dados.cep, dados.endereco, dados.referencia, dados.descricao].some(Boolean)) return;
     try {
       localStorage.setItem(CHAVE_RASCUNHO, JSON.stringify(dados));
@@ -81,10 +83,12 @@
       if (cat) cat.checked = true;
       $("f-cep").value = d.cep.replace(/[^\d-]/g, "").slice(0, 9);
       $("f-end").value = d.endereco; $("f-ref").value = d.referencia; $("f-desc").value = d.descricao;
+      var regiao = ZELA.mural.regiao(d.bairro) || ZELA.mural.regiaoDoEndereco(d.endereco);
+      campoBairro.definir(regiao);
       form.querySelector('[name="risco"][value="' + (d.risco === "alto" ? "alto" : "baixo") + '"]').checked = true;
       $("f-anon").checked = d.anonimo === true;
       $("f-desc-cont").textContent = d.descricao.length + " de 300 caracteres";
-      var primeiroIncompleto = !cat ? 1 : d.endereco.trim().length < 3 ? 2 : d.descricao.trim().length < 10 ? 3 : 4;
+      var primeiroIncompleto = !cat ? 1 : d.endereco.trim().length < 3 || !campoBairro.escolhido() ? 2 : d.descricao.trim().length < 10 ? 3 : 4;
       var retomar = Math.min(d.passo, primeiroIncompleto);
       aviso.hidden = true; form.hidden = false; rascunhoAtivo = true;
       mostrarPasso(retomar, true);
@@ -158,6 +162,9 @@
     if (n === 2 && $("f-end").value.trim().length < 3) {
       return erro("f-end", "err-end", "Diga onde fica o problema. Pode ser só o nome da rua.");
     }
+    if (n === 2 && !campoBairro.escolhido()) {
+      return erro("f-relato-bairro", "f-relato-bairro-erro", "Escolha uma sugestão de bairro para organizar este aviso.");
+    }
     if (n === 3 && $("f-desc").value.trim().length < 10) {
       return erro("f-desc", "err-desc", "Escreva pelo menos 10 letras para a equipe entender o problema.");
     }
@@ -182,6 +189,7 @@
 
   /* ---------- CEP (API pública ViaCEP) ---------- */
   var ultimoCep = "";
+  var buscaCepAtual = 0;
 
   function mascararCep() {
     var campo = $("f-cep");
@@ -200,11 +208,14 @@
     }
     limparErro("f-cep", "err-cep");
     ultimoCep = cep;
+    var consulta = ++buscaCepAtual;
     botao.disabled = true;
     msg.textContent = "Buscando o CEP…";
     fetch("https://viacep.com.br/ws/" + cep + "/json/")
       .then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
       .then(function (d) {
+        if (consulta !== buscaCepAtual) return;
+        if (campo.value.replace(/\D/g, "") !== cep) { msg.textContent = ""; return; }
         if (d.erro) {
           msg.textContent = "";
           erro("f-cep", "err-cep", "Não encontramos o CEP " + campo.value + ". Confira os números ou digite o endereço abaixo.");
@@ -214,6 +225,9 @@
         var lugar = [d.bairro, d.localidade && d.uf ? d.localidade + "/" + d.uf : d.localidade].filter(Boolean).join(" — ");
         var end = $("f-end");
         end.value = rua ? rua + ", " + (lugar ? " — " + lugar : "") : lugar;
+        var regiao = ZELA.mural.regiao({ nome: d.bairro, cidade: d.localidade, estado: d.uf });
+        campoBairro.definir(regiao);
+        guardarRascunho();
         limparErro("f-end", "err-end");
         checarRepetido();
         if (rua) {
@@ -228,10 +242,11 @@
         }
       })
       .catch(function () {
+        if (consulta !== buscaCepAtual) return;
         ultimoCep = "";
         msg.textContent = "Não conseguimos consultar o CEP agora (sem internet?). Digite o endereço abaixo, por favor.";
       })
-      .then(function () { botao.disabled = false; });
+      .then(function () { if (consulta === buscaCepAtual) botao.disabled = false; });
     return true;
   }
 
@@ -256,7 +271,12 @@
           var partes = [rua + (a.house_number ? ", " + a.house_number : ""), a.suburb || a.neighbourhood || a.city_district || ""]
             .filter(function (p) { return p && p.trim(); });
           if (!partes.length) throw new Error("vazio");
+          var cidade = a.city || a.town || a.village || a.municipality || "";
+          var uf = (a["ISO3166-2-lvl4"] || a.state_code || "").replace(/^BR-/, "");
+          if (cidade) partes.push(cidade + (uf ? "/" + uf : ""));
           $("f-end").value = partes.join(" — ");
+          campoBairro.definir(ZELA.mural.regiao({ nome: a.suburb || a.neighbourhood || a.city_district, cidade: cidade, estado: uf || a.state }));
+          guardarRascunho();
           limparErro("f-end", "err-end");
           msg.textContent = "Localização encontrada: " + $("f-end").value + ". Confira se está certo.";
           checarRepetido();
@@ -313,6 +333,7 @@
     var linhas = [
       ["Tipo", cat.nome, 1, "o tipo de problema"],
       ["Local", $("f-end").value.trim() + (ref ? " (" + ref + ")" : "") + ($("f-cep").value ? " · CEP " + $("f-cep").value : ""), 2, "o local"],
+      ["Bairro", campoBairro.escolhido() ? ZELA.bairroPreferido.rotulo(campoBairro.escolhido()) : "Escolha o bairro no passo Local", 2, "o bairro do aviso"],
       ["Descrição", $("f-desc").value.trim(), 3, "a descrição"],
       ["Foto", temFoto ? "Sim, 1 foto" : "Sem foto", 3, "a foto"],
       ["Risco", valor("risco") === "alto" ? "Sim, há riscos." : "Não, mas atrapalha", 3, "o risco"],
@@ -330,6 +351,7 @@
   }
 
   function concluir(apoio) {
+    if (!apoio && !campoBairro.escolhido()) { mostrarPasso(2, true); validar(2); return; }
     $("err-envio").hidden = true;
     var id, texto;
     if (apoio) {
@@ -342,13 +364,15 @@
       $("ok-titulo").textContent = "Apoio registrado. Agora são " + (aviso.apoios + 1) + " vizinhos.";
       texto = "Você apoiou o aviso “" + aviso.titulo + "” na " + aviso.local + ". Ele subiu na fila de prioridade e você pode acompanhar pelo mesmo protocolo.";
     } else {
-      id = "ZL-2026-" + String(Math.floor(10000 + Math.random() * 89999));
       var cat = valor("cat");
       var meus = ZELA.store.get("protocolos", {});
+      do { id = "ZL-2026-" + String(Math.floor(10000 + Math.random() * 89999)); }
+      while (Object.hasOwn(meus, id) || Object.hasOwn(ZELA.protocolos, id));
       meus[id] = {
         cat: cat,
         titulo: ZELA.nomeCategoria(cat).nome + ": " + $("f-desc").value.trim().slice(0, 60),
         local: $("f-end").value.trim(),
+        bairro: campoBairro.escolhido(), criadoEm: new Date().toISOString(), risco: valor("risco") === "alto",
         atual: 0, dias: 0, apoios: 1,
         datas: [hoje(), "Previsão: em até 2 dias úteis", "—", "—"],
         dono: (ZELA.conta.atual() || {}).tel || null
@@ -362,6 +386,9 @@
     $("ok-texto").textContent = texto;
     $("ok-protocolo").textContent = id;
     $("link-acompanhar").href = "acompanhar.html?p=" + encodeURIComponent(id);
+    var linkBairro = ZELA.mural.linkBairro(id);
+    $("link-bairro").hidden = !linkBairro;
+    if (linkBairro) $("link-bairro").href = linkBairro;
     $("link-entrar").hidden = !!ZELA.conta.atual();
     $("area-form").hidden = true;
     $("area-sucesso").hidden = false;
@@ -395,6 +422,9 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     var form = $("form-relato");
+    campoBairro = ZELA.iniciarCampoBairro("f-relato-bairro", {
+      inicial: ZELA.bairroPreferido.atual(), escolher: guardarRascunho, somenteBusca: true
+    });
 
     /* Tipo pré-escolhido pela página inicial (?tipo=luz) */
     var tipo = new URLSearchParams(location.search).get("tipo");

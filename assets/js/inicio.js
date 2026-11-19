@@ -58,8 +58,7 @@
     var esc = ZELA.escapar;
 
     function render(bairro, anunciar) {
-      var avisos = ZELA.avisos
-        .filter(function (a) { return a.bairro === bairro.bairroId; })
+      var avisos = ZELA.mural.doBairro(bairro)
         .sort(function (x, y) { return y.apoios - x.apoios; })
         .slice(0, 3);
       lista.innerHTML = avisos.map(function (a) {

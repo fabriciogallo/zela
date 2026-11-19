@@ -9,14 +9,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
-  <link rel="stylesheet" href="../assets/css/style.css?v=rotulos-v1">
+  <link rel="stylesheet" href="../assets/css/style.css?v=mural-v1">
   <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=feedback-v1">
   <script src="../assets/js/acessibilidade.js?v=feedback-v1"></script>
   <script src="../assets/js/dados.js" defer></script>
   <script src="../assets/js/comum.js?v=jornada-v3" defer></script>
+  <script src="../assets/js/avisos.js?v=mural-v1" defer></script>
   <script src="../assets/js/mobilidade.js?v=jornada-v3" defer></script>
   <script src="../assets/js/voz.js?v=feedback-v1" defer></script>
-  <script src="../assets/js/relatar.js?v=jornada-v3" defer></script>
+  <script src="../assets/js/busca-locais.js?v=feedback-v1" defer></script>
+  <script src="../assets/js/preferencia-bairro.js?v=mural-v1" defer></script>
+  <script src="../assets/js/relatar.js?v=mural-v1" defer></script>
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -124,6 +127,16 @@
                   <p id="err-end" class="error" role="alert"></p>
                   <p id="loc-msg" role="status"></p>
                 </div>
+                <div class="field route-place">
+                  <label for="f-relato-bairro">Bairro do aviso</label>
+                  <input id="f-relato-bairro" class="input" type="text" required role="combobox" autocomplete="off" spellcheck="false" enterkeyhint="search" maxlength="160" aria-autocomplete="list" aria-controls="f-relato-bairro-lista" aria-expanded="false" aria-describedby="f-relato-bairro-dica f-relato-bairro-erro">
+                  <ul id="f-relato-bairro-lista" class="list-reset place-results" role="listbox" tabindex="-1" aria-label="Sugestões de bairro do aviso" hidden></ul>
+                  <p id="f-relato-bairro-status" class="hint" role="status"></p>
+                  <p id="f-relato-bairro-erro" class="error" role="alert"></p>
+                  <p id="f-relato-bairro-dica" class="hint">O CEP ou a localização preenchem este campo. Confira o bairro onde o problema acontece.</p>
+                  <button type="button" class="btn btn--ghost btn--sm bairro-gps" id="f-relato-bairro-gps" hidden>Localizar bairro</button>
+                  <p id="f-relato-bairro-gps-status" class="hint" role="status"></p>
+                </div>
                 <div class="field">
                   <label for="f-ref">Ponto de referência <span class="muted">(opcional)</span></label>
                   <input id="f-ref" name="referencia" class="input" type="text" placeholder="Ex.: em frente à padaria">
@@ -219,6 +232,7 @@
           <p id="copia-msg" role="status"></p>
           <div class="row" style="gap:12px">
             <a id="link-acompanhar" class="btn btn--ink btn--lg" href="acompanhar.html">Acompanhar meu aviso</a>
+            <a id="link-bairro" class="btn btn--ghost btn--lg" href="bairro.html" hidden>Ver aviso no bairro</a>
             <a class="btn btn--ghost btn--lg" href="relatar.html">Relatar outro problema</a>
           </div>
           <a id="link-entrar" class="link-action" href="entrar.html?volta=meus-avisos.html" hidden><span>Entrar com o celular para salvar este aviso na sua conta</span></a>

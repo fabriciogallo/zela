@@ -17,9 +17,8 @@
   function avisosVisiveis() {
     var f = filtros();
     var apoiados = ZELA.store.get("apoiados", {});
-    var lista = ZELA.avisos
+    var lista = ZELA.mural.doBairro(bairro)
       .filter(function (a) {
-        if (a.bairro !== f.bairro) return false;
         if (f.cat !== "todos" && a.cat !== f.cat) return false;
         if (f.mobilidade && tiposMobilidade.indexOf(a.cat) === -1) return false;
         if (f.status === "abertos" && a.status === "Resolvido") return false;
@@ -60,11 +59,12 @@
   function render() {
     var lista = avisosVisiveis();
     var f = filtros();
+    var temAvisos = ZELA.mural.doBairro(bairro).length > 0;
     $("chip-bairro").textContent = ZELA.bairroPreferido.rotulo(bairro);
     $("chip-bairro-demo").hidden = !f.bairro;
     $("contagem").textContent = lista.length === 1 ? "1 aviso encontrado" : lista.length + " avisos encontrados";
-    $("vazio").hidden = !f.bairro || lista.length > 0;
-    $("vazio-bairro").hidden = Boolean(f.bairro);
+    $("vazio").hidden = (!f.bairro && !temAvisos) || lista.length > 0;
+    $("vazio-bairro").hidden = Boolean(f.bairro) || temAvisos;
     $("mapa-bairro").hidden = !f.bairro;
 
     $("lista").innerHTML = lista.map(function (it, i) {
@@ -73,11 +73,12 @@
         '<button type="button" class="btn support ' + (it.meu ? "" : "btn--primary") + '" data-apoiar="' + a.id + '" aria-pressed="' + it.meu + '">' +
         (it.meu ? "Você apoiou" : "Eu também vi") + '<span class="sr-only">: ' + esc(a.titulo) + "</span></button>";
       return '<li class="report' + (sel ? " is-selected" : "") + '" id="aviso-' + a.id + '">' +
-        '<button type="button" class="report-n" data-sel="' + a.id + '" aria-label="Aviso ' + n + ": marcar no mapa\">" + n + "</button>" +
+        '<button type="button" class="report-n" data-sel="' + a.id + '" aria-label="Aviso ' + n + (a.doAparelho ? ": destacar na lista\">" : ": marcar no mapa\">") + n + "</button>" +
         '<div class="report-body">' +
           "<h3>" + esc(a.titulo) + "</h3>" +
           "<p>" + esc(a.local) + " · há " + a.dias + (a.dias === 1 ? " dia" : " dias") + "</p>" +
           '<p class="report-tags"><span class="pill pill--dotted">' + esc(a.status) + '</span><span class="pill ' + it.prio.classe + '">Prioridade ' + it.prio.nivel.toLowerCase() + "</span></p>" +
+          (a.doAparelho ? '<p class="hint t-small">Criado neste aparelho · <a href="acompanhar.html?p=' + encodeURIComponent(a.protocolo) + '">Acompanhar ' + esc(a.protocolo) + '</a>. Sem ponto definido no mapa.</p>' : "") +
         "</div>" +
         '<div class="report-side"><p class="report-count"><span class="display">' + it.total + '</span><span class="t-small">apoios</span></p>' + botaoApoio + "</div>" +
       "</li>";
@@ -88,6 +89,7 @@
     if (mapa.dataset.bairro !== f.bairro) { ZELA.mapaReal(mapa, ZELA.centros[f.bairro], 1); mapa.dataset.bairro = f.bairro; }
     mapa.querySelectorAll(".pin").forEach(function (p) { p.remove(); });
     lista.forEach(function (it, i) {
+      if (!Number.isFinite(it.a.x) || !Number.isFinite(it.a.y)) return;
       var b = document.createElement("button");
       b.type = "button";
       b.className = "pin";
@@ -108,13 +110,14 @@
     if (!item) return;
     if (origemMapa) item.scrollIntoView({ block: "nearest" });
     item.querySelector(".report-n").focus({ preventScroll: true });
-    var a = ZELA.avisos.filter(function (x) { return x.id === id; })[0];
+    var a = ZELA.mural.encontrar(id);
     ZELA.anunciar("Selecionado: " + a.titulo + ", " + a.local + ".");
   }
 
   function apoiar(id) {
     var apoiados = ZELA.store.get("apoiados", {});
-    var a = ZELA.avisos.filter(function (x) { return x.id === id; })[0];
+    var a = ZELA.mural.encontrar(id);
+    if (!a) return;
     if (apoiados[id]) {
       delete apoiados[id];
       ZELA.anunciar("Apoio removido de " + a.titulo + ".");
@@ -132,16 +135,16 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     var parametros = new URLSearchParams(location.search);
-    bairro = ZELA.bairroPreferido.exemplo(parametros.get("bairro")) || ZELA.bairroPreferido.atual();
+    bairro = ZELA.mural.regiao({ nome: parametros.get("bairro_nome"), cidade: parametros.get("cidade"), estado: parametros.get("estado") }) ||
+      ZELA.bairroPreferido.exemplo(parametros.get("bairro")) || ZELA.bairroPreferido.atual();
     ZELA.iniciarCampoBairro("f-bairro", {
       inicial: bairro,
       escolher: function (lugar) {
         bairro = lugar;
         ZELA.bairroPreferido.salvar(lugar);
-        if (parametros.has("bairro")) {
-          parametros.delete("bairro");
+        if (["bairro", "bairro_nome", "cidade", "estado"].some(function (chave) { return parametros.has(chave); })) {
           var url = new URL(location.href);
-          url.searchParams.delete("bairro");
+          ["bairro", "bairro_nome", "cidade", "estado"].forEach(function (chave) { parametros.delete(chave); url.searchParams.delete(chave); });
           history.replaceState(history.state, "", url);
         }
         selecionado = null;
@@ -161,15 +164,20 @@
 
     $("mapa").addEventListener("click", function (e) {
       var b = e.target.closest("[data-sel]");
-      if (b) selecionar(Number(b.getAttribute("data-sel")), true);
+      if (b) selecionar(b.getAttribute("data-sel"), true);
     });
     $("lista").addEventListener("click", function (e) {
       var ap = e.target.closest("[data-apoiar]");
-      if (ap) return apoiar(Number(ap.getAttribute("data-apoiar")));
+      if (ap) return apoiar(ap.getAttribute("data-apoiar"));
       var s = e.target.closest("[data-sel]");
-      if (s) selecionar(Number(s.getAttribute("data-sel")), false);
+      if (s) selecionar(s.getAttribute("data-sel"), false);
     });
 
+    var alvo = ZELA.mural.encontrar(location.hash.replace(/^#aviso-/, ""));
+    if (alvo && alvo.status === "Resolvido") $("f-status").value = "todos";
     render();
+    if (alvo && $("aviso-" + alvo.id)) {
+      selecionar(alvo.id, true);
+    }
   });
 })();
