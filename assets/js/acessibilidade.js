@@ -101,10 +101,9 @@
     const abrir = document.createElement("button");
     abrir.type = "button";
     abrir.className = "btn btn--primary btn--sm";
-    abrir.setAttribute("aria-label", "Ajustes de leitura");
     abrir.setAttribute("aria-haspopup", "dialog");
     abrir.setAttribute("aria-controls", "ajustes-leitura");
-    abrir.innerHTML = '<span class="leitura-aa" aria-hidden="true">Aa</span> Leitura';
+    abrir.innerHTML = '<span class="leitura-aa" aria-hidden="true">Aa</span> Ajustar leitura';
     grupo.replaceChildren(abrir);
     // O mesmo botão fica sempre na barra, na ordem de leitura de cada layout.
     reposicionarAtalho = function () {

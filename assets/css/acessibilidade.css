@@ -12,12 +12,13 @@
 /* Com letras grandes, os controles continuam inteiros em uma segunda linha. */
 @container zela-nav (width < calc(100px + 11rem)) {
   .nav-bar:has(> .leitura-atalho) > .brand { flex-basis: 100%; }
+  .nav-bar > .leitura-atalho { flex: 1 1 0; min-inline-size: 0; margin-inline-start: 0; }
   .nav-bar > .leitura-atalho .leitura-aa { font-size: 1em; }
-  .nav-bar > .leitura-atalho > .btn { gap: 6px; padding-inline: 6px; }
+  .nav-bar > .leitura-atalho > .btn { inline-size: 100%; gap: 6px; padding-inline: 6px; }
   .nav-bar:has(> .leitura-atalho) > .menu-toggle { padding-inline: 6px; }
 }
 @container zela-nav (width < 10rem) {
-  /* A palavra Leitura identifica o ajuste mesmo sem o símbolo decorativo. */
+  /* O texto identifica o ajuste mesmo sem o símbolo decorativo. */
   .nav-bar > .leitura-atalho .leitura-aa { display: none; }
 }
 .leitura-aa { font-size: 1.1875em; font-weight: 700; }
