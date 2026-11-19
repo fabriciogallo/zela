@@ -95,31 +95,26 @@
     const cabecalho = document.querySelector(".site-header");
     const barra = document.getElementById("nav-bar");
     const menu = barra.querySelector(".menu-toggle");
-    cabecalho.before(grupo);
     grupo.className = "leitura-atalho";
     grupo.removeAttribute("role");
     grupo.removeAttribute("aria-label");
     const abrir = document.createElement("button");
     abrir.type = "button";
-    abrir.className = "btn btn--ghost btn--sm";
+    abrir.className = "btn btn--primary btn--sm";
     abrir.setAttribute("aria-label", "Ajustes de leitura");
     abrir.setAttribute("aria-haspopup", "dialog");
     abrir.setAttribute("aria-controls", "ajustes-leitura");
     abrir.innerHTML = '<span class="leitura-aa" aria-hidden="true">Aa</span> Leitura';
     grupo.replaceChildren(abrir);
-    function medirAtalho() {
-      root.style.setProperty("--leitura-height", Math.ceil(grupo.getBoundingClientRect().height) + "px");
-    }
-    // Move o mesmo botão: não cria cópias nem perde as preferências ou o foco.
+    // O mesmo botão fica sempre na barra, na ordem de leitura de cada layout.
     reposicionarAtalho = function () {
-      const naBarra = getComputedStyle(barra).getPropertyValue("--leitura-na-barra").trim() === "1";
-      const destino = naBarra ? barra : cabecalho.parentElement;
-      if (grupo.parentElement !== destino) {
+      const compacta = getComputedStyle(barra).getPropertyValue("--nav-compacta").trim() === "1";
+      const noLugar = grupo.parentElement === barra && (compacta ? grupo.nextElementSibling === menu : barra.lastElementChild === grupo);
+      if (!noLugar) {
         const manterFoco = grupo.contains(document.activeElement);
-        (naBarra ? menu : cabecalho).before(grupo);
+        if (compacta) menu.before(grupo); else barra.append(grupo);
         if (manterFoco) abrir.focus({ preventScroll: true });
       }
-      medirAtalho();
     };
     reposicionarAtalho();
     window.addEventListener("resize", reposicionarAtalho);

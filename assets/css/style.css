@@ -72,7 +72,7 @@
 
 html {
   font-size: 100%;
-  --bottom-clearance: max(var(--report-clearance, 0px), var(--leitura-space, 0px));
+  --bottom-clearance: var(--report-clearance, 0px);
   scroll-padding-block: var(--header-clearance, 80px) var(--bottom-clearance);
 }
 html:is([data-texto="1"], [data-texto="125"]) { font-size: 125%; }
@@ -369,7 +369,7 @@ html:has(.report-action:not([hidden])) { --report-clearance: calc(76px + env(saf
 .t-panel-slide:focus-within { transition: none; }
 
 .nav-bar {
-  --leitura-na-barra: 1;
+  --nav-compacta: 1;
   --panel-open-dur: 250ms;
   --panel-close-dur: 150ms;
   --panel-translate-y: calc(-100% - 20px);
@@ -412,7 +412,7 @@ html:has(.report-action:not([hidden])) { --report-clearance: calc(76px + env(saf
 
 /* Ícone e espaços têm largura fixa; os rótulos crescem com o tamanho do texto. */
 @container zela-nav (min-width: max(1056px, 300px + 40rem)) {
-  .nav-bar { --leitura-na-barra: 0; width: fit-content; gap: 4px 14px; padding-inline-start: 14px; }
+  .nav-bar { --nav-compacta: 0; width: fit-content; gap: 4px 14px; padding-inline-start: 14px; }
   .js .menu-toggle { display: none; }
   .js .nav-bar .nav-collapsible, .js .nav-bar.is-open .nav-collapsible, .nav-collapsible { display: contents; }
   .brand-rule, .nav-spacer { display: block; }

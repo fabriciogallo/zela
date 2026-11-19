@@ -1,18 +1,13 @@
 /* Painel de leitura e preferências opcionais. As cores continuam vindo dos tokens do Zela. */
-:root { --leitura-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
-:root:has(body > .leitura-atalho) { --leitura-space: calc(var(--leitura-bottom) + var(--leitura-height, 48px) + 8px); }
 .leitura-atalho {
-  position: fixed; z-index: 28;
-  inset-inline-start: max(12px, env(safe-area-inset-left, 0px));
-  inset-block-end: var(--leitura-bottom);
-  max-inline-size: min(18rem, calc(100% - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
-}
-.leitura-atalho > .btn { min-block-size: 48px; border-color: var(--sky-deep); color: var(--sky-hover); box-shadow: var(--shadow-sheet); }
-.nav-bar > .leitura-atalho {
   position: static; flex: 0 0 auto; margin-inline-start: auto; max-inline-size: 100%;
 }
+.leitura-atalho > .btn {
+  min-block-size: 48px; padding-inline: 12px;
+  background: var(--sky-deep); border-color: var(--sky-deep); color: #fff;
+}
+.leitura-atalho > .btn:is(:hover, :active) { background: var(--sky-hover); border-color: var(--sky-hover); }
 .nav-bar:has(> .leitura-atalho) { gap: 8px; }
-.nav-bar > .leitura-atalho > .btn { padding-inline: 8px; }
 .nav-bar:has(> .leitura-atalho) > .menu-toggle { margin-inline-start: 0; padding-inline: 8px; min-block-size: 48px; }
 /* Com letras grandes, os controles continuam inteiros em uma segunda linha. */
 @container zela-nav (width < calc(100px + 11rem)) {
