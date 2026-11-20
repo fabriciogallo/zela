@@ -1,0 +1,2 @@
+# Preserve os bytes dos documentos na troca entre Windows e outros sistemas.
+*.pdf binary
