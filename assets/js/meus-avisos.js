@@ -61,7 +61,7 @@
 
   var apoios = Object.keys(u.apoios || {});
   var apoiados = ZELA.mural.todos().filter(function (a) { return apoios.indexOf(a.id) >= 0; }).map(function (a) {
-    var p = a.protocolo && ZELA.protocolos[a.protocolo];
+    var p = a.protocolo && ZELA.mural.protocolo(a.protocolo);
     return {
       id: a.protocolo || "Aviso nº " + a.id, titulo: a.titulo, local: a.doAparelho ? a.local : a.local + " — " + (ZELA.bairros[a.bairro] || ""),
       atual: p ? p.atual : Math.max(0, ZELA.etapas.map(function (e) { return e.nome; }).indexOf(a.status))

@@ -34,8 +34,9 @@
 
     var sms = ZELA.store.get("sms", {});
     atualizarSms(!!sms[id], false);
-    $("avaliacao").hidden = !resolvido;
-    $("aval-msg").textContent = "";
+    $("avaliacao").hidden = !resolvido || dados.avaliacao === "confirmado";
+    $("aval-msg").textContent = dados.avaliacao === "confirmado" ? "Você confirmou a solução neste navegador." :
+      dados.avaliacao === "reaberto" ? "Aviso reaberto neste navegador. Voltou para a fila com prioridade alta." : "";
     $("resultado").hidden = false;
     history.replaceState(null, "", "?p=" + encodeURIComponent(id));
     if (focar) $("res-titulo").focus();
@@ -63,7 +64,7 @@
     $("sms-rotulo").textContent = ligado ? "Avisos por SMS ligados" : "Receber avisos por SMS";
     if (anunciar) {
       $("sms-msg").textContent = ligado
-        ? "Pronto. Você vai receber um SMS quando o aviso mudar de etapa."
+        ? "Preferência guardada neste navegador. O envio de SMS é simulado neste protótipo."
         : "Avisos por SMS desligados.";
     } else {
       $("sms-msg").textContent = "";
@@ -71,7 +72,7 @@
   }
 
   function listarMeus() {
-    var meus = Object.keys(ZELA.store.get("protocolos", {}));
+    var meus = Object.keys(ZELA.store.get("protocolos", {})).filter(function (id) { return ZELA.formatoProtocolo.test(id); });
     $("meus-protocolos").innerHTML = meus.slice(-3).map(function (id) {
       return '<button type="button" class="btn btn--ghost btn--sm" data-exemplo="' + id + '">' + id + " (seu)</button>";
     }).join("");
@@ -96,16 +97,22 @@
     $("btn-sms").addEventListener("click", function () {
       var sms = ZELA.store.get("sms", {});
       sms[atual] = !sms[atual];
-      ZELA.store.set("sms", sms);
+      if (!ZELA.store.set("sms", sms)) {
+        $("sms-msg").textContent = "Não conseguimos guardar essa preferência. Permita o armazenamento do site e tente de novo.";
+        return;
+      }
       atualizarSms(sms[atual], true);
     });
 
     $("avaliacao").addEventListener("click", function (e) {
       var b = e.target.closest("[data-aval]");
       if (!b) return;
-      $("aval-msg").textContent = b.getAttribute("data-aval") === "sim"
-        ? "Obrigado! Sua confirmação fecha o aviso e conta na nota do serviço do bairro."
-        : "Entendido. Reabrimos o aviso com prioridade alta e avisamos o órgão responsável.";
+      if (!ZELA.mural.avaliar(atual, b.getAttribute("data-aval") === "sim")) {
+        $("aval-msg").textContent = "Não conseguimos guardar sua resposta. Permita o armazenamento do site e tente novamente.";
+        return;
+      }
+      mostrar(atual, ZELA.mural.protocolo(atual), true);
+      ZELA.anunciar($("aval-msg").textContent);
     });
 
     var p = new URLSearchParams(location.search).get("p");

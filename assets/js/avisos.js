@@ -35,14 +35,78 @@
       };
     });
     const idsLocais = new Set(locais.map(function (a) { return a.protocolo; }));
+    const decisoes = ZELA.store.get("avaliacoes", {});
     return ZELA.avisos.filter(function (a) { return !idsLocais.has(a.protocolo); }).map(function (a) {
-      return Object.assign({}, a, { id: String(a.id) });
-    }).concat(locais);
+      const p = (ZELA.protocolos || {})[a.protocolo];
+      return Object.assign({}, a, { id: String(a.id), status: ZELA.etapas[p?.atual]?.nome || a.status, dias: p?.dias ?? a.dias });
+    }).concat(locais).map(function (a) {
+      const decisao = decisoes[a.protocolo];
+      if (!decisao || !["confirmado", "reaberto"].includes(decisao.situacao)) return a;
+      return Object.assign({}, a, { status: decisao.situacao === "confirmado" ? "Resolvido" : "Recebido", avaliacao: decisao.situacao, reaberto: decisao.situacao === "reaberto" });
+    });
+  }
+
+  function apoiados() {
+    const conta = ZELA.conta?.atual();
+    return conta ? conta.apoios || {} : ZELA.store.get("apoiados", {});
+  }
+  function totalApoios(aviso) {
+    const contas = ZELA.store.get("contas", {});
+    const votos = Object.values(contas).filter(function (c) { return c?.apoios?.[aviso.id]; }).length;
+    // Apoios antigos do aparelho podem ser espelhos de uma conta: conte-os uma vez.
+    const anonimo = !votos && ZELA.store.get("apoiados", {})[aviso.id] ? 1 : 0;
+    return aviso.apoios + votos + anonimo;
+  }
+  function protocolo(id) {
+    const base = ZELA.store.get("protocolos", {})[id] || (ZELA.protocolos || {})[id];
+    if (!base) return null;
+    const aviso = todos().find(function (a) { return a.protocolo === id; });
+    if (!aviso) return Object.assign({}, base);
+    const atual = ZELA.etapas.findIndex(function (e) { return e.nome === aviso.status; });
+    const datas = (base.datas || []).slice();
+    const decisao = ZELA.store.get("avaliacoes", {})[id];
+    if (decisao) {
+      if (aviso.reaberto) { datas.splice(0, datas.length, "Reaberto pelo morador", "Aguardando novo encaminhamento", "—", "—"); }
+      else datas[3] = "Confirmado pelo morador";
+    }
+    return Object.assign({}, base, { atual: Math.max(0, atual), dias: aviso.dias, apoios: totalApoios(aviso), datas: datas, avaliacao: aviso.avaliacao });
+  }
+  function endereco(valor) {
+    const partes = normalizar(valor).split(/\s+[—–]\s+/)[0].split(",");
+    const fim = partes[0].match(/^(.*\s\S+)\s+(\d+[a-z]?)$/);
+    return { rua: (fim ? fim[1] : partes[0]).trim(), numero: partes[1]?.trim().match(/^\d+[a-z]?\b/)?.[0] || fim?.[2] || "" };
   }
   ZELA.mural = {
     regiao: regiao,
     regiaoDoEndereco: regiaoDoEndereco,
     todos: todos,
+    protocolo: protocolo,
+    apoiados: apoiados,
+    totalApoios: totalApoios,
+    apoiar: function (id, ligado) {
+      const aviso = todos().find(function (a) { return a.id === String(id); });
+      if (!aviso || aviso.status === "Resolvido") return false;
+      if (ZELA.conta?.atual()) return ZELA.conta.marcarApoio(aviso.id, ligado);
+      const votos = Object.assign({}, apoiados());
+      if (ligado) votos[aviso.id] = true; else delete votos[aviso.id];
+      return ZELA.store.set("apoiados", votos);
+    },
+    avaliar: function (id, resolvido) {
+      const aviso = todos().find(function (a) { return a.protocolo === id; });
+      if (!aviso || aviso.status !== "Resolvido" || aviso.avaliacao === "confirmado" || typeof resolvido !== "boolean") return false;
+      const decisoes = Object.assign({}, ZELA.store.get("avaliacoes", {}));
+      decisoes[id] = { situacao: resolvido ? "confirmado" : "reaberto", quando: new Date().toISOString() };
+      return ZELA.store.set("avaliacoes", decisoes);
+    },
+    possivelRepetido: function (cat, local, lugar) {
+      const alvo = endereco(local);
+      if (alvo.rua.length < 4) return null;
+      return this.doBairro(lugar).find(function (a) {
+        const outro = endereco(a.local);
+        return a.protocolo && a.cat === cat && a.status !== "Resolvido" && outro.rua === alvo.rua &&
+          (!alvo.numero || !outro.numero || alvo.numero === outro.numero);
+      }) || null;
+    },
     encontrar: function (id) { return todos().find(function (a) { return a.id === String(id); }); },
     linkBairro: function (protocolo) {
       const aviso = todos().find(function (a) { return a.protocolo === protocolo; });

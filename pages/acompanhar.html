@@ -13,11 +13,11 @@
   <link rel="stylesheet" href="../assets/css/acessibilidade.css?v=ajustar-leitura-v1">
   <script src="../assets/js/acessibilidade.js?v=ajustar-leitura-v1"></script>
   <script src="../assets/js/dados.js" defer></script>
-  <script src="../assets/js/comum.js?v=jornada-v3" defer></script>
-  <script src="../assets/js/avisos.js?v=mural-v1" defer></script>
+  <script src="../assets/js/comum.js?v=entrega-v1" defer></script>
+  <script src="../assets/js/avisos.js?v=entrega-v1" defer></script>
   <script src="../assets/js/mobilidade.js?v=jornada-v3" defer></script>
   <script src="../assets/js/voz.js?v=feedback-v1" defer></script>
-  <script src="../assets/js/acompanhar.js?v=mural-v1" defer></script>
+  <script src="../assets/js/acompanhar.js?v=entrega-v1" defer></script>
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -97,7 +97,7 @@
 
           <section class="panel panel--green inv stack" style="gap:20px" aria-labelledby="sms-t">
             <h2 id="sms-t" class="t-tab">Avisar quando mudar</h2>
-            <p>Mandamos uma mensagem por SMS a cada nova etapa. Funciona em qualquer celular.</p>
+            <p>Experimente ativar os avisos de cada etapa. Neste protótipo, a preferência fica neste navegador e nenhum SMS é enviado.</p>
             <button type="button" class="switch" id="btn-sms" aria-pressed="false">
               <span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span>
               <span id="sms-rotulo">Receber avisos por SMS</span>
@@ -112,8 +112,8 @@
               <button type="button" class="btn btn--primary" data-aval="sim">Sim, está resolvido</button>
               <button type="button" class="btn btn--ghost" data-aval="nao">Não, continua igual</button>
             </div>
-            <p id="aval-msg" role="status"></p>
           </section>
+          <p id="aval-msg" role="status"></p>
         </div>
       </div>
     </div>

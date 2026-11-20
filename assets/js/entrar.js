@@ -73,6 +73,7 @@
     if (v.length !== 4) return erro("f-codigo", "err-codigo", "O código tem 4 números. Ele está na mensagem que enviamos.");
     if (v !== codigo) return erro("f-codigo", "err-codigo", "Código errado. Confira a mensagem ou peça outro código.");
     var r = ZELA.conta.entrar(tel, $("f-nome").value.trim(), bairroEscolhido);
+    if (r.erro) return erro("f-codigo", "err-codigo", r.erro);
     ZELA.store.set("aviso-login", r.guardados);
     location.href = destino();
   });

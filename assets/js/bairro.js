@@ -16,7 +16,7 @@
 
   function avisosVisiveis() {
     var f = filtros();
-    var apoiados = ZELA.store.get("apoiados", {});
+    var apoiados = ZELA.mural.apoiados();
     var lista = ZELA.mural.doBairro(bairro)
       .filter(function (a) {
         if (f.cat !== "todos" && a.cat !== f.cat) return false;
@@ -27,7 +27,7 @@
       })
       .map(function (a) {
         var meu = !!apoiados[a.id];
-        var total = a.apoios + (meu ? 1 : 0);
+        var total = ZELA.mural.totalApoios(a);
         return { a: a, meu: meu, total: total, prio: ZELA.prioridade(a, total) };
       });
     lista.sort(function (x, y) {
@@ -115,18 +115,15 @@
   }
 
   function apoiar(id) {
-    var apoiados = ZELA.store.get("apoiados", {});
+    var apoiados = ZELA.mural.apoiados();
     var a = ZELA.mural.encontrar(id);
     if (!a) return;
-    if (apoiados[id]) {
-      delete apoiados[id];
-      ZELA.anunciar("Apoio removido de " + a.titulo + ".");
-    } else {
-      apoiados[id] = true;
-      ZELA.anunciar("Apoio registrado. Agora " + (a.apoios + 1) + " vizinhos apoiam " + a.titulo + ".");
+    var ligado = !apoiados[id];
+    if (!ZELA.mural.apoiar(id, ligado)) {
+      ZELA.anunciar("Não conseguimos guardar o apoio. Permita o armazenamento do site e tente de novo.");
+      return;
     }
-    ZELA.store.set("apoiados", apoiados);
-    ZELA.conta.marcarApoio(id, !!apoiados[id]);
+    ZELA.anunciar(ligado ? "Apoio registrado. Agora " + ZELA.mural.totalApoios(a) + " vizinhos apoiam " + a.titulo + "." : "Apoio removido de " + a.titulo + ".");
     selecionado = id;
     render();
     var b = document.querySelector('[data-apoiar="' + id + '"]');

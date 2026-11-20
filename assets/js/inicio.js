@@ -59,7 +59,7 @@
 
     function render(bairro, anunciar) {
       var avisos = ZELA.mural.doBairro(bairro)
-        .sort(function (x, y) { return y.apoios - x.apoios; })
+        .sort(function (x, y) { return ZELA.mural.totalApoios(y) - ZELA.mural.totalApoios(x); })
         .slice(0, 3);
       lista.innerHTML = avisos.map(function (a) {
         return '<li class="proof">' +
@@ -68,7 +68,7 @@
             '<h3 class="t-lead" style="font-weight:700">' + esc(a.titulo) + "</h3>" +
             "<p>" + esc(a.local) + "</p>" +
           "</div>" +
-          '<p class="proof-value"><span class="t-number">' + a.apoios + '</span><span class="t-lead">vizinhos também viram</span></p>' +
+          '<p class="proof-value"><span class="t-number">' + ZELA.mural.totalApoios(a) + '</span><span class="t-lead">vizinhos também viram</span></p>' +
         "</li>";
       }).join("");
       lista.hidden = !avisos.length;

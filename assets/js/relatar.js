@@ -23,6 +23,7 @@
   var dupIgnorado = false;
   var fotoUrl = null;
   var campoBairro = null;
+  var avisoRepetido = null;
   var rascunhoAtivo = false, rascunhoTimer = null, concluido = false, armazenamentoAvisado = false;
   var CHAVE_RASCUNHO = "zela:rascunho-relato";
 
@@ -130,6 +131,7 @@
     $("btn-cancelar").hidden = n !== 1;
     $("btn-avancar").textContent = n === 4 ? "Enviar aviso" : "Continuar";
     if (n === 4) montarRevisao();
+    if (n === 2) checarRepetido();
     if (focar) {
       var t = $("t-passo-" + n);
       t.focus({ preventScroll: true });
@@ -174,15 +176,14 @@
   /* ---------- Aviso repetido ---------- */
   function checarRepetido() {
     var dup = $("dup");
-    var aviso = ZELA.avisos[0]; /* poste apagado na Rua das Palmeiras */
-    var mostra = !dupIgnorado && valor("cat") === aviso.cat && /palmeiras/i.test($("f-end").value);
-    if (mostra && dup.hidden) {
-      var apoiados = ZELA.store.get("apoiados", {});
-      var total = aviso.apoios + (apoiados[aviso.id] ? 1 : 0);
-      $("dup-texto").textContent = aviso.titulo + " · " + aviso.local + " · a 50 metros de você. " + total + " vizinhos apoiam esse aviso.";
+    var anterior = avisoRepetido;
+    avisoRepetido = dupIgnorado ? null : ZELA.mural.possivelRepetido(valor("cat"), $("f-end").value, campoBairro?.escolhido());
+    if (avisoRepetido) {
+      var aviso = avisoRepetido;
+      $("dup-texto").textContent = aviso.titulo + " · " + aviso.local + ". " + ZELA.mural.totalApoios(aviso) + " apoios. Confira se é o mesmo problema.";
       dup.hidden = false;
-      ZELA.anunciar("Atenção: um vizinho já avisou um problema parecido aqui perto.");
-    } else if (!mostra) {
+      if (anterior?.id !== aviso.id) ZELA.anunciar("Há um aviso do mesmo tipo nessa rua e bairro. Confira se é o mesmo problema.");
+    } else {
       dup.hidden = true;
     }
   }
@@ -190,6 +191,7 @@
   /* ---------- CEP (API pública ViaCEP) ---------- */
   var ultimoCep = "";
   var buscaCepAtual = 0;
+  var consultaCep = null;
 
   function mascararCep() {
     var campo = $("f-cep");
@@ -209,13 +211,19 @@
     limparErro("f-cep", "err-cep");
     ultimoCep = cep;
     var consulta = ++buscaCepAtual;
+    if (consultaCep) consultaCep.abort();
+    consultaCep = new AbortController();
+    var controlador = consultaCep;
+    var prazo = window.setTimeout(function () { controlador.abort(); }, 10000);
+    var enderecoAnterior = $("f-end").value;
     botao.disabled = true;
     msg.textContent = "Buscando o CEP…";
-    fetch("https://viacep.com.br/ws/" + cep + "/json/")
+    fetch("https://viacep.com.br/ws/" + cep + "/json/", { signal: controlador.signal })
       .then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
       .then(function (d) {
         if (consulta !== buscaCepAtual) return;
         if (campo.value.replace(/\D/g, "") !== cep) { msg.textContent = ""; return; }
+        if ($("f-end").value !== enderecoAnterior) { msg.textContent = "Você alterou o endereço durante a consulta. Confira o local e o bairro antes de continuar."; return; }
         if (d.erro) {
           msg.textContent = "";
           erro("f-cep", "err-cep", "Não encontramos o CEP " + campo.value + ". Confira os números ou digite o endereço abaixo.");
@@ -243,10 +251,11 @@
       })
       .catch(function () {
         if (consulta !== buscaCepAtual) return;
+        if (campo.value.replace(/\D/g, "") !== cep) { msg.textContent = ""; return; }
         ultimoCep = "";
         msg.textContent = "Não conseguimos consultar o CEP agora (sem internet?). Digite o endereço abaixo, por favor.";
       })
-      .then(function () { if (consulta === buscaCepAtual) botao.disabled = false; });
+      .then(function () { window.clearTimeout(prazo); if (consulta === buscaCepAtual) { consultaCep = null; botao.disabled = false; } });
     return true;
   }
 
@@ -254,6 +263,7 @@
   function usarLocalizacao() {
     var msg = $("loc-msg");
     var botao = $("btn-loc");
+    var enderecoAnterior = $("f-end").value;
     if (!("geolocation" in navigator)) {
       msg.textContent = "Seu navegador não informa a localização. Digite o endereço, por favor.";
       return;
@@ -261,11 +271,14 @@
     botao.disabled = true;
     msg.textContent = "Procurando sua localização…";
     navigator.geolocation.getCurrentPosition(function (pos) {
+      var controlador = new AbortController();
+      var prazo = window.setTimeout(function () { controlador.abort(); }, 10000);
       var url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=pt-BR&zoom=18" +
         "&lat=" + pos.coords.latitude.toFixed(5) + "&lon=" + pos.coords.longitude.toFixed(5);
-      fetch(url, { headers: { "Accept": "application/json" } })
+      fetch(url, { headers: { "Accept": "application/json" }, signal: controlador.signal })
         .then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
         .then(function (d) {
+          if ($("f-end").value !== enderecoAnterior) { msg.textContent = "Você alterou o endereço durante a localização. Confira o local e o bairro antes de continuar."; return; }
           var a = d.address || {};
           var rua = a.road || a.pedestrian || a.footway || "";
           var partes = [rua + (a.house_number ? ", " + a.house_number : ""), a.suburb || a.neighbourhood || a.city_district || ""]
@@ -284,7 +297,7 @@
         .catch(function () {
           msg.textContent = "Achamos você no mapa, mas não o nome da rua. Digite o endereço, por favor.";
         })
-        .then(function () { botao.disabled = false; });
+        .then(function () { window.clearTimeout(prazo); botao.disabled = false; });
     }, function () {
       botao.disabled = false;
       msg.textContent = "Não foi possível usar sua localização. Digite o endereço, por favor.";
@@ -355,14 +368,13 @@
     $("err-envio").hidden = true;
     var id, texto;
     if (apoio) {
-      var aviso = ZELA.avisos[0];
-      var apoiados = ZELA.store.get("apoiados", {});
-      apoiados[aviso.id] = true;
-      if (!ZELA.store.set("apoiados", apoiados)) { falhaAoGuardar(); return; }
-      ZELA.conta.marcarApoio(aviso.id, true);
+      checarRepetido();
+      var aviso = avisoRepetido;
+      if (!aviso) { ZELA.anunciar("O aviso sugerido mudou. Confira o local antes de continuar."); return; }
+      if (!ZELA.mural.apoiar(aviso.id, true)) { falhaAoGuardar(); return; }
       id = aviso.protocolo;
-      $("ok-titulo").textContent = "Apoio registrado. Agora são " + (aviso.apoios + 1) + " vizinhos.";
-      texto = "Você apoiou o aviso “" + aviso.titulo + "” na " + aviso.local + ". Ele subiu na fila de prioridade e você pode acompanhar pelo mesmo protocolo.";
+      $("ok-titulo").textContent = "Apoio registrado. Agora são " + ZELA.mural.totalApoios(aviso) + " apoios.";
+      texto = "Você apoia o aviso “" + aviso.titulo + "” na " + aviso.local + ". Acompanhe pelo mesmo protocolo.";
     } else {
       var cat = valor("cat");
       var meus = ZELA.store.get("protocolos", {});
@@ -423,7 +435,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     var form = $("form-relato");
     campoBairro = ZELA.iniciarCampoBairro("f-relato-bairro", {
-      inicial: ZELA.bairroPreferido.atual(), escolher: guardarRascunho, somenteBusca: true
+      inicial: ZELA.bairroPreferido.atual(), escolher: function () { checarRepetido(); guardarRascunho(); }, somenteBusca: true
     });
 
     /* Tipo pré-escolhido pela página inicial (?tipo=luz) */

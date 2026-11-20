@@ -187,6 +187,15 @@
 
   // O Nominatim pede no máximo uma consulta por segundo.
   let ultimaNominatim = 0;
+  async function consultarJson(url, opcoes) {
+    const controlador = new AbortController();
+    const prazo = window.setTimeout(function () { controlador.abort(); }, 12000);
+    try {
+      const resposta = await fetch(url, Object.assign({}, opcoes, { signal: controlador.signal }));
+      if (!resposta.ok) throw new Error("Consulta indisponível");
+      return await resposta.json();
+    } finally { window.clearTimeout(prazo); }
+  }
   async function nominatim(caminho, parametros) {
     const horario = Math.max(Date.now(), ultimaNominatim + 1100);
     const espera = horario - Date.now();
@@ -194,9 +203,7 @@
     if (espera > 0) await new Promise(function (ok) { window.setTimeout(ok, espera); });
     const url = "https://nominatim.openstreetmap.org/" + caminho + "?" +
       new URLSearchParams(Object.assign({ format: "jsonv2", "accept-language": "pt-BR" }, parametros));
-    const resposta = await fetch(url, { headers: { Accept: "application/json" } });
-    if (!resposta.ok) throw new Error("Nominatim indisponível");
-    return resposta.json();
+    return consultarJson(url, { headers: { Accept: "application/json" } });
   }
 
   async function geocodificar(parametros) {
@@ -557,12 +564,10 @@
       'node["kerb"~"^(lowered|flush|raised)$"](' + caixa + ");" +
       'node["barrier"~"^(bollard|gate|turnstile|kissing_gate|stile|cycle_barrier|block|chain|kerb)$"](' + caixa + ");" +
       ");out geom;";
-    const resposta = await fetch("https://overpass-api.de/api/interpreter", {
+    const dados = await consultarJson("https://overpass-api.de/api/interpreter", {
       method: "POST",
       body: new URLSearchParams({ data: consultaOsm })
     });
-    if (!resposta.ok) throw new Error("Overpass indisponível");
-    const dados = await resposta.json();
     const grupos = { arvores: [], bancos: [], agua: [], rampas: [], obstaculos: [] };
     dados.elements.forEach(function (el) {
       const t = el.tags || {};
@@ -588,13 +593,12 @@
     const espera = ultimaBusca + 1100 - Date.now();
     if (espera > 0) await new Promise(function (ok) { window.setTimeout(ok, espera); });
     ultimaBusca = Date.now();
-    const resposta = await fetch("https://valhalla1.openstreetmap.de/height", {
+    const dados = await consultarJson("https://valhalla1.openstreetmap.de/height", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ shape: shape })
     });
-    if (!resposta.ok) throw new Error("Elevação indisponível");
-    const alturas = (await resposta.json()).height || [];
+    const alturas = dados.height || [];
     let inicio = 0;
     fatias.forEach(function (fatia, r) {
       let subida = 0, maxIncl = 0;

@@ -8,7 +8,11 @@
   /* ---------- Armazenamento seguro (pode falhar em modo privado) ---------- */
   ZELA.store = {
     get: function (k, padrao) {
-      try { var v = localStorage.getItem("zela:" + k); return v === null ? padrao : JSON.parse(v); }
+      try {
+        var bruto = localStorage.getItem("zela:" + k), v = bruto === null ? padrao : JSON.parse(bruto);
+        if (padrao !== null && (v === null || typeof v !== typeof padrao || typeof v === "object" && Array.isArray(v) !== Array.isArray(padrao))) return padrao;
+        return v;
+      }
       catch (e) { return padrao; }
     },
     set: function (k, v) {
@@ -32,13 +36,20 @@
       contas[tel] = contas[tel] || { nome: "", desde: new Date().toISOString(), apoios: {} };
       if (nome) contas[tel].nome = nome;
       if (bairro) contas[tel].bairro = bairro;
-      ZELA.store.set("contas", contas);
-      ZELA.store.set("sessao", tel);
+      var anonimos = ZELA.store.get("apoiados", {});
+      contas[tel].apoios = contas[tel].apoios || {};
+      Object.keys(anonimos).forEach(function (id) {
+        if (anonimos[id] && !Object.values(contas).some(function (c) { return c.apoios && c.apoios[id]; })) contas[tel].apoios[id] = true;
+      });
+      if (!ZELA.store.set("contas", contas) || !ZELA.store.set("sessao", tel)) {
+        return { erro: "Não conseguimos guardar seu acesso neste navegador. Permita o armazenamento do site e tente novamente." };
+      }
+      ZELA.store.set("apoiados", {});
       /* avisos feitos neste aparelho antes de entrar passam a ser desta conta */
       var protos = ZELA.store.get("protocolos", {}), guardados = 0;
-      Object.keys(protos).forEach(function (id) { if (!protos[id].dono) { protos[id].dono = tel; guardados++; } });
-      ZELA.store.set("protocolos", protos);
-      return { nova: nova, guardados: guardados };
+      Object.keys(protos).forEach(function (id) { if (ZELA.formatoProtocolo.test(id) && protos[id] && !protos[id].dono) { protos[id].dono = tel; guardados++; } });
+      var salvouAvisos = ZELA.store.set("protocolos", protos);
+      return { nova: nova, guardados: salvouAvisos ? guardados : 0 };
     },
     sair: function () { ZELA.store.set("sessao", null); },
     salvarBairro: function (bairro) {
@@ -51,15 +62,15 @@
     avisos: function () {
       var u = ZELA.conta.atual(); if (!u) return [];
       var protos = ZELA.store.get("protocolos", {});
-      return Object.keys(protos).filter(function (id) { return protos[id].dono === u.tel; })
-        .map(function (id) { return Object.assign({ id: id }, protos[id]); }).reverse();
+      return Object.keys(protos).filter(function (id) { return ZELA.formatoProtocolo.test(id) && protos[id]?.dono === u.tel; })
+        .map(function (id) { return Object.assign({ id: id }, ZELA.mural ? ZELA.mural.protocolo(id) : protos[id]); }).reverse();
     },
     marcarApoio: function (avisoId, ligado) {
-      var u = ZELA.conta.atual(); if (!u) return;
+      var u = ZELA.conta.atual(); if (!u) return false;
       var contas = ZELA.store.get("contas", {});
       var c = contas[u.tel]; c.apoios = c.apoios || {};
       if (ligado) c.apoios[avisoId] = true; else delete c.apoios[avisoId];
-      ZELA.store.set("contas", contas);
+      return ZELA.store.set("contas", contas);
     },
     formatarTel: function (tel) {
       var d = String(tel).replace(/\D/g, "");
@@ -141,7 +152,7 @@
     var meus = ZELA.store.get("protocolos", {});
     var dados = meus[v] || ZELA.protocolos[v];
     if (!dados) return { erro: "Não encontramos o protocolo " + v + ". Confira os números no seu comprovante." };
-    return { id: v, dados: dados };
+    return { id: v, dados: ZELA.mural ? ZELA.mural.protocolo(v) || dados : dados };
   };
 
   ZELA.nomeCategoria = function (id) {
@@ -153,6 +164,7 @@
   ZELA.prioridade = function (a, apoios) {
     if (a.status === "Resolvido") return { nivel: "Baixa", classe: "prio-baixa", pontos: 0 };
     var pontos = apoios + (a.risco ? 15 : 0) + a.dias;
+    if (a.reaberto) pontos = Math.max(35, pontos);
     if (pontos >= 35) return { nivel: "Alta", classe: "prio-alta", pontos: pontos };
     if (pontos >= 20) return { nivel: "Média", classe: "prio-media", pontos: pontos };
     return { nivel: "Baixa", classe: "prio-baixa", pontos: pontos };
