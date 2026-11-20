@@ -6,6 +6,8 @@ Projeto acadêmico da **FIAP**, desenvolvido para a **Global Solution**, no cont
 
 **Deploy:** https://fabriciogallo.github.io/zela/ &nbsp;·&nbsp; **Repositório:** https://github.com/fabriciogallo/zela
 
+**Entrega acadêmica:** [Documentação em PDF](docs/ZELA_Global_Solution_Documentacao.pdf) · [Vídeo-pitch](https://youtu.be/PJ3f07WxqnQ)
+
 ---
 
 ## Integrantes
@@ -26,7 +28,7 @@ Buracos, postes apagados, lixo e calçadas quebradas aparecem toda semana nos ba
 
 **Cidadão beneficiado:** moradores de bairros periféricos de grandes cidades — em especial pessoas idosas, com pouca familiaridade digital e internet instável.
 
-> **Persona:** Dona Cida, 64 anos, Jardim Ângela (SP). Viu um buraco crescer por três meses na frente da creche, não sabia para quem ligar e desistiu na primeira tentativa.
+> **Persona ilustrativa:** Dona Cida, 64 anos, Jardim Ângela (SP). Viu um buraco crescer por três meses na frente da creche, não sabia para quem ligar e desistiu na primeira tentativa.
 
 ---
 
@@ -40,6 +42,10 @@ O **Zela** é uma plataforma web de zeladoria colaborativa que conecta o morador
 
 Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso em vez de criar um duplicado. Mais apoios = mais urgência para o órgão responsável.
 
+O outro foco é a **Rota acessível**: a pessoa busca saída e destino por rua, CEP ou localização e compara trajetos pelo **perfil de mobilidade**. Há opções para cadeira de rodas, andador, bengala, carrinho de bebê, malas, baixa visão e cegueira. As instruções ficam disponíveis em texto e voz, com os limites dos dados do mapa visíveis.
+
+O encaminhamento aos órgãos públicos e os SMS são demonstrativos. Relatos, apoios e confirmações ficam neste navegador; não há integração com a prefeitura nem sincronização entre aparelhos.
+
 ### Jornada do usuário
 
 | Etapa | O que a pessoa sente | Como o Zela responde |
@@ -52,7 +58,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 
 ---
 
-## Páginas (mínimo de 4 exigido)
+## Páginas do protótipo
 
 | Página | Arquivo | Descrição |
 | --- | --- | --- |
@@ -64,6 +70,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Sua conta | `pages/entrar.html` | Acesso aos avisos e apoios com celular e código por SMS (simulado), com bairro opcional |
 | Meus avisos | `pages/meus-avisos.html` | Avisos feitos e apoiados; consulta e alteração do bairro do perfil |
 | Sobre | `pages/sobre.html` | Como o Zela funciona, integrantes e conexão com os ODS |
+| Documentação do projeto | `pages/projeto.html` | Persona, jornada, interações e justificativas, fora do menu principal |
 
 ---
 
@@ -71,7 +78,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 
 | Tela | Interação | Problema de experiência resolvido |
 | --- | --- | --- |
-| Todas | Painel Leitura e VLibras | Texto até 200%, contraste, links destacados, áreas de toque maiores, espaçamento e tradução automática para Libras |
+| Todas | Botão Ajustar leitura na barra superior e VLibras | Texto até 200%, contraste, links destacados, áreas de toque maiores, espaçamento e tradução automática para Libras |
 | Todas | Menu recolhível (fecha com Esc), que volta ao rolar para cima | Dá acesso à navegação e à conta sem voltar até o topo |
 | Início | Abas "Como funciona" com setas do teclado | Explica o serviço em partes, sem muro de texto |
 | Início | Avisos por bairro + consulta rápida de protocolo | Mostra que vizinhos já usam; avisa na hora se o número está errado |
@@ -81,9 +88,9 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 | Relatar | Busca por CEP via API ViaCEP | Preenche rua, bairro e cidade automaticamente |
 | Relatar / Meu bairro | Bairro confirmado, relato salvo e atalho para vê-lo na lista | Faz o aviso aparecer junto aos demais do mesmo bairro e cidade neste navegador |
 | Relatar | "Usar minha localização" (OpenStreetMap/Nominatim) | Poupa digitação do endereço |
-| Relatar | Detecção de aviso repetido → "Apoiar esse aviso" | Evita filas duplicadas; mostra que outros vizinhos se importam |
+| Relatar | Sugestão de aviso parecido por categoria, rua e bairro, comparando o número quando informado | Permite conferir e apoiar um aviso com protocolo existente neste navegador ou nos exemplos, sem inventar distância até o problema |
 | Relatar | Foto com prévia, revisão com "Alterar", copiar protocolo | Dá segurança antes de enviar e impede que o número se perca |
-| Acompanhar | Linha do tempo + avisos por SMS + "Ficou resolvido mesmo?" | Mostra o que acontece após o envio e devolve a palavra ao morador |
+| Acompanhar | Linha do tempo, preferência de SMS simulado e confirmação ou reabertura persistente | Guarda a resposta no navegador e mantém a situação consistente em Acompanhar, Meu bairro e Sua conta |
 | Meu bairro | Filtros, mapa ligado à lista e "Eu também vi" | Prioriza o mais urgente e facilita encontrar avisos perto de casa |
 | Sua conta / Meus avisos | Login sem senha (celular + código SMS simulado) | Avisos e apoios ficam salvos por pessoa; ninguém precisa guardar protocolo |
 | Rota acessível | Sugestões por rua, CEP ou localização atual na saída e no destino | Distingue ruas de mesmo nome pelo bairro e pela cidade e permite preencher qualquer ponto pelo GPS |
@@ -98,9 +105,10 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **Protocolo:** `ZL-2026-04817` (em execução), `ZL-2026-03991` (resolvido), `ZL-2026-05102`.
 - **CEP:** em Relatar → passo 2, digite **01310-100** (Avenida Paulista) ou **99999-999** (erro).
 - **Relato no bairro:** no passo Local, confira o **Bairro do aviso** preenchido pelo CEP ou GPS; no endereço manual, escolha uma sugestão de bairro. Depois de enviar, use **Ver aviso no bairro**, disponível também em Acompanhar. O atalho abre a região do aviso sem alterar o bairro salvo no perfil.
-- **Aviso repetido:** em Relatar, escolha **Poste apagado** e escreva **Rua das Palmeiras**.
+- **Aviso repetido:** em Relatar, escolha **Poste apagado**, **Jardim Ângela** como bairro do aviso e escreva **Rua das Palmeiras**. Confira a sugestão antes de apoiar. Outro bairro, categoria ou número diferente não deve ser tratado como o mesmo aviso.
 - **Sua conta:** use qualquer celular no formato (11) 9XXXX-XXXX; o código aparece como SMS simulado.
-- **Leitura:** abra **Aa Leitura** na barra superior em telas compactas ou no canto inferior esquerdo em telas maiores, alinhado ao botão de relato. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. **Fechar** mantém as preferências; **Limpar configurações** restaura somente os ajustes de leitura e preserva o bairro, a conta e os avisos.
+- **Leitura:** abra **Aa Ajustar leitura**, destacado em azul na barra superior em todas as telas. Experimente **Leitura confortável** ou ajuste tamanho do texto, contraste, links, animações, espaço entre linhas, botões e aparência. **Fechar** mantém as preferências; **Limpar configurações** restaura somente os ajustes de leitura e preserva o bairro, a conta e os avisos.
+- **Confirmação e reabertura:** consulte `ZL-2026-03991`, marcado como resolvido. Confirme a solução ou escolha **Não, continua igual** e recarregue a página. A decisão permanece neste navegador; a reabertura devolve o aviso à fila com prioridade alta.
 - **Meu bairro:** busque **Grajaú** para ver avisos simulados ou **01310-100** para escolher Bela Vista e experimentar o estado sem avisos. Você também pode salvar ou remover o bairro em **Meus avisos → Seus dados**.
   Ao selecionar uma rua ou um CEP, o endereço permanece visível no campo e o bairro identifica os avisos. O GPS usa uma posição aproximada; confira a rua sugerida antes de continuar.
 - **Rota acessível:** em **Escolher pela região**, selecione Cidade Tiradentes. Escolha o Terminal e a Casa de Cultura como saída e destino, mantenha o perfil **Cadeira de rodas** e clique em **Buscar trajeto**.
@@ -108,7 +116,7 @@ Quando um vizinho já avisou o mesmo problema, o Zela oferece **apoiar** o aviso
 - **Rascunho:** preencha parte de um relato e recarregue a página. Escolha **Continuar de onde parei** ou **Descartar rascunho**. O envio concluído limpa o rascunho; falhas ao guardar o aviso mantêm as respostas na tela.
 - **Perfil de mobilidade:** escolha um perfil na chamada da rota no Início. Abra Meu bairro e depois Rota acessível para confirmar a mesma escolha.
 - **Instruções:** busque um trajeto e use **Próxima instrução**, **Instrução anterior** e **Ver todas as instruções**. O avanço é manual; não há navegação automática pela posição em tempo real.
-- **Voz:** em Leitura, escolha voz e velocidade e use **Testar esta voz**. Depois experimente a ajuda do relato, um aviso em Acompanhar e uma instrução de trajeto. Nenhum áudio começa sem uma ação da pessoa. Os títulos e as descrições das páginas podem ser lidos pelo leitor de tela do aparelho.
+- **Voz:** em **Ajustar leitura**, escolha voz e velocidade e use **Testar esta voz**. Depois experimente a ajuda do relato, um aviso em Acompanhar e uma instrução de trajeto. Nenhum áudio começa sem uma ação da pessoa. Os títulos e as descrições das páginas podem ser lidos pelo leitor de tela do aparelho.
 
 ---
 
@@ -152,7 +160,7 @@ O protótipo guarda os relatos somente no navegador em que foram criados. A pré
 Testes automatizados dos relatos, localização e leitura pelo aparelho (Node.js):
 
 ```sh
-node --test tests/avisos.test.mjs tests/localizacao.test.mjs tests/voz.test.mjs
+node --test tests/avisos.test.mjs tests/fluxos.test.mjs tests/localizacao.test.mjs tests/voz.test.mjs
 ```
 
 A revisão visual considera telas pequenas e desktop, ampliação de texto até 200%, alto contraste e movimento reduzido. A análise automática com axe complementa a revisão; não certifica conformidade com WCAG. O contraste de itens sobre imagens e mapas exige avaliação visual adicional.
@@ -177,6 +185,7 @@ Antes da entrega, ainda são necessários testes com NVDA, TalkBack e VoiceOver 
 - Dados simulados em `assets/js/dados.js`
 - Mapas com tiles do [OpenStreetMap](https://www.openstreetmap.org/copyright)
 - Consulta de trajetos via [API Valhalla](https://valhalla.github.io/valhalla/api/route/api-reference/) (servidor FOSSGIS)
+- Consulta de árvores, bancos, água, rampas e obstáculos registrados no OpenStreetMap via Overpass; elevação consultada no Valhalla. A disponibilidade é informada por trajeto; árvores próximas indicam apenas possível sombra.
 - APIs públicas: [ViaCEP](https://viacep.com.br/), [Nominatim](https://nominatim.org/) e [Photon](https://github.com/komoot/photon#demo-server). A busca usa o servidor de demonstração do Photon, com pausa entre digitação e consulta. A posição enviada para identificar o bairro é arredondada; a preferência salva no navegador guarda só a identificação do bairro e da cidade.
 - `localStorage` para sessão, preferências, apoios e protocolos
 - Web Speech do navegador para leitura opcional
@@ -224,19 +233,29 @@ zela/
 │       ├── favicon.svg
 │       ├── abertura-animada.svg
 │       ├── abertura.gif
+│       ├── rota-destaque.svg   # Ilustração da chamada de mobilidade no Início
 │       ├── relatar-problema.svg # Ícone local do botão flutuante
 │       └── cat-*.svg           # Ícones de categoria de problema
 │
-├── tests/                      # Testes de relatos, localização e controles de voz
+├── docs/
+│   └── ZELA_Global_Solution_Documentacao.pdf # Documento acadêmico revisado para a entrega
+├── tests/                      # Testes de relatos, contas, localização e controles de voz
 ├── .nojekyll                   # Necessário para o GitHub Pages ignorar o Jekyll
 └── README.md
 ```
 
 ---
 
-## Deploy no GitHub Pages
+## Executar localmente
 
-1. Crie um repositório **público** no GitHub e envie estes arquivos para a branch `main`.
-2. No repositório: **Settings → Pages → Build and deployment → Source: Deploy from a branch**.
-3. Escolha a branch `main` e a pasta `/ (root)` e salve.
-4. Em 1–2 minutos o site fica disponível em `https://SEU-USUARIO.github.io/NOME-DO-REPO/`.
+O site é estático e não exige build. Na pasta do projeto, use Python para iniciar uma prévia:
+
+```sh
+python -m http.server 4176 --bind 127.0.0.1
+```
+
+Abra [a prévia local](http://127.0.0.1:4176/) no mesmo computador. As consultas externas precisam de internet; a localização depende da permissão do navegador.
+
+## Publicação
+
+O [Zela está publicado no GitHub Pages](https://fabriciogallo.github.io/zela/), a partir da branch `main` e da raiz do repositório. Atualizações enviadas para essa branch acionam a publicação automática. O arquivo `.nojekyll` mantém a estrutura estática do projeto.
